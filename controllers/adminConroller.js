@@ -179,7 +179,7 @@ const addProduct = async (req,res)=>{
     productListHelper.deleteProduct(id).then((response)=>{
 
     }).catch((error)=>{
-      
+      console.log(error)
     })
 
 
