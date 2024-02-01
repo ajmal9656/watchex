@@ -43,6 +43,6 @@ app.use('/',userAuthRoute);
 app.use('/admin',adminAuthRoute)
 
 
-app.listen(300, () => {
+app.listen(3000, () => {
   console.log("started http://localhost:300/ ,http://localhost:3000/");
 });

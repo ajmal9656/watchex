@@ -3,8 +3,10 @@ const categoryHelper = require("../helpers/cateroryHelper");
 const productListHelper = require("../helpers/productHelper");
 const adminHelper = require("../helpers/adminHelper");
 const categoryModel = require("../models/categoryModel");
+const productModel = require("../models/productModel");
 const adminModel = require("../models/adminModel");
 const { response } = require("express");
+
 
 
 
@@ -37,6 +39,29 @@ const loadAdminHome=async(req,res)=>{
     console.log(error)
   })
   
+}
+
+const logoutAdmin = async (req,res)=>{
+  try{
+    if(req.session.admin){
+      req.session.destroy((error)=>{
+        if(error){
+          res.redirect("/admin")
+
+        }
+        else{
+          res.redirect("/admin");
+        }
+      })
+    }else{
+      res.redirect("/admin")
+
+    }
+
+  }catch(error){
+    console.log(error)
+
+  }
 }
 
 const userList = async (req, res) => {
@@ -92,6 +117,7 @@ const createCategory = async (req, res) => {
 
 const softDeleteCategory = async (req, res) => {
   const id = req.params.id;
+  
   categoryHelper.catSoftDeletion(id).then((response) => {
     if (response.status) {
       res
@@ -176,7 +202,14 @@ const addProduct = async (req,res)=>{
 
   const softDeleteProduct=(req,res)=>{
     const id=req.params.id;
+    console.log(id);
     productListHelper.deleteProduct(id).then((response)=>{
+
+    if(response.product_status){
+      res.json({message:"Product listed"})
+    }else{
+      res.json({message:"Product unlisted"})
+    }
 
     }).catch((error)=>{
       console.log(error)
@@ -185,6 +218,62 @@ const addProduct = async (req,res)=>{
 
   }
 
+
+  const loadEditProduct=async(req,res)=>{
+    const id=req.params.id;
+    const productData= await productModel.findById(id);
+    const catData = await categoryHelper.getAllCategory();
+    res.render("admin/editProduct",{product:productData,categories:catData})
+
+    
+  }
+
+  const editProduct=async(req,res)=>{
+    try {
+      const product = await productModel.findById(req.params.id);
+      if (!product) {
+        return res.redirect('/admin/productList');
+      }
+    const check = await productListHelper.checkDuplicateProduct(req.params.id,req.body);
+    switch (check.status) {
+      case 1:
+        product.product_name = req.body.product_name;
+        product.product_description = req.body.product_description;
+        product.product_price = req.body.product_price;
+        product.product_quantity = req.body.product_quantity;
+        product.product_category = req.body.product_category;
+        product.product_discount = req.body.product_discount;
+        break;
+      case 2:
+        product.product_name = req.body.product_name;
+        product.product_description = req.body.product_description;
+        product.product_price = req.body.product_price;
+        product.product_quantity = req.body.product_quantity;
+        product.product_category = req.body.product_category;
+        product.product_discount = req.body.product_discount
+        break;
+      case 3:
+        console.log("User already Exists");
+        break;
+      default:
+        console.log("error");
+        break;
+    }
+
+    if(req.files){
+      const filenames = await productListHelper.editImages(product.image, req.files);
+      product.image = filenames;
+
+    }
+    await product.save();
+    res.redirect('/admin/productList');
+  } catch (err) {
+    console.log(err);
+  }
+
+    
+    }
+  
 
 module.exports = {
   userList,
@@ -199,5 +288,8 @@ module.exports = {
   addProduct,
   loadAdmin,
   loadAdminHome,
-  softDeleteProduct
+  softDeleteProduct,
+  loadEditProduct,
+  editProduct,
+  logoutAdmin
 };

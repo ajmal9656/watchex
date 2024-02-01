@@ -52,9 +52,10 @@ const catSoftDeletion = async (id) => {
   });
 };
 
-const editCategory = async(id)=>{
+const getAllCategory = async()=>{
   return new Promise(async(resolve,reject)=>{
-    
+    const result=await categorySchema.find();
+    resolve(result);
   })
 
 }
@@ -63,4 +64,5 @@ module.exports = {
   categoryList,
   addCategory,
   catSoftDeletion,
+  getAllCategory
 };

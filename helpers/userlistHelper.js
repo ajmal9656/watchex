@@ -2,7 +2,7 @@ const User = require("../models/userModel");
 
 const getList = async ()=>{
     return new Promise(async(resolve,reject)=>{
-        await User.find({isAdmin:0}).then((response)=>{
+        await User.find().then((response)=>{
             resolve(response);
         }).catch((error)=>{
             console.log(error);

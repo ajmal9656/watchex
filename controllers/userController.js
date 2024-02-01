@@ -4,22 +4,32 @@ const nodemailer = require("nodemailer");
 const { EMAIL, PASSWORD } = require("../env");
 const userHelper=require('../helpers/userHelper');
 const otpHelper=require('../helpers/otpHelper');
+const productHelper=require('../helpers/productHelper');
+const productModel=require("../models/productModel")
 
-const loadhome = function (req, res) {
+const loadhome = async (req, res) =>{
+
+  const productData = await productHelper.getAllProducts();
+  
+
+
+
   if (req.session.user) {
-    res.render("user/indexx",{message:"hi"});
+    res.render("user/indexx",{message:"hi",product:productData});
   } 
   // else if (req.session.admin) {
   //   res.render("admin/index");
   // }
    else {
 
-    res.render("user/indexx");
+
+    res.render("user/indexx",{product:productData});
   }
 };
 
 const loadlogin = function (req, res) {
   if (req.session.user) {
+    
     res.redirect("/");}
   //    else if (req.session.admin) {
   //   res.send("/adminhome");
@@ -68,7 +78,7 @@ const insertUser = async (req, res) => {
     
     if(response.registeredData){
 
-      req.session.user=response.registeredData;
+      req.session.userdata=response.registeredData;
       req.session.email=response.registeredData.email;
 
       res.redirect("/otp-verification");
@@ -156,7 +166,7 @@ const generateOtp = async (req, res) => {
   
 
 const verifyOtp = async (req, res) => {
-  const user = req.session.user;
+  const userData = req.session.userdata;
 
   const storedOtp = req.session.otp;
   
@@ -164,9 +174,9 @@ const verifyOtp = async (req, res) => {
 
 
   if (storedOtp === enteredOtp) {
-    const result = await User.create(user);
+    const result = await User.create(userData);
     if (result) {
-      delete req.session.user;
+      delete req.session.userdata;
       req.flash("message","OTP verified.You can login now");
       res.redirect("/login")
     }
@@ -214,6 +224,23 @@ const loaduserhome = async (req, res) => {
   // }
 };
 
+const viewProduct = async(req,res)=>{
+  const id = req.params.id;
+  userHelper.getProductDetails(id).then((response)=>{
+    if(req.session.user){
+    res.render("user/productView",{product:response});
+    }
+    else{
+      
+      res.redirect("/login")
+    }
+  })
+  // const products = await productModel.findById(id)
+  // console.log(products);
+  // res.render("user/productView",{product:products});
+
+}
+
 module.exports = {
   loadlogin,
   loadregister,
@@ -222,5 +249,6 @@ module.exports = {
   generateOtp,
   verifyOtp,
   loaduserhome,
-  userlogout
+  userlogout,
+  viewProduct
 };

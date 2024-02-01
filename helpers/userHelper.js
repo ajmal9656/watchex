@@ -1,5 +1,7 @@
+const productModel = require("../models/productModel");
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
+
 
 const loginHelper = async (userData) => {
   return new Promise(async (resolve, reject) => {
@@ -61,7 +63,29 @@ const signUpHelper = async(data) => {
     }}
 )};
 
+const getProductDetails = async(id)=>{
+  return new Promise(async(resolve,reject)=>{
+
+    // const productData=await productModel.aggregate([{$match:{_id:id}},{
+    //   $lookup:{
+    //     from:"categories",
+    //     localField:"product_category",
+    //     foreignField:"_id",
+    //     as:"category"
+    //   }
+    // }]);
+    // console.log(productData);
+    // console.log(id);
+    const productData = await productModel.findById(id)
+
+    resolve(productData)
+
+
+  })
+}
+
 module.exports = {
   loginHelper,
   signUpHelper,
+  getProductDetails
 };

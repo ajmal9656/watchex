@@ -8,17 +8,20 @@ const multerMiddleware = require("../middleware/multer");
 
 router.get("/",adminController.loadAdmin);
 router.post("/",adminController.loadAdminHome);
-router.get("/usersList",adminController.userList);
-router.get("/block-unblock-user/:id",adminController.blockOrUnblockUser);
-router.get("/category",adminController.loadCategory);
+router.get("/logout",adminMiddleware.isLogout,adminController.logoutAdmin);
+router.get("/usersList",adminMiddleware.isLogout,adminController.userList);
+router.get("/block-unblock-user/:id",adminMiddleware.isLogout,adminController.blockOrUnblockUser);
+router.get("/category",adminMiddleware.isLogout,adminController.loadCategory);
 router.post("/createCategory",adminController.createCategory);
-router.get("/deleteCategory/:id",adminController.softDeleteCategory);
-router.get("/productList",adminController.LoadProduct);
-router.get("/getAddProduct",adminController.loadAddProduct);
-router.get("/editcategory",adminController.loadEditcategory);
+router.get("/deleteCategory/:id",adminMiddleware.isLogout,adminController.softDeleteCategory);
+router.get("/productList",adminMiddleware.isLogout,adminController.LoadProduct);
+router.get("/getAddProduct",adminMiddleware.isLogout,adminController.loadAddProduct);
+router.get("/editcategory",adminMiddleware.isLogout,adminController.loadEditcategory);
 router.put("/editcategory/:id",adminController.editCategory);
 router.post("/addProduct",multerMiddleware.productUpload,adminController.addProduct);
-router.get("/delete-product/:id",adminController.softDeleteCategory);
+router.get("/delete-product/:id",adminMiddleware.isLogout,adminController.softDeleteProduct);
+router.get("/edit-product/:id",adminMiddleware.isLogout,adminController.loadEditProduct);
+router.put("/edit-product/:id",multerMiddleware.productUpload,adminController.editProduct);
 
 
 module.exports=router;

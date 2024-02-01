@@ -1,5 +1,6 @@
 const productSchema=require("../models/productModel");
 const categorySchema=require("../models/categoryModel");
+const fs = require('fs');
 
 
 const productList=async()=>{
@@ -80,6 +81,83 @@ const deleteProduct= async(id)=>{
   })
 }
 
+const checkDuplicateProduct= async(productId,body)=>{
+  return new Promise(async (resolve, reject) => {
+    const checker = await productSchema.findOne({ _id: productId });
+    const check = await productSchema.findOne({
+      product_name: body.productName,
+    });
+
+    if (!check) {
+      resolve({ status: 1 });
+    } else if (productId == check._id) {
+      resolve({ status: 2 });
+    } else {
+      resolve({ status: 3 });
+    }
+  });
+
+}
+
+const editImages = async (oldImages, newImages) => {
+  return new Promise((resolve, reject) => {
+    if (newImages && newImages.length > 0) {
+      // if new files are uploaded
+      let filenames = [];
+      for (let i = 0; i < newImages.length; i++) {
+        filenames.push(newImages[i].filename);
+      }
+      // delete old images if they exist
+      if (oldImages && oldImages.length > 0) {
+        for (let i = 0; i < oldImages.length; i++) {
+          fs.unlink("public/uploads/" + oldImages[i], (err) => {
+            if (err) {
+              reject(err);
+            }
+          });
+        }
+      }
+      resolve(filenames);
+    } else {
+      // use old images if new images are not uploaded
+      resolve(oldImages);
+    }
+  });
+}
+
+const getAllProducts = async ()=>{
+  try{
+  return new Promise (async(resolve,reject)=>{
+    const product =await productSchema.aggregate([{
+      $lookup:{
+        from:"categories",
+        localField:"product_category",
+        foreignField:"_id",
+        as:"category"
+      }
+    }]);
+    
+
+    const activeproduct = product.filter((item)=>{
+      const category=item.category[0];
+      if(category.status){
+        if(item.product_status){
+          return true;
+        }
+        return false;
+    
+      }
+      return false;
+    });
+
+    resolve(activeproduct);
+  })}catch(error){
+    console.log(error);
+  }
+ 
+
+}
+
 
 
 
@@ -88,6 +166,9 @@ module.exports={
     productList,
     getAddProduct,
     productAdd,
-    deleteProduct
+    deleteProduct,
+    checkDuplicateProduct,
+    editImages,
+    getAllProducts
 
 }
