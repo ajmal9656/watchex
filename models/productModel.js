@@ -21,8 +21,23 @@ const productSchema=new mongoose.Schema({
         required:true
     },
     product_quantity:{
-        type:String,
+        S:{
+            quantity:{
+                type:Number,
         required:true
+            }
+        },
+        M:{
+            quantity:{
+                type:Number,
+        required:true
+            }
+        }, L:{
+            quantity:{
+                type:Number,
+        required:true
+            }
+        }
     },
     product_discount:{
         type:String,
@@ -36,6 +51,14 @@ const productSchema=new mongoose.Schema({
         type:Boolean,
         default:true
     },
+    productCart_status:{
+        type:Boolean,
+        default:false
+    },
+    total_quantity:{
+        type:Number,
+        default:0
+    }
 },
 {
     timestamps:true,

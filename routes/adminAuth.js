@@ -14,10 +14,10 @@ router.get("/block-unblock-user/:id",adminMiddleware.isLogout,adminController.bl
 router.get("/category",adminMiddleware.isLogout,adminController.loadCategory);
 router.post("/createCategory",adminController.createCategory);
 router.get("/deleteCategory/:id",adminMiddleware.isLogout,adminController.softDeleteCategory);
-router.get("/productList",adminMiddleware.isLogout,adminController.LoadProduct);
-router.get("/getAddProduct",adminMiddleware.isLogout,adminController.loadAddProduct);
 router.get("/editcategory",adminMiddleware.isLogout,adminController.loadEditcategory);
 router.put("/editcategory/:id",adminController.editCategory);
+router.get("/productList",adminMiddleware.isLogout,adminController.LoadProduct);
+router.get("/getAddProduct",adminMiddleware.isLogout,adminController.loadAddProduct);
 router.post("/addProduct",multerMiddleware.productUpload,adminController.addProduct);
 router.get("/delete-product/:id",adminMiddleware.isLogout,adminController.softDeleteProduct);
 router.get("/edit-product/:id",adminMiddleware.isLogout,adminController.loadEditProduct);

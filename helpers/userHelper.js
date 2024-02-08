@@ -17,7 +17,7 @@ const loginHelper = async (userData) => {
             if (result) {
               response.logId = true;
               response.data = accountData;
-              console.log(response);
+              
               resolve(response);
             } else {
               response.errorMessage = "no result";
@@ -84,8 +84,35 @@ const getProductDetails = async(id)=>{
   })
 }
 
+const getUserDetails = async(userId)=>{
+  return new Promise(async(resolve,reject)=>{
+    const result = await User.findOne({_id:userId});
+
+    if(result){
+      resolve(result);
+    }
+    else{
+      console.log("not found")
+    }
+  })
+}
+const addUserAddress=async(userId,body)=>{
+  return new Promise(async(resolve,reject)=>{
+
+    const result = await User.updateOne({_id:userId},{$push:{address:body}});
+
+    console.log(result)
+
+    resolve(result);
+    
+
+  })
+}
+
 module.exports = {
   loginHelper,
   signUpHelper,
-  getProductDetails
+  getProductDetails,
+  getUserDetails,
+  addUserAddress
 };

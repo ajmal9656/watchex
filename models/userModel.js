@@ -22,7 +22,16 @@ const userSchema =new mongoose.Schema({
     isActive:{
         type:Boolean,
         default:true,
-    }
+    },
+    address:[{
+        name:String,
+        house:String,
+        state:String,
+        country:String,
+        city:String,
+        pincode:Number,
+        addressType:Number,
+    }]
 
 })
 

@@ -20,304 +20,11 @@
     <link rel="stylesheet" href="/public/user/assets/css/main.css?v=3.4" />
     <link
       rel="stylesheet"
-      type="text/css"
-      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+      href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css"
     />
   </head>
 
   <body>
-    <!-- Quick view -->
-    <div
-      class="modal fade custom-modal"
-      id="quickViewModal"
-      tabindex="-1"
-      aria-labelledby="quickViewModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
-          <div class="modal-body">
-            <div class="row">
-              <div class="col-md-6 col-sm-12 col-xs-12">
-                <div class="detail-gallery">
-                  <span class="zoom-icon"><i class="fi-rs-search"></i></span>
-                  <!-- MAIN SLIDES -->
-                  <div class="product-image-slider">
-                    <figure class="border-radius-10">
-                      <img
-                        src="/public/user/assets/imgs/shop/product-16-2.jpg"
-                        alt="product image"
-                      />
-                    </figure>
-                    <figure class="border-radius-10">
-                      <img
-                        src="/public/user/assets/imgs/shop/product-16-1.jpg"
-                        alt="product image"
-                      />
-                    </figure>
-                    <figure class="border-radius-10">
-                      <img
-                        src="/public/user/assets/imgs/shop/product-16-3.jpg"
-                        alt="product image"
-                      />
-                    </figure>
-                    <figure class="border-radius-10">
-                      <img
-                        src="/public/user/assets/imgs/shop/product-16-4.jpg"
-                        alt="product image"
-                      />
-                    </figure>
-                    <figure class="border-radius-10">
-                      <img
-                        src="/public/user/assets/imgs/shop/product-16-5.jpg"
-                        alt="product image"
-                      />
-                    </figure>
-                    <figure class="border-radius-10">
-                      <img
-                        src="/public/user/assets/imgs/shop/product-16-6.jpg"
-                        alt="product image"
-                      />
-                    </figure>
-                    <figure class="border-radius-10">
-                      <img
-                        src="/public/user/assets/imgs/shop/product-16-7.jpg"
-                        alt="product image"
-                      />
-                    </figure>
-                  </div>
-                  <!-- THUMBNAILS -->
-                  <div class="slider-nav-thumbnails pl-15 pr-15">
-                    <div>
-                      <img
-                        src="/public/user/assets/imgs/shop/thumbnail-3.jpg"
-                        alt="product image"
-                      />
-                    </div>
-                    <div>
-                      <img
-                        src="/public/user/assets/imgs/shop/thumbnail-4.jpg"
-                        alt="product image"
-                      />
-                    </div>
-                    <div>
-                      <img
-                        src="/public/user/assets/imgs/shop/thumbnail-5.jpg"
-                        alt="product image"
-                      />
-                    </div>
-                    <div>
-                      <img
-                        src="/public/user/assets/imgs/shop/thumbnail-6.jpg"
-                        alt="product image"
-                      />
-                    </div>
-                    <div>
-                      <img
-                        src="/public/user/assets/imgs/shop/thumbnail-7.jpg"
-                        alt="product image"
-                      />
-                    </div>
-                    <div>
-                      <img
-                        src="/public/user/assets/imgs/shop/thumbnail-8.jpg"
-                        alt="product image"
-                      />
-                    </div>
-                    <div>
-                      <img
-                        src="/public/user/assets/imgs/shop/thumbnail-9.jpg"
-                        alt="product image"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <!-- End Gallery -->
-                <div class="social-icons single-share">
-                  <ul class="text-grey-5 d-inline-block">
-                    <li><strong class="mr-10">Share this:</strong></li>
-                    <li class="social-facebook">
-                      <a href="#"
-                        ><img
-                          src="/public/user/assets/imgs/theme/icons/icon-facebook.svg"
-                          alt=""
-                      /></a>
-                    </li>
-                    <li class="social-twitter">
-                      <a href="#"
-                        ><img
-                          src="/public/user/assets/imgs/theme/icons/icon-twitter.svg"
-                          alt=""
-                      /></a>
-                    </li>
-                    <li class="social-instagram">
-                      <a href="#"
-                        ><img
-                          src="/public/user/assets/imgs/theme/icons/icon-instagram.svg"
-                          alt=""
-                      /></a>
-                    </li>
-                    <li class="social-linkedin">
-                      <a href="#"
-                        ><img
-                          src="/public/user/assets/imgs/theme/icons/icon-pinterest.svg"
-                          alt=""
-                      /></a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-              <div class="col-md-6 col-sm-12 col-xs-12">
-                <div class="detail-info">
-                  <h3 class="title-detail mt-30">
-                    <%= product.product_name %>
-                  </h3>
-                  <div class="product-detail-rating">
-                    <div class="pro-details-brand">
-                      <span> Brands: <a href="shop-grid-right.html"></a></span>
-                    </div>
-                    <div class="product-rate-cover text-end">
-                      <div class="product-rate d-inline-block">
-                        <div class="product-rating" style="width: 90%"></div>
-                      </div>
-                      <span class="font-small ml-5 text-muted">
-                        (25 reviews)</span
-                      >
-                    </div>
-                    yikes
-                  </div>
-                  <div class="clearfix product-price-cover">
-                    <div class="product-price primary-color float-left">
-                      <ins
-                        ><span class="text-brand"
-                          ><%= product.product_description %></span
-                        ></ins
-                      >
-                      <ins
-                        ><span class="old-price font-md ml-15"
-                          >$200.00</span
-                        ></ins
-                      >
-                      <span class="save-price font-md color3 ml-15"
-                        ><%= product.product_discount %></span
-                      >
-                    </div>
-                  </div>
-                  <div class="bt-1 border-color-1 mt-15 mb-15"></div>
-                  <div class="short-desc mb-30">
-                    <p class="font-sm"><%= product.product_description %></p>
-                  </div>
-
-                  <div class="attr-detail attr-color mb-15">
-                    <strong class="mr-10">Color</strong>
-                    <ul class="list-filter color-filter">
-                      <li>
-                        <a href="#" data-color="Red"
-                          ><span class="product-color-red"></span
-                        ></a>
-                      </li>
-                      <li>
-                        <a href="#" data-color="Yellow"
-                          ><span class="product-color-yellow"></span
-                        ></a>
-                      </li>
-                      <li class="active">
-                        <a href="#" data-color="White"
-                          ><span class="product-color-white"></span
-                        ></a>
-                      </li>
-                      <li>
-                        <a href="#" data-color="Orange"
-                          ><span class="product-color-orange"></span
-                        ></a>
-                      </li>
-                      <li>
-                        <a href="#" data-color="Cyan"
-                          ><span class="product-color-cyan"></span
-                        ></a>
-                      </li>
-                      <li>
-                        <a href="#" data-color="Green"
-                          ><span class="product-color-green"></span
-                        ></a>
-                      </li>
-                      <li>
-                        <a href="#" data-color="Purple"
-                          ><span class="product-color-purple"></span
-                        ></a>
-                      </li>
-                    </ul>
-                  </div>
-                  <div class="attr-detail attr-size">
-                    <strong class="mr-10">Size</strong>
-                    <ul class="list-filter size-filter font-small">
-                      <li><a href="#">S</a></li>
-                      <li class="active"><a href="#">M</a></li>
-                      <li><a href="#">L</a></li>
-                      <li><a href="#">XL</a></li>
-                      <li><a href="#">XXL</a></li>
-                    </ul>
-                  </div>
-                  <div class="bt-1 border-color-1 mt-30 mb-30"></div>
-                  <div class="detail-extralink">
-                    <div class="detail-qty border radius">
-                      <a href="#" class="qty-down"
-                        ><i class="fi-rs-angle-small-down"></i
-                      ></a>
-                      <span class="qty-val">1</span>
-                      <a href="#" class="qty-up"
-                        ><i class="fi-rs-angle-small-up"></i
-                      ></a>
-                    </div>
-                    <div class="product-extra-link2">
-                      <button
-                        type="submit"
-                        class="button button-add-to-cart"
-                        onclick="addToCart('<%= product._id %>')"
-                      >
-                        Add to cart
-                      </button>
-                      <a
-                        aria-label="Add To Wishlist"
-                        class="action-btn hover-up"
-                        href="shop-wishlist.html"
-                        ><i class="fi-rs-heart"></i
-                      ></a>
-                      <a
-                        aria-label="Compare"
-                        class="action-btn hover-up"
-                        href="shop-compare.html"
-                        ><i class="fi-rs-shuffle"></i
-                      ></a>
-                    </div>
-                  </div>
-                  <ul class="product-meta font-xs color-grey mt-50">
-                    <li class="mb-5">SKU: <a href="#">FWM15VKT</a></li>
-                    <li class="mb-5">
-                      Tags: <a href="#" rel="tag">Cloth</a>,
-                      <a href="#" rel="tag">Women</a>,
-                      <a href="#" rel="tag">Dress</a>
-                    </li>
-                    <li>
-                      Availability:<span class="in-stock text-success ml-5"
-                        >8 Items In Stock</span
-                      >
-                    </li>
-                  </ul>
-                </div>
-                <!-- Detail Info -->
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
     <header class="header-area header-style-1 header-height-2">
       <div class="header-top header-top-ptb-1 d-none d-lg-block">
         <div class="container">
@@ -443,7 +150,7 @@
                         alt="Evara"
                         src="/public/user/assets/imgs/theme/icons/icon-cart.svg"
                       />
-                      <span class="pro-count blue">3</span>
+                      <span class="pro-count blue">2</span>
                     </a>
                     <div class="cart-dropdown-wrap cart-dropdown-hm2">
                       <ul>
@@ -827,7 +534,7 @@
                                 alt="menu_banner1"
                               />
                               <div class="banne_info">
-                                <h6>10%</h6>
+                                <h6>10% Off</h6>
                                 <h4>New Arrival</h4>
                                 <a href="#">Shop now</a>
                               </div>
@@ -1435,9 +1142,7 @@
         <div class="mobile-header-top">
           <div class="mobile-header-logo">
             <a href="index.html"
-              ><img
-                src="/public/user/assets/imgs/page/Screenshot__242_-removebg-preview.png"
-                alt="logo"
+              ><img src="/public/user/assets/imgs/theme/logo.svg" alt="logo"
             /></a>
           </div>
           <div
@@ -1749,709 +1454,419 @@
         <div class="container">
           <div class="breadcrumb">
             <a href="index.html" rel="nofollow">Home</a>
-            <span></span> Fashion <span></span> Abstract Print Patchwork Dress
+            <span></span> Shop <span></span> Your Cart
           </div>
         </div>
       </div>
       <section class="mt-50 mb-50">
         <div class="container">
           <div class="row">
-            <div class="col-lg-12">
-              <div class="product-detail accordion-detail">
-                <div class="row mb-50">
-                  <div class="col-md-6 col-sm-12 col-xs-12">
-                    <div class="detail-gallery">
-                      <span class="zoom-icon"
-                        ><i class="fi-rs-search"></i
-                      ></span>
-                      <!-- MAIN SLIDES -->
-                      <div class="product-image-slider">
-                        <figure class="border-radius-10">
-                          <img
-                            src="/public/uploads/<%= product.image[0] %>"
-                            alt="product image"
-                          />
-                        </figure>
-                        <figure class="border-radius-10">
-                          <img
-                            src="/public/uploads/<%= product.image[1] %>"
-                            alt="product image"
-                          />
-                        </figure>
-                        <figure class="border-radius-10">
-                          <img
-                            src="/public/uploads/<%= product.image[2] %>"
-                            alt="product image"
-                          />
-                        </figure>
-                        <figure class="border-radius-10">
-                          <img
-                            src="/public/uploads/<%= product.image[3] %>"
-                            alt="product image"
-                          />
-                        </figure>
-                      </div>
-                      <!-- THUMBNAILS -->
-                      <div class="slider-nav-thumbnails pl-15 pr-15">
-                        <div>
-                          <img
-                            src="/public/uploads/<%= product.image[0] %>"
-                            alt="product image"
-                          />
-                        </div>
-                        <div>
-                          <img
-                            src="/public/uploads/<%= product.image[1] %>"
-                            alt="product image"
-                          />
-                        </div>
-                        <div>
-                          <img
-                            src="/public/uploads/<%= product.image[2] %>"
-                            alt="product image"
-                          />
-                        </div>
-                        <div>
-                          <img
-                            src="/public/uploads/<%= product.image[3] %>"
-                            alt="product image"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <!-- End Gallery -->
-                  </div>
-                  <div class="col-md-6 col-sm-12 col-xs-12">
-                    <div class="detail-info">
-                      <h2 class="title-detail"><%= product.product_name %></h2>
-                      <div class="product-detail-rating">
-                        <div class="pro-details-brand">
-                          <span>
-                            Brands:
-                            <a href="shop-grid-right.html">Bootstrap</a></span
-                          >
-                        </div>
-                        <div class="product-rate-cover text-end">
-                          <div class="product-rate d-inline-block">
-                            <div
-                              class="product-rating"
-                              style="width: 90%"
-                            ></div>
-                          </div>
-                          <span class="font-small ml-5 text-muted">
-                            (25 reviews)</span
-                          >
-                        </div>
-                      </div>
-                      <div class="clearfix product-price-cover">
-                        <div class="product-price primary-color float-left">
-                          <ins
-                            ><span class="text-brand"
-                              >$<%= product.offerPrice %></span
-                            ></ins
-                          >
-                          <ins
-                            ><span class="old-price font-md ml-15"
-                              ><%= product.product_price %></span
-                            ></ins
-                          >
-                          <span class="save-price font-md color3 ml-15"
-                            ><%= product.product_discount %>% Off</span
-                          >
-                        </div>
-                      </div>
-                      <div class="bt-1 border-color-1 mt-15 mb-15"></div>
-                      <div class="short-desc mb-30">
-                        <p><%= product.product_description %></p>
-                      </div>
-                      <div class="product_sort_info font-xs mb-30">
-                        <ul>
-                          <li class="mb-10">
-                            <i class="fi-rs-crown mr-5"></i> 1 Year AL Jazeera
-                            Brand Warranty
-                          </li>
-                          <li class="mb-10">
-                            <i class="fi-rs-refresh mr-5"></i> 30 Day Return
-                            Policy
-                          </li>
-                          <li>
-                            <i class="fi-rs-credit-card mr-5"></i> Cash on
-                            Delivery available
-                          </li>
-                        </ul>
-                      </div>
-                      <div class="attr-detail attr-color mb-15">
-                        <strong class="mr-10">Color</strong>
-                        <ul class="list-filter color-filter">
-                          <li>
-                            <a href="#" data-color="Red"
-                              ><span class="product-color-red"></span
-                            ></a>
-                          </li>
-                          <li>
-                            <a href="#" data-color="Yellow"
-                              ><span class="product-color-yellow"></span
-                            ></a>
-                          </li>
-                          <li class="active">
-                            <a href="#" data-color="White"
-                              ><span class="product-color-white"></span
-                            ></a>
-                          </li>
-                          <li>
-                            <a href="#" data-color="Orange"
-                              ><span class="product-color-orange"></span
-                            ></a>
-                          </li>
-                          <li>
-                            <a href="#" data-color="Cyan"
-                              ><span class="product-color-cyan"></span
-                            ></a>
-                          </li>
-                          <li>
-                            <a href="#" data-color="Green"
-                              ><span class="product-color-green"></span
-                            ></a>
-                          </li>
-                          <li>
-                            <a href="#" data-color="Purple"
-                              ><span class="product-color-purple"></span
-                            ></a>
-                          </li>
-                        </ul>
-                      </div>
-                      <div class="attr-detail attr-size">
-                        <strong class="mr-10">Size</strong>
-                        <ul class="list-filter size-filter font-small">
-                          <li><a href="#" id="smallQuantity">S</a></li>
-                          <li class="active"><a href="#" id="mediumQuantity">M</a></li>
-                          <li><a href="#" id="largeQuantity">L</a></li>
+            <div class="col-12">
+              <div class="table-responsive container">
+                <table
+                  class="table shopping-summery text-center clean"
+                  id="myTable"
+                >
+                  <thead>
+                    <tr class="main-heading">
+                      <th scope="col" class="text-center">Image</th>
+                      <th scope="col" class="text-center">Name</th>
+                      <th scope="col" class="text-center">Price</th>
+                      <th scope="col" class="text-center">Size</th>
+                      <th scope="col" class="text-center">Quantity</th>
+                      <th scope="col" class="text-center">Subtotal</th>
+                      <th scope="col" class="text-center">Remove</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% for( let i = 0; i < products.length; i++ ) { %>
+                        <tr>
+                            <td class="image product-thumbnail">
+                              <img
+                                src="/public/uploads/<%= products[i].product.image[0] %>"
+                                alt="#"
+                              />
+                            </td>
+                            <td class="product-des product-name">
+                              <h5 class="product-name">
+                                <a href="shop-product-right.html"
+                                  ><%= products[i].product.product_name %></a
+                                >
+                              </h5>
+                              <p class="font-xs">
+                                <%= products[i].product.product_description %>
+                              </p>
+                            </td>
+                            <td class="price" data-title="Price">
+                              <span>$<%= products[i].product.offerPrice %></span>
+                            </td>
+                            <td class="price" data-title="Price">
+                              <span><%= products[i].size %></span>
+                            </td>
+                            <td class="text-center" data-title="Stock">
+                              <div class="detail-qty border radius m-auto">
+                                <a href="#" class="qty-down" onclick="incOrDecquantity('<%= products[i].product._id %>','-1')"
+                                  ><i class="fi-rs-angle-small-down"></i
+                                ></a>
+                                <span class="qty-val"><%= products[i].quantity %></span>
+                                <a href="#" class="qty-up" onclick="incOrDecquantity('<%= products[i].product._id %>','1')"
+                                  ><i class="fi-rs-angle-small-up"></i
+                                ></a>
+                              </div>
+                            </td>
+                            <td class="text-right" data-title="Cart">
+                                
+                                    <span>$<%= products[i].quantity*products[i].product.offerPrice %></span>
+                              
+                            </td>
+                            <td class="action" data-title="Remove">
+                              <a onclick="removeFromCart('<%= products[i].product._id %>')" class="text-muted"
+                                ><i class="fi-rs-trash"></i
+                              ></a>
+                            </td>
+                          </tr>
                           
-                        </ul>
-                      </div>
-                      <div class="bt-1 border-color-1 mt-30 mb-30"></div>
-                      <div class="detail-extralink">
-                        <% if (product.isCart) { %>
-                        <div class="product-extra-link2">
-                          <button
-                            type="submit"
-                            class="button button-add-to-cart"
-                            onclick="viewCart()"
-                          >
-                            View cart
-                          </button>
-                          <a
-                            aria-label="Add To Wishlist"
-                            class="action-btn hover-up"
-                            onclick="addToWishlist('<%= product._id %>')"
-                            ><i class="fi-rs-heart"></i
-                          ></a>
-                          <a
-                            aria-label="Compare"
-                            class="action-btn hover-up"
-                            href="shop-compare.html"
-                            ><i class="fi-rs-shuffle"></i
-                          ></a>
-                        </div>
-
-                        <% } else { %>
-                        <div class="product-extra-link2">
-                          <button
-                            type="submit"
-                            class="button button-add-to-cart"
-                            onclick="addToCart('<%= product._id %>')"
-                          >
-                            Add to cart
-                          </button>
-                          <a
-                            aria-label="Add To Wishlist"
-                            class="action-btn hover-up"
-                            onclick="addToWishlist('<%= product._id %>')"
-                            ><i class="fi-rs-heart"></i
-                          ></a>
-                          <a
-                            aria-label="Compare"
-                            class="action-btn hover-up"
-                            href="shop-compare.html"
-                            ><i class="fi-rs-shuffle"></i
-                          ></a>
-                        </div>
-
-                        <% } %>
-                      </div>
-                      <ul class="product-meta font-xs color-grey mt-50">
-                        <li class="mb-5">SKU: <a href="#">FWM15VKT</a></li>
-                        <li class="mb-5">
-                          Tags: <a href="#" rel="tag">Cloth</a>,
-                          <a href="#" rel="tag">Women</a>,
-                          <a href="#" rel="tag">Dress</a>
-                        </li>
-                        <li>
-                          Availability:<span class="in-stock text-success ml-5" id="smallQ"
-                            ><%= product.product_quantity.S.quantity %> Items In Stock</span
-                          >
-                          <span class="in-stock text-success ml-5" id="mediumQ"
-                            ><%= product.product_quantity.M.quantity %> Items In Stock</span
-                          >
-                          <span class="in-stock text-success ml-5" id="largeQ"
-                            ><%= product.product_quantity.L.quantity %> Items In Stock</span
-                          >
-                        </li>
-                      </ul>
-                    </div>
-                    <!-- Detail Info -->
+                    <% } %>
+                
+                  </tbody>
+                </table>
+              </div>
+              <div class="cart-action text-end pt-15">
+                
+                <a class="btn" href="/"
+                  ><i class="fi-rs-shopping-bag mr-10"></i>Continue Shopping</a
+                >
+              </div>
+              <div class="divider center_icon mt-50 mb-50">
+                <i class="fi-rs-fingerprint"></i>
+              </div>
+              <div class="row mb-50">
+                <div class="col-lg-6 col-md-12">
+                  <div class="heading_s1 mb-3">
+                    <h4>Calculate Shipping</h4>
                   </div>
-                </div>
-                <div class="row">
-                  <div class="col-lg-10 m-auto entry-main-content">
-                    <h2 class="section-title style-1 mb-30">Description</h2>
-                    <div class="description mb-50">
-                      <p>
-                        Uninhibited carnally hired played in whimpered dear
-                        gorilla koala depending and much yikes off far quetzal
-                        goodness and from for grimaced goodness unaccountably
-                        and meadowlark near unblushingly crucial scallop tightly
-                        neurotic hungrily some and dear furiously this apart.
-                      </p>
-                      <p>
-                        Spluttered narrowly yikes left moth in yikes bowed this
-                        that grizzly much hello on spoon-fed that alas rethought
-                        much decently richly and wow against the frequent
-                        fluidly at formidable acceptably flapped besides and
-                        much circa far over the bucolically hey precarious
-                        goldfinch mastodon goodness gnashed a jellyfish and one
-                        however because.
-                      </p>
-                      <ul class="product-more-infor mt-30">
-                        <li><span>Type Of Packing</span> Bottle</li>
-                        <li>
-                          <span>Color</span> Green, Pink, Powder Blue, Purple
-                        </li>
-                        <li><span>Quantity Per Case</span> 100ml</li>
-                        <li><span>Ethyl Alcohol</span> 70%</li>
-                        <li><span>Piece In One</span> Carton</li>
-                      </ul>
-                      <hr class="wp-block-separator is-style-dots" />
-                      <p>
-                        Laconic overheard dear woodchuck wow this outrageously
-                        taut beaver hey hello far meadowlark imitatively
-                        egregiously hugged that yikes minimally unanimous pouted
-                        flirtatiously as beaver beheld above forward energetic
-                        across this jeepers beneficently cockily less a the
-                        raucously that magic upheld far so the this where crud
-                        then below after jeez enchanting drunkenly more much wow
-                        callously irrespective limpet.
-                      </p>
-                      <h4 class="mt-30">Packaging & Delivery</h4>
-                      <hr class="wp-block-separator is-style-wide" />
-                      <p>
-                        Less lion goodness that euphemistically robin
-                        expeditiously bluebird smugly scratched far while thus
-                        cackled sheepishly rigid after due one assenting
-                        regarding censorious while occasional or this more crane
-                        went more as this less much amid overhung anathematic
-                        because much held one exuberantly sheep goodness so
-                        where rat wry well concomitantly.
-                      </p>
-                      <p>
-                        Scallop or far crud plain remarkably far by thus far
-                        iguana lewd precociously and and less rattlesnake
-                        contrary caustic wow this near alas and next and pled
-                        the yikes articulate about as less cackled dalmatian in
-                        much less well jeering for the thanks blindly
-                        sentimental whimpered less across objectively fanciful
-                        grimaced wildly some wow and rose jeepers outgrew
-                        lugubrious luridly irrationally attractively dachshund.
-                      </p>
-                    </div>
-                    <h3 class="section-title style-1 mb-30">Additional info</h3>
-                    <table class="font-md mb-30">
-                      <tbody>
-                        <tr class="stand-up">
-                          <th>Stand Up</th>
-                          <td>
-                            <p>35″L x 24″W x 37-45″H(front to back wheel)</p>
-                          </td>
-                        </tr>
-                        <tr class="folded-wo-wheels">
-                          <th>Folded (w/o wheels)</th>
-                          <td>
-                            <p>32.5″L x 18.5″W x 16.5″H</p>
-                          </td>
-                        </tr>
-                        <tr class="folded-w-wheels">
-                          <th>Folded (w/ wheels)</th>
-                          <td>
-                            <p>32.5″L x 24″W x 18.5″H</p>
-                          </td>
-                        </tr>
-                        <tr class="door-pass-through">
-                          <th>Door Pass Through</th>
-                          <td>
-                            <p>24</p>
-                          </td>
-                        </tr>
-                        <tr class="frame">
-                          <th>Frame</th>
-                          <td>
-                            <p>Aluminum</p>
-                          </td>
-                        </tr>
-                        <tr class="weight-wo-wheels">
-                          <th>Weight (w/o wheels)</th>
-                          <td>
-                            <p>20 LBS</p>
-                          </td>
-                        </tr>
-                        <tr class="weight-capacity">
-                          <th>Weight Capacity</th>
-                          <td>
-                            <p>60 LBS</p>
-                          </td>
-                        </tr>
-                        <tr class="width">
-                          <th>Width</th>
-                          <td>
-                            <p>24″</p>
-                          </td>
-                        </tr>
-                        <tr class="handle-height-ground-to-handle">
-                          <th>Handle height (ground to handle)</th>
-                          <td>
-                            <p>37-45″</p>
-                          </td>
-                        </tr>
-                        <tr class="wheels">
-                          <th>Wheels</th>
-                          <td>
-                            <p>12″ air / wide track slick tread</p>
-                          </td>
-                        </tr>
-                        <tr class="seat-back-height">
-                          <th>Seat back height</th>
-                          <td>
-                            <p>21.5″</p>
-                          </td>
-                        </tr>
-                        <tr class="head-room-inside-canopy">
-                          <th>Head room (inside canopy)</th>
-                          <td>
-                            <p>25″</p>
-                          </td>
-                        </tr>
-                        <tr class="pa_color">
-                          <th>Color</th>
-                          <td>
-                            <p>Black, Blue, Red, White</p>
-                          </td>
-                        </tr>
-                        <tr class="pa_size">
-                          <th>Size</th>
-                          <td>
-                            <p>M, S</p>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                    <div class="social-icons single-share">
-                      <ul class="text-grey-5 d-inline-block">
-                        <li><strong class="mr-10">Share this:</strong></li>
-                        <li class="social-facebook">
-                          <a href="#"
-                            ><img
-                              src="/public/user/assets/imgs/theme/icons/icon-facebook.svg"
-                              alt=""
-                          /></a>
-                        </li>
-                        <li class="social-twitter">
-                          <a href="#"
-                            ><img
-                              src="/public/user/assets/imgs/theme/icons/icon-twitter.svg"
-                              alt=""
-                          /></a>
-                        </li>
-                        <li class="social-instagram">
-                          <a href="#"
-                            ><img
-                              src="/public/user/assets/imgs/theme/icons/icon-instagram.svg"
-                              alt=""
-                          /></a>
-                        </li>
-                        <li class="social-linkedin">
-                          <a href="#"
-                            ><img
-                              src="/public/user/assets/imgs/theme/icons/icon-pinterest.svg"
-                              alt=""
-                          /></a>
-                        </li>
-                      </ul>
-                    </div>
-                    <h3 class="section-title style-1 mb-30 mt-30">
-                      Reviews (3)
-                    </h3>
-                    <!--Comments-->
-                    <div class="comments-area style-2">
-                      <div class="row">
-                        <div class="col-lg-8">
-                          <h4 class="mb-30">Customer questions & answers</h4>
-                          <div class="comment-list">
-                            <div
-                              class="single-comment justify-content-between d-flex"
-                            >
-                              <div class="user justify-content-between d-flex">
-                                <div class="thumb text-center">
-                                  <img
-                                    src="/public/user/assets/imgs/page/avatar-6.jpg"
-                                    alt=""
-                                  />
-                                  <h6><a href="#">Jacky Chan</a></h6>
-                                  <p class="font-xxs">Since 2012</p>
-                                </div>
-                                <div class="desc">
-                                  <div class="product-rate d-inline-block">
-                                    <div
-                                      class="product-rating"
-                                      style="width: 90%"
-                                    ></div>
-                                  </div>
-                                  <p>
-                                    Thank you very fast shipping from Poland
-                                    only 3days.
-                                  </p>
-                                  <div class="d-flex justify-content-between">
-                                    <div class="d-flex align-items-center">
-                                      <p class="font-xs mr-30">
-                                        December 4, 2020 at 3:12 pm
-                                      </p>
-                                      <a href="#" class="text-brand btn-reply"
-                                        >Reply <i class="fi-rs-arrow-right"></i>
-                                      </a>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <!--single-comment -->
-                            <div
-                              class="single-comment justify-content-between d-flex"
-                            >
-                              <div class="user justify-content-between d-flex">
-                                <div class="thumb text-center">
-                                  <img
-                                    src="/public/user/assets/imgs/page/avatar-7.jpg"
-                                    alt=""
-                                  />
-                                  <h6><a href="#">Ana Rosie</a></h6>
-                                  <p class="font-xxs">Since 2008</p>
-                                </div>
-                                <div class="desc">
-                                  <div class="product-rate d-inline-block">
-                                    <div
-                                      class="product-rating"
-                                      style="width: 90%"
-                                    ></div>
-                                  </div>
-                                  <p>Great low price and works well.</p>
-                                  <div class="d-flex justify-content-between">
-                                    <div class="d-flex align-items-center">
-                                      <p class="font-xs mr-30">
-                                        December 4, 2020 at 3:12 pm
-                                      </p>
-                                      <a href="#" class="text-brand btn-reply"
-                                        >Reply <i class="fi-rs-arrow-right"></i>
-                                      </a>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <!--single-comment -->
-                            <div
-                              class="single-comment justify-content-between d-flex"
-                            >
-                              <div class="user justify-content-between d-flex">
-                                <div class="thumb text-center">
-                                  <img
-                                    src="/public/user/assets/imgs/page/avatar-8.jpg"
-                                    alt=""
-                                  />
-                                  <h6><a href="#">Steven Keny</a></h6>
-                                  <p class="font-xxs">Since 2010</p>
-                                </div>
-                                <div class="desc">
-                                  <div class="product-rate d-inline-block">
-                                    <div
-                                      class="product-rating"
-                                      style="width: 90%"
-                                    ></div>
-                                  </div>
-                                  <p>
-                                    Authentic and Beautiful, Love these way more
-                                    than ever expected They are Great earphones
-                                  </p>
-                                  <div class="d-flex justify-content-between">
-                                    <div class="d-flex align-items-center">
-                                      <p class="font-xs mr-30">
-                                        December 4, 2020 at 3:12 pm
-                                      </p>
-                                      <a href="#" class="text-brand btn-reply"
-                                        >Reply <i class="fi-rs-arrow-right"></i>
-                                      </a>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <!--single-comment -->
-                          </div>
-                        </div>
-                        <div class="col-lg-4">
-                          <h4 class="mb-30">Customer reviews</h4>
-                          <div class="d-flex mb-30">
-                            <div class="product-rate d-inline-block mr-15">
-                              <div
-                                class="product-rating"
-                                style="width: 90%"
-                              ></div>
-                            </div>
-                            <h6>4.8 out of 5</h6>
-                          </div>
-                          <div class="progress">
-                            <span>5 star</span>
-                            <div
-                              class="progress-bar"
-                              role="progressbar"
-                              style="width: 50%"
-                              aria-valuenow="50"
-                              aria-valuemin="0"
-                              aria-valuemax="100"
-                            >
-                              50%
-                            </div>
-                          </div>
-                          <div class="progress">
-                            <span>4 star</span>
-                            <div
-                              class="progress-bar"
-                              role="progressbar"
-                              style="width: 25%"
-                              aria-valuenow="25"
-                              aria-valuemin="0"
-                              aria-valuemax="100"
-                            >
-                              25%
-                            </div>
-                          </div>
-                          <div class="progress">
-                            <span>3 star</span>
-                            <div
-                              class="progress-bar"
-                              role="progressbar"
-                              style="width: 45%"
-                              aria-valuenow="45"
-                              aria-valuemin="0"
-                              aria-valuemax="100"
-                            >
-                              45%
-                            </div>
-                          </div>
-                          <div class="progress">
-                            <span>2 star</span>
-                            <div
-                              class="progress-bar"
-                              role="progressbar"
-                              style="width: 65%"
-                              aria-valuenow="65"
-                              aria-valuemin="0"
-                              aria-valuemax="100"
-                            >
-                              65%
-                            </div>
-                          </div>
-                          <div class="progress mb-30">
-                            <span>1 star</span>
-                            <div
-                              class="progress-bar"
-                              role="progressbar"
-                              style="width: 85%"
-                              aria-valuenow="85"
-                              aria-valuemin="0"
-                              aria-valuemax="100"
-                            >
-                              85%
-                            </div>
-                          </div>
-                          <a href="#" class="font-xs text-muted"
-                            >How are ratings calculated?</a
-                          >
+                  <p class="mt-15 mb-30">
+                    Flat rate: <span class="font-xl text-brand fw-900">5%</span>
+                  </p>
+                  <form class="field_form shipping_calculator">
+                    <div class="form-row">
+                      <div class="form-group col-lg-12">
+                        <div class="custom_select">
+                          <select class="form-control select-active">
+                            <option value="">Choose a option...</option>
+                            <option value="AX">Aland Islands</option>
+                            <option value="AF">Afghanistan</option>
+                            <option value="AL">Albania</option>
+                            <option value="DZ">Algeria</option>
+                            <option value="AD">Andorra</option>
+                            <option value="AO">Angola</option>
+                            <option value="AI">Anguilla</option>
+                            <option value="AQ">Antarctica</option>
+                            <option value="AG">Antigua and Barbuda</option>
+                            <option value="AR">Argentina</option>
+                            <option value="AM">Armenia</option>
+                            <option value="AW">Aruba</option>
+                            <option value="AU">Australia</option>
+                            <option value="AT">Austria</option>
+                            <option value="AZ">Azerbaijan</option>
+                            <option value="BS">Bahamas</option>
+                            <option value="BH">Bahrain</option>
+                            <option value="BD">Bangladesh</option>
+                            <option value="BB">Barbados</option>
+                            <option value="BY">Belarus</option>
+                            <option value="PW">Belau</option>
+                            <option value="BE">Belgium</option>
+                            <option value="BZ">Belize</option>
+                            <option value="BJ">Benin</option>
+                            <option value="BM">Bermuda</option>
+                            <option value="BT">Bhutan</option>
+                            <option value="BO">Bolivia</option>
+                            <option value="BQ">
+                              Bonaire, Saint Eustatius and Saba
+                            </option>
+                            <option value="BA">Bosnia and Herzegovina</option>
+                            <option value="BW">Botswana</option>
+                            <option value="BV">Bouvet Island</option>
+                            <option value="BR">Brazil</option>
+                            <option value="IO">
+                              British Indian Ocean Territory
+                            </option>
+                            <option value="VG">British Virgin Islands</option>
+                            <option value="BN">Brunei</option>
+                            <option value="BG">Bulgaria</option>
+                            <option value="BF">Burkina Faso</option>
+                            <option value="BI">Burundi</option>
+                            <option value="KH">Cambodia</option>
+                            <option value="CM">Cameroon</option>
+                            <option value="CA">Canada</option>
+                            <option value="CV">Cape Verde</option>
+                            <option value="KY">Cayman Islands</option>
+                            <option value="CF">Central African Republic</option>
+                            <option value="TD">Chad</option>
+                            <option value="CL">Chile</option>
+                            <option value="CN">China</option>
+                            <option value="CX">Christmas Island</option>
+                            <option value="CC">Cocos (Keeling) Islands</option>
+                            <option value="CO">Colombia</option>
+                            <option value="KM">Comoros</option>
+                            <option value="CG">Congo (Brazzaville)</option>
+                            <option value="CD">Congo (Kinshasa)</option>
+                            <option value="CK">Cook Islands</option>
+                            <option value="CR">Costa Rica</option>
+                            <option value="HR">Croatia</option>
+                            <option value="CU">Cuba</option>
+                            <option value="CW">CuraÇao</option>
+                            <option value="CY">Cyprus</option>
+                            <option value="CZ">Czech Republic</option>
+                            <option value="DK">Denmark</option>
+                            <option value="DJ">Djibouti</option>
+                            <option value="DM">Dominica</option>
+                            <option value="DO">Dominican Republic</option>
+                            <option value="EC">Ecuador</option>
+                            <option value="EG">Egypt</option>
+                            <option value="SV">El Salvador</option>
+                            <option value="GQ">Equatorial Guinea</option>
+                            <option value="ER">Eritrea</option>
+                            <option value="EE">Estonia</option>
+                            <option value="ET">Ethiopia</option>
+                            <option value="FK">Falkland Islands</option>
+                            <option value="FO">Faroe Islands</option>
+                            <option value="FJ">Fiji</option>
+                            <option value="FI">Finland</option>
+                            <option value="FR">France</option>
+                            <option value="GF">French Guiana</option>
+                            <option value="PF">French Polynesia</option>
+                            <option value="TF">
+                              French Southern Territories
+                            </option>
+                            <option value="GA">Gabon</option>
+                            <option value="GM">Gambia</option>
+                            <option value="GE">Georgia</option>
+                            <option value="DE">Germany</option>
+                            <option value="GH">Ghana</option>
+                            <option value="GI">Gibraltar</option>
+                            <option value="GR">Greece</option>
+                            <option value="GL">Greenland</option>
+                            <option value="GD">Grenada</option>
+                            <option value="GP">Guadeloupe</option>
+                            <option value="GT">Guatemala</option>
+                            <option value="GG">Guernsey</option>
+                            <option value="GN">Guinea</option>
+                            <option value="GW">Guinea-Bissau</option>
+                            <option value="GY">Guyana</option>
+                            <option value="HT">Haiti</option>
+                            <option value="HM">
+                              Heard Island and McDonald Islands
+                            </option>
+                            <option value="HN">Honduras</option>
+                            <option value="HK">Hong Kong</option>
+                            <option value="HU">Hungary</option>
+                            <option value="IS">Iceland</option>
+                            <option value="IN">India</option>
+                            <option value="ID">Indonesia</option>
+                            <option value="IR">Iran</option>
+                            <option value="IQ">Iraq</option>
+                            <option value="IM">Isle of Man</option>
+                            <option value="IL">Israel</option>
+                            <option value="IT">Italy</option>
+                            <option value="CI">Ivory Coast</option>
+                            <option value="JM">Jamaica</option>
+                            <option value="JP">Japan</option>
+                            <option value="JE">Jersey</option>
+                            <option value="JO">Jordan</option>
+                            <option value="KZ">Kazakhstan</option>
+                            <option value="KE">Kenya</option>
+                            <option value="KI">Kiribati</option>
+                            <option value="KW">Kuwait</option>
+                            <option value="KG">Kyrgyzstan</option>
+                            <option value="LA">Laos</option>
+                            <option value="LV">Latvia</option>
+                            <option value="LB">Lebanon</option>
+                            <option value="LS">Lesotho</option>
+                            <option value="LR">Liberia</option>
+                            <option value="LY">Libya</option>
+                            <option value="LI">Liechtenstein</option>
+                            <option value="LT">Lithuania</option>
+                            <option value="LU">Luxembourg</option>
+                            <option value="MO">Macao S.A.R., China</option>
+                            <option value="MK">Macedonia</option>
+                            <option value="MG">Madagascar</option>
+                            <option value="MW">Malawi</option>
+                            <option value="MY">Malaysia</option>
+                            <option value="MV">Maldives</option>
+                            <option value="ML">Mali</option>
+                            <option value="MT">Malta</option>
+                            <option value="MH">Marshall Islands</option>
+                            <option value="MQ">Martinique</option>
+                            <option value="MR">Mauritania</option>
+                            <option value="MU">Mauritius</option>
+                            <option value="YT">Mayotte</option>
+                            <option value="MX">Mexico</option>
+                            <option value="FM">Micronesia</option>
+                            <option value="MD">Moldova</option>
+                            <option value="MC">Monaco</option>
+                            <option value="MN">Mongolia</option>
+                            <option value="ME">Montenegro</option>
+                            <option value="MS">Montserrat</option>
+                            <option value="MA">Morocco</option>
+                            <option value="MZ">Mozambique</option>
+                            <option value="MM">Myanmar</option>
+                            <option value="NA">Namibia</option>
+                            <option value="NR">Nauru</option>
+                            <option value="NP">Nepal</option>
+                            <option value="NL">Netherlands</option>
+                            <option value="AN">Netherlands Antilles</option>
+                            <option value="NC">New Caledonia</option>
+                            <option value="NZ">New Zealand</option>
+                            <option value="NI">Nicaragua</option>
+                            <option value="NE">Niger</option>
+                            <option value="NG">Nigeria</option>
+                            <option value="NU">Niue</option>
+                            <option value="NF">Norfolk Island</option>
+                            <option value="KP">North Korea</option>
+                            <option value="NO">Norway</option>
+                            <option value="OM">Oman</option>
+                            <option value="PK">Pakistan</option>
+                            <option value="PS">Palestinian Territory</option>
+                            <option value="PA">Panama</option>
+                            <option value="PG">Papua New Guinea</option>
+                            <option value="PY">Paraguay</option>
+                            <option value="PE">Peru</option>
+                            <option value="PH">Philippines</option>
+                            <option value="PN">Pitcairn</option>
+                            <option value="PL">Poland</option>
+                            <option value="PT">Portugal</option>
+                            <option value="QA">Qatar</option>
+                            <option value="IE">Republic of Ireland</option>
+                            <option value="RE">Reunion</option>
+                            <option value="RO">Romania</option>
+                            <option value="RU">Russia</option>
+                            <option value="RW">Rwanda</option>
+                            <option value="ST">São Tomé and Príncipe</option>
+                            <option value="BL">Saint Barthélemy</option>
+                            <option value="SH">Saint Helena</option>
+                            <option value="KN">Saint Kitts and Nevis</option>
+                            <option value="LC">Saint Lucia</option>
+                            <option value="SX">
+                              Saint Martin (Dutch part)
+                            </option>
+                            <option value="MF">
+                              Saint Martin (French part)
+                            </option>
+                            <option value="PM">
+                              Saint Pierre and Miquelon
+                            </option>
+                            <option value="VC">
+                              Saint Vincent and the Grenadines
+                            </option>
+                            <option value="SM">San Marino</option>
+                            <option value="SA">Saudi Arabia</option>
+                            <option value="SN">Senegal</option>
+                            <option value="RS">Serbia</option>
+                            <option value="SC">Seychelles</option>
+                            <option value="SL">Sierra Leone</option>
+                            <option value="SG">Singapore</option>
+                            <option value="SK">Slovakia</option>
+                            <option value="SI">Slovenia</option>
+                            <option value="SB">Solomon Islands</option>
+                            <option value="SO">Somalia</option>
+                            <option value="ZA">South Africa</option>
+                            <option value="GS">
+                              South Georgia/Sandwich Islands
+                            </option>
+                            <option value="KR">South Korea</option>
+                            <option value="SS">South Sudan</option>
+                            <option value="ES">Spain</option>
+                            <option value="LK">Sri Lanka</option>
+                            <option value="SD">Sudan</option>
+                            <option value="SR">Suriname</option>
+                            <option value="SJ">Svalbard and Jan Mayen</option>
+                            <option value="SZ">Swaziland</option>
+                            <option value="SE">Sweden</option>
+                            <option value="CH">Switzerland</option>
+                            <option value="SY">Syria</option>
+                            <option value="TW">Taiwan</option>
+                            <option value="TJ">Tajikistan</option>
+                            <option value="TZ">Tanzania</option>
+                            <option value="TH">Thailand</option>
+                            <option value="TL">Timor-Leste</option>
+                            <option value="TG">Togo</option>
+                            <option value="TK">Tokelau</option>
+                            <option value="TO">Tonga</option>
+                            <option value="TT">Trinidad and Tobago</option>
+                            <option value="TN">Tunisia</option>
+                            <option value="TR">Turkey</option>
+                            <option value="TM">Turkmenistan</option>
+                            <option value="TC">Turks and Caicos Islands</option>
+                            <option value="TV">Tuvalu</option>
+                            <option value="UG">Uganda</option>
+                            <option value="UA">Ukraine</option>
+                            <option value="AE">United Arab Emirates</option>
+                            <option value="GB">United Kingdom (UK)</option>
+                            <option value="US">USA (US)</option>
+                            <option value="UY">Uruguay</option>
+                            <option value="UZ">Uzbekistan</option>
+                            <option value="VU">Vanuatu</option>
+                            <option value="VA">Vatican</option>
+                            <option value="VE">Venezuela</option>
+                            <option value="VN">Vietnam</option>
+                            <option value="WF">Wallis and Futuna</option>
+                            <option value="EH">Western Sahara</option>
+                            <option value="WS">Western Samoa</option>
+                            <option value="YE">Yemen</option>
+                            <option value="ZM">Zambia</option>
+                            <option value="ZW">Zimbabwe</option>
+                          </select>
                         </div>
                       </div>
                     </div>
-                    <!--comment form-->
-                    <div class="comment-form">
-                      <h4 class="mb-15">Add a review</h4>
-                      <div class="product-rate d-inline-block mb-30"></div>
-                      <div class="row">
-                        <div class="col-lg-8 col-md-12">
-                          <form
-                            class="form-contact comment_form"
-                            action="#"
-                            id="commentForm"
-                          >
-                            <div class="row">
-                              <div class="col-12">
-                                <div class="form-group">
-                                  <textarea
-                                    class="form-control w-100"
-                                    name="comment"
-                                    id="comment"
-                                    cols="30"
-                                    rows="9"
-                                    placeholder="Write Comment"
-                                  ></textarea>
-                                </div>
+                    <div class="form-row row">
+                      <div class="form-group col-lg-6">
+                        <input
+                          required="required"
+                          placeholder="State / Country"
+                          name="name"
+                          type="text"
+                        />
+                      </div>
+                      <div class="form-group col-lg-6">
+                        <input
+                          required="required"
+                          placeholder="PostCode / ZIP"
+                          name="name"
+                          type="text"
+                        />
+                      </div>
+                    </div>
+                    <div class="form-row">
+                      <div class="form-group col-lg-12">
+                        <button class="btn btn-sm">
+                          <i class="fi-rs-shuffle mr-10"></i>Update
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                  <div class="mb-30 mt-50">
+                    <div class="heading_s1 mb-3">
+                      <h4>Apply Coupon</h4>
+                    </div>
+                    <div class="total-amount">
+                      <div class="left">
+                        <div class="coupon">
+                          <form action="#" target="_blank">
+                            <div class="form-row row justify-content-center">
+                              <div class="form-group col-lg-6">
+                                <input
+                                  class="font-medium"
+                                  name="Coupon"
+                                  placeholder="Enter Your Coupon"
+                                />
                               </div>
-                              <div class="col-sm-6">
-                                <div class="form-group">
-                                  <input
-                                    class="form-control"
-                                    name="name"
-                                    id="name"
-                                    type="text"
-                                    placeholder="Name"
-                                  />
-                                </div>
+                              <div class="form-group col-lg-6">
+                                <button class="btn btn-sm">
+                                  <i class="fi-rs-label mr-10"></i>Apply
+                                </button>
                               </div>
-                              <div class="col-sm-6">
-                                <div class="form-group">
-                                  <input
-                                    class="form-control"
-                                    name="email"
-                                    id="email"
-                                    type="email"
-                                    placeholder="Email"
-                                  />
-                                </div>
-                              </div>
-                              <div class="col-12">
-                                <div class="form-group">
-                                  <input
-                                    class="form-control"
-                                    name="website"
-                                    id="website"
-                                    type="text"
-                                    placeholder="Website"
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                            <div class="form-group">
-                              <button
-                                type="submit"
-                                class="button button-contactForm"
-                              >
-                                Submit Review
-                              </button>
                             </div>
                           </form>
                         </div>
@@ -2459,282 +1874,44 @@
                     </div>
                   </div>
                 </div>
-                <div class="row mt-60">
-                  <div class="col-12">
-                    <h3 class="section-title style-1 mb-30">
-                      Related products
-                    </h3>
-                  </div>
-                  <div class="col-12">
-                    <div class="row related-products">
-                      <div class="col-lg-3 col-md-4 col-12 col-sm-6">
-                        <div class="product-cart-wrap small hover-up">
-                          <div class="product-img-action-wrap">
-                            <div class="product-img product-img-zoom">
-                              <a href="shop-product-right.html" tabindex="0">
-                                <img
-                                  class="default-img"
-                                  src="/public/user/assets/imgs/shop/product-2-1.jpg"
-                                  alt=""
-                                />
-                                <img
-                                  class="hover-img"
-                                  src="/public/user/assets/imgs/shop/product-2-2.jpg"
-                                  alt=""
-                                />
-                              </a>
-                            </div>
-                            <div class="product-action-1">
-                              <a
-                                aria-label="Quick view"
-                                class="action-btn small hover-up"
-                                data-bs-toggle="modal"
-                                data-bs-target="#quickViewModal
-"
-                                ><i class="fi-rs-search"></i
-                              ></a>
-                              <a
-                                aria-label="Add To Wishlist"
-                                class="action-btn small hover-up"
-                                href="shop-wishlist.html"
-                                tabindex="0"
-                                ><i class="fi-rs-heart"></i
-                              ></a>
-                              <a
-                                aria-label="Compare"
-                                class="action-btn small hover-up"
-                                href="shop-compare.html"
-                                tabindex="0"
-                                ><i class="fi-rs-shuffle"></i
-                              ></a>
-                            </div>
-                            <div
-                              class="product-badges product-badges-position product-badges-mrg"
-                            >
-                              <span class="hot">Hot</span>
-                            </div>
-                          </div>
-                          <div class="product-content-wrap">
-                            <h2>
-                              <a href="shop-product-right.html" tabindex="0"
-                                >Ulstra Bass Headphone</a
-                              >
-                            </h2>
-                            <div class="rating-result" title="90%">
-                              <span> </span>
-                            </div>
-                            <div class="product-price">
-                              <span>$238.85 </span>
-                              <span class="old-price">$245.8</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-lg-3 col-md-4 col-12 col-sm-6">
-                        <div class="product-cart-wrap small hover-up">
-                          <div class="product-img-action-wrap">
-                            <div class="product-img product-img-zoom">
-                              <a href="shop-product-right.html" tabindex="0">
-                                <img
-                                  class="default-img"
-                                  src="/public/user/assets/imgs/shop/product-3-1.jpg"
-                                  alt=""
-                                />
-                                <img
-                                  class="hover-img"
-                                  src="/public/user/assets/imgs/shop/product-4-2.jpg"
-                                  alt=""
-                                />
-                              </a>
-                            </div>
-                            <div class="product-action-1">
-                              <a
-                                aria-label="Quick view"
-                                class="action-btn small hover-up"
-                                data-bs-toggle="modal"
-                                data-bs-target="#quickViewModal
-"
-                                ><i class="fi-rs-search"></i
-                              ></a>
-                              <a
-                                aria-label="Add To Wishlist"
-                                class="action-btn small hover-up"
-                                href="shop-wishlist.html"
-                                tabindex="0"
-                                ><i class="fi-rs-heart"></i
-                              ></a>
-                              <a
-                                aria-label="Compare"
-                                class="action-btn small hover-up"
-                                href="shop-compare.html"
-                                tabindex="0"
-                                ><i class="fi-rs-shuffle"></i
-                              ></a>
-                            </div>
-                            <div
-                              class="product-badges product-badges-position product-badges-mrg"
-                            >
-                              <span class="sale">-12%</span>
-                            </div>
-                          </div>
-                          <div class="product-content-wrap">
-                            <h2>
-                              <a href="shop-product-right.html" tabindex="0"
-                                >Smart Bluetooth Speaker</a
-                              >
-                            </h2>
-                            <div class="rating-result" title="90%">
-                              <span> </span>
-                            </div>
-                            <div class="product-price">
-                              <span>$138.85 </span>
-                              <span class="old-price">$145.8</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-lg-3 col-md-4 col-12 col-sm-6">
-                        <div class="product-cart-wrap small hover-up">
-                          <div class="product-img-action-wrap">
-                            <div class="product-img product-img-zoom">
-                              <a href="shop-product-right.html" tabindex="0">
-                                <img
-                                  class="default-img"
-                                  src="/public/user/assets/imgs/shop/product-4-1.jpg"
-                                  alt=""
-                                />
-                                <img
-                                  class="hover-img"
-                                  src="/public/user/assets/imgs/shop/product-4-2.jpg"
-                                  alt=""
-                                />
-                              </a>
-                            </div>
-                            <div class="product-action-1">
-                              <a
-                                aria-label="Quick view"
-                                class="action-btn small hover-up"
-                                data-bs-toggle="modal"
-                                data-bs-target="#quickViewModal
-"
-                                ><i class="fi-rs-search"></i
-                              ></a>
-                              <a
-                                aria-label="Add To Wishlist"
-                                class="action-btn small hover-up"
-                                href="shop-wishlist.html"
-                                tabindex="0"
-                                ><i class="fi-rs-heart"></i
-                              ></a>
-                              <a
-                                aria-label="Compare"
-                                class="action-btn small hover-up"
-                                href="shop-compare.html"
-                                tabindex="0"
-                                ><i class="fi-rs-shuffle"></i
-                              ></a>
-                            </div>
-                            <div
-                              class="product-badges product-badges-position product-badges-mrg"
-                            >
-                              <span class="new">New</span>
-                            </div>
-                          </div>
-                          <div class="product-content-wrap">
-                            <h2>
-                              <a href="shop-product-right.html" tabindex="0"
-                                >HomeSpeak 12UEA Goole</a
-                              >
-                            </h2>
-                            <div class="rating-result" title="90%">
-                              <span> </span>
-                            </div>
-                            <div class="product-price">
-                              <span>$738.85 </span>
-                              <span class="old-price">$1245.8</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-lg-3 col-md-4 col-12 col-sm-6">
-                        <div class="product-cart-wrap small hover-up mb-0">
-                          <div class="product-img-action-wrap">
-                            <div class="product-img product-img-zoom">
-                              <a href="shop-product-right.html" tabindex="0">
-                                <img
-                                  class="default-img"
-                                  src="/public/user/assets/imgs/shop/product-5-1.jpg"
-                                  alt=""
-                                />
-                                <img
-                                  class="hover-img"
-                                  src="/public/user/assets/imgs/shop/product-3-2.jpg"
-                                  alt=""
-                                />
-                              </a>
-                            </div>
-                            <div class="product-action-1">
-                              <a
-                                aria-label="Quick view"
-                                class="action-btn small hover-up"
-                                data-bs-toggle="modal"
-                                data-bs-target="#quickViewModal
-"
-                                ><i class="fi-rs-search"></i
-                              ></a>
-                              <a
-                                aria-label="Add To Wishlist"
-                                class="action-btn small hover-up"
-                                href="shop-wishlist.html"
-                                tabindex="0"
-                                ><i class="fi-rs-heart"></i
-                              ></a>
-                              <a
-                                aria-label="Compare"
-                                class="action-btn small hover-up"
-                                href="shop-compare.html"
-                                tabindex="0"
-                                ><i class="fi-rs-shuffle"></i
-                              ></a>
-                            </div>
-                            <div
-                              class="product-badges product-badges-position product-badges-mrg"
-                            >
-                              <span class="hot">Hot</span>
-                            </div>
-                          </div>
-                          <div class="product-content-wrap">
-                            <h2>
-                              <a href="shop-product-right.html" tabindex="0"
-                                >Dadua Camera 4K 2022EF</a
-                              >
-                            </h2>
-                            <div class="rating-result" title="90%">
-                              <span> </span>
-                            </div>
-                            <div class="product-price">
-                              <span>$89.8 </span>
-                              <span class="old-price">$98.8</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                <div class="col-lg-6 col-md-12">
+                  <div class="border p-md-4 p-30 border-radius cart-totals">
+                    <div class="heading_s1 mb-3">
+                      <h4>Cart Totals</h4>
                     </div>
-                  </div>
-                </div>
-                <div
-                  class="banner-img banner-big wow fadeIn f-none animated mt-50"
-                >
-                  <img
-                    class="border-radius-10"
-                    src="/public/user/assets/imgs/banner/banner-4.png"
-                    alt=""
-                  />
-                  <div class="banner-text">
-                    <h4 class="mb-15 mt-40">Repair Services</h4>
-                    <h2 class="fw-600 mb-20">
-                      We're an Apple <br />Authorised Service Provider
-                    </h2>
+                    <div class="table-responsive">
+                      <table class="table">
+                        <tbody>
+                          <tr>
+                            <td class="cart_total_label">Cart Subtotal</td>
+                            <td class="cart_total_amount">
+                              <span class="font-lg fw-900 text-brand"
+                                >$240.00</span
+                              >
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="cart_total_label">Shipping</td>
+                            <td class="cart_total_amount">
+                              <i class="ti-gift mr-5"></i> Free Shipping
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="cart_total_label">Total</td>
+                            <td class="cart_total_amount">
+                              <strong
+                                ><span class="font-xl fw-900 text-brand"
+                                  >$240.00</span
+                                ></strong
+                              >
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <a href="#" class="btn">
+                      <i class="fi-rs-box-alt mr-10"></i> Proceed To CheckOut</a
+                    >
                   </div>
                 </div>
               </div>
@@ -2936,140 +2113,6 @@
       </div>
     </div>
     <!-- Vendor JS-->
-    <script>
-      document.getElementById("smallQ").style.display = "none";
-      document.getElementById("largeQ").style.display = "none";
-      document.getElementById("mediumQ").style.display = "inline";
-      document.getElementById("smallQuantity").addEventListener("click", () => {
-        document.getElementById("smallQ").style.display = "inline";
-        document.getElementById("largeQ").style.display = "none";
-        document.getElementById("mediumQ").style.display = "none";
-        document.getElementById("smallQuantity").classList.add("active");
-        document.getElementById("mediumQuantity").classList.remove("active");
-        document.getElementById("largeQuantity").classList.remove("active");
-      });
-      document
-        .getElementById("mediumQuantity")
-        .addEventListener("click", () => {
-          document.getElementById("mediumQ").style.display = "inline";
-          document.getElementById("largeQ").style.display = "none";
-          document.getElementById("smallQ").style.display = "none";
-          document.getElementById("mediumQuantity").classList.add("active");
-          document.getElementById("largeQuantity").classList.remove("active");
-          document.getElementById("smallQuantity").classList.remove("active");
-        });
-      document.getElementById("largeQuantity").addEventListener("click", () => {
-        document.getElementById("largeQ").style.display = "inline";
-        document.getElementById("mediumQ").style.display = "none";
-        document.getElementById("smallQ").style.display = "none";
-        document.getElementById("largeQuantity").classList.add("active");
-        document.getElementById("mediumQuantity").classList.remove("active");
-        document.getElementById("smallQuantity").classList.remove("active");
-      });
-    </script>
-    <script>
-      const addToCart = (productId) => {
-
-    let size="";
-    if(document.getElementById('smallQuantity').classList.contains('active')){
-        size="S";
-    }
-    else if(document.getElementById('mediumQuantity').classList.contains('active')){
-        size="M";
-    }
-    else if(document.getElementById('largeQuantity').classList.contains('active')){
-        size="L";
-    }else{
-        size="M";
-    }
-        console.log(productId);
-        $.ajax({
-          url:`/addToCart/${productId}/${size}`,
-          method: "POST",
-          success: function (response) {
-            if (response.status) {
-              Toastify({
-                text: "Added to Cart",
-                duration: 3000,
-                gravity: "top", // top or bottom
-                position: "center", // left, center or right
-                stopOnFocus: true, // Prevents dismissing of toast on hover
-                style: {
-                  background: "green",
-                },
-              }).showToast();
-              setTimeout(() => {
-                location.reload();
-              }, 600);
-            } else {
-              Toastify({
-                text: "Something went wrong, Please try again later",
-                duration: 3000,
-                gravity: "top", // top or bottom
-                position: "center", // left, center or right
-                stopOnFocus: true, // Prevents dismissing of toast on hover
-                style: {
-                  background: "red",
-                },
-              }).showToast();
-            }
-          },
-          error: function (XHR, textStatus, errorThrown) {
-            console.log(errorThrown);
-          },
-        });
-      };
-    </script>
-    <script>
-      const addToWishlist = (productId) => {
-        console.log(productId);
-        $.ajax({
-          url: /addToWishlist/ + productId,
-          method: "POST",
-          success: function (response) {
-            if (response.status) {
-              Toastify({
-                text: "Added to Wishlist",
-                duration: 3000,
-                gravity: "top", // top or bottom
-                position: "center", // left, center or right
-                stopOnFocus: true, // Prevents dismissing of toast on hover
-                style: {
-                  background: "green",
-                },
-              }).showToast();
-              setTimeout(() => {
-                location.reload();
-              }, 600);
-            } else {
-              Toastify({
-                text: "Something went wrong, Please try again later",
-                duration: 3000,
-                gravity: "top", // top or bottom
-                position: "center", // left, center or right
-                stopOnFocus: true, // Prevents dismissing of toast on hover
-                style: {
-                  background: "red",
-                },
-              }).showToast();
-            }
-          },
-          error: function (XHR, textStatus, errorThrown) {
-            console.log(errorThrown);
-          },
-        });
-      };
-    </script>
-    <script>
-      function viewCart() {
-        window.location.href = "/cartView";
-      }
-    </script>
-    <!-- toastify -->
-    <script
-      type="text/javascript"
-      src="https://cdn.jsdelivr.net/npm/toastify-js"
-    ></script>
     <script src="/public/user/assets/js/vendor/modernizr-3.6.0.min.js"></script>
     <script src="/public/user/assets/js/vendor/jquery-3.6.0.min.js"></script>
     <script src="/public/user/assets/js/vendor/jquery-migrate-3.3.0.min.js"></script>
@@ -3088,10 +2131,90 @@
     <script src="/public/user/assets/js/plugins/isotope.js"></script>
     <script src="/public/user/assets/js/plugins/scrollup.js"></script>
     <script src="/public/user/assets/js/plugins/jquery.vticker-min.js"></script>
-    <script src="/public/user/assets/js/plugins/jquery.theia.sticky.js"></script>
-    <script src="/public/user/assets/js/plugins/jquery.elevatezoom.js"></script>
     <!-- Template  JS -->
-    <script src="/public/user/assets/js/main.js?v=3.4"></script>
-    <script src="/public/user/assets/js/shop.js?v=3.4"></script>
+    <script src="./public/user/assets/js/main.js?v=3.4"></script>
+    <script src="./public/user/assets/js/shop.js?v=3.4"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script>
+      $(document).ready(() => {
+        $("#myTable").DataTable();
+      });
+    </script>
+    <script>
+      const incOrDecquantity = (productId,quantity)=>{
+        $.ajax({
+          url:`/updateQuantity?productId=${productId}&quantity=${quantity}`,
+          method:"patch",
+          success: function (response){
+            if(response.status){
+              window.location.reload();
+
+            }
+            else{
+              console.log("error")
+            }
+          }
+        })
+      }
+    </script>
+    <script>
+      const removeFromCart = (productId)=>{
+        $.ajax({
+          url:"/removeProduct/"+productId,
+          method:"DELETE",
+          success: function (response){
+            if(response.status){
+              window.location.reload();
+
+            }
+            else{
+              window.location.reload();
+            }
+          }
+        })
+      }
+    </script>
+    <!-- <script>
+        // Get references to the necessary elements
+    const quantityVal = document.querySelector(".qty-val");
+    const priceSpan = document.querySelector(".price span");
+    const subtotalSpan = document.querySelector(".text-right span");
+
+    // Function to update the subtotal price
+    function updateSubtotal() {
+      const quantity = parseInt(quantityVal.textContent);
+      const price = parseFloat(priceSpan.textContent.replace("$", "")); // Remove dollar sign
+      const subtotal = quantity * price;
+      subtotalSpan.textContent = `$${subtotal.toFixed(2)}`; // Format with two decimal places
+    }
+
+    // Attach event listeners to the quantity buttons
+    document.querySelector(".qty-down").addEventListener("click", () => {
+      const currentQuantity = parseInt(quantityVal.textContent);
+      if (currentQuantity > 1) {
+        quantityVal.textContent = currentQuantity - 1;
+        updateSubtotal();
+      }
+    });
+
+    document.querySelector(".qty-up").addEventListener("click", () => {
+      const currentQuantity = parseInt(quantityVal.textContent);
+      quantityVal.textContent = currentQuantity+1;
+      updateSubtotal();
+    });
+
+    // Call the update function initially to display the correct subtotal
+    updateSubtotal();
+    </script> -->
+
+    <!-- <script>
+         function updateCart(cartId) {
+   
+        $.ajax({
+          url: "/updateCart/" + cartId,
+          type: "get",
+        })}
+    </script> -->
+    
   </body>
 </html>

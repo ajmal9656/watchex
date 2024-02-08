@@ -14,27 +14,43 @@
                     <h4>Basic</h4>
                 </div>
                 <div class="card-body">
-                    <form action="/admin/addProduct" method="post" enctype="multipart/form-data">
+                    <form action="/admin/addProduct" method="post" enctype="multipart/form-data" id="productForm">
                         <div class="mb-4">
                             <label for="product_name" class="form-label">Product Name</label>
                             <input type="text" name="product_name" placeholder="Type here" class="form-control"
                                 id="product_name">
+                                <div id="error1" class="text-danger"></div>
                         </div>
                         <div class="mb-4">
                             <label class="form-label">Product description</label>
                             <textarea placeholder="Type here" name="product_description" class="form-control"
                                 rows="4"></textarea>
+                                
                         </div>
                         <div class="mb-4">
                             <label class="form-label" for="product_price">Price</label>
                             <input type="text" placeholder="price" name="price" class="form-control" id="product_price">
+                            <div id="error2" class="text-danger"></div>
                         </div>
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="mb-4">
-                                    <label for="product_quantity" class="form-label">Quantity</label>
-                                    <input type="text" name="quantity" placeholder="nos" class="form-control"
+                                    <label for="product_quantity" class="form-label">Small Quantity</label>
+                                    <input type="text" name="smallQuantity" placeholder="nos" class="form-control"
                                         id="product_quantity">
+                                        <div id="error3" class="text-danger"></div>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="product_quantity" class="form-label">Medium Quantity</label>
+                                    <input type="text" name="mediumQuantity" placeholder="nos" class="form-control"
+                                        id="product_quantity">
+                                        <div id="error3" class="text-danger"></div>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="product_quantity" class="form-label">Large Quantity</label>
+                                    <input type="text" name="largeQuantity" placeholder="nos" class="form-control"
+                                        id="product_quantity">
+                                        <div id="error3" class="text-danger"></div>
                                 </div>
                             </div>
                             <div class="col-lg-6">
@@ -42,6 +58,7 @@
                                     <label for="product_discount" class="form-label">Discount</label>
                                     <input type="text" name="discount" placeholder="%" class="form-control"
                                         id="product_discount">
+                                        <div id="error4" class="text-danger"></div>
                                 </div>
                             </div>
 
@@ -112,5 +129,96 @@
         </form>
     </div>
 </section> <!-- content-main end// -->
+
+
+<script>
+    const nameval=document.getElementById('product_name');
+    const priceval=document.getElementById('product_price');
+    const quantityval=document.getElementById('product_quantity');
+    const discountval=document.getElementById('product_discount');
+    const productForm=document.getElementById('productForm');
+    const error1=document.getElementById('error1');
+    const error2=document.getElementById('error2');
+    const error3=document.getElementById('error3');
+    const error4=document.getElementById('error4');
+
+    function formvalidate(e){
+       const namevalue=nameval.value;
+       const pricevalue=priceval.value;
+        const quantityvalue=quantityval.value;
+       const discountvalue=discountval.value;
+
+
+
+            error1.innerHTML = "";
+            error2.innerHTML = "";
+            error3.innerHTML = "";
+            error4.innerHTML = "";
+            let isValid = true;
+
+
+        if (namevalue.trim() === "") {
+            error1.style.display = "block";
+            error1.innerHTML = "Product Name is required.";
+            isValid = false;
+            } else if (/^\d+$/.test(namevalue) || /^-\d+$/.test(namevalue)) {
+                error1.innerHTML = "Product Name cannot contain numbers.";
+                isValid = false;
+            }
+
+            if (pricevalue.trim() === "") {
+                error2.style.display = "block";
+                error2.innerHTML = "Product Price is required.";
+                isValid = false;
+            }
+            else if (isNaN(pricevalue) || parseFloat(pricevalue) <= 0) {
+                error2.style.display = "block";
+                error2.innerHTML = "Product Price must be a valid number greater than 0.";
+                isValid = false;
+            } 
+            if (isNaN(quantityvalue) || parseInt(quantityvalue) < 0) {
+                error3.style.display = "block";
+                error3.innerHTML = "Product Quantity must be a valid non-negative integer.";
+                isValid = false;
+            } else if (quantityvalue.trim() === "") {
+                error3.style.display = "block";
+                error3.innerHTML = "Product Quantity is required.";
+                isValid = false;
+            }
+
+            if (discountvalue.trim() === "") {
+                error4.style.display = "block";
+                error4.innerHTML = "Discount is required.";
+                isValid = false;
+            }
+            else if (isNaN(discountvalue) || parseFloat(discountvalue) < 0 || parseFloat(discountvalue) > 100) {
+                error4.style.display = "block";
+                error4.innerHTML = "Discount must be a valid percentage between 0 and 100.";
+                isValid = false;
+            }
+
+            
+
+            return isValid;
+
+
+
+   
+
+
+
+
+    }
+   
+
+  productForm.addEventListener("submit", (e) => {
+    const isValid = formvalidate(e);
+    if (!isValid) {
+      e.preventDefault();
+    }
+  });
+
+
+</script>
 
 <%- include("../partials/admin/admin-footer") %>

@@ -44,13 +44,18 @@ const productAdd=async(data,files)=>{
             let imageUrl = file.filename;
             imageUrls.push(imageUrl);
           }
+
+          const totalQuantity = parseInt(data.smallQuantity)+parseInt(data.mediumQuantity)+parseInt(data.largeQuantity)
       
           await productSchema.create({
             product_name: data.product_name,
             product_description: data.product_description,
             product_category: data.product_category,
             product_price: data.price,
-            product_quantity: data.quantity,
+            "product_quantity.S.quantity": data.smallQuantity,
+            "product_quantity.M.quantity": data.mediumQuantity,
+            "product_quantity.L.quantity": data.largeQuantity,
+            total_quantity:totalQuantity,
             product_discount: data.discount,
             image: imageUrls,
           }).then((result) => {
@@ -134,23 +139,24 @@ const getAllProducts = async ()=>{
         localField:"product_category",
         foreignField:"_id",
         as:"category"
-      }
-    }]);
+      },
+      
+  },{$match:{product_status:true,"category.status":true}}]);
     
 
-    const activeproduct = product.filter((item)=>{
-      const category=item.category[0];
-      if(category.status){
-        if(item.product_status){
-          return true;
-        }
-        return false;
+    // const activeproduct = product.filter((item)=>{
+    //   const category=item.category[0];
+    //   if(category.status){
+    //     if(item.product_status){
+    //       return true;
+    //     }
+    //     return false;
     
-      }
-      return false;
-    });
+    //   }
+    //   return false;
+    // });
 
-    resolve(activeproduct);
+    resolve(product);
   })}catch(error){
     console.log(error);
   }

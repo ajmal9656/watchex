@@ -1,7 +1,7 @@
 const emailid = document.getElementById('logEmail');
 const passid = document.getElementById('logPassword');
-const error5 = document.getElementById('error5');
-const error6 = document.getElementById('error6');
+const error1 = document.getElementById('error1');
+const error2 = document.getElementById('error2');
 const logform = document.getElementById('loginform')
 
 function emailvalidate(e){
@@ -9,12 +9,12 @@ function emailvalidate(e){
     const emailpattern = /^([a-zA-Z0-9._-]+)@([a-zA-Z.-]+).([a-zA-z]{2,4})$/ 
     if(!emailpattern.test(emailval))
     {    
-        error5.style.display = "block"
-        error5.innerHTML = "Invalid Format!!"
+        error1.style.display = "block"
+        error1.innerHTML = "Invalid Format!!"
     }
     else{
-        error5.style.display = "none"
-        error5.innerHTML = ""
+        error1.style.display = "none"
+        error1.innerHTML = ""
     }
 }
 function passvalidate(e){
@@ -23,18 +23,18 @@ function passvalidate(e){
     const digit = /\d/
     if(passval.length < 8)
     {   
-        error6.style.display = "block"
-        error6.innerHTML = "Must have atleast 8 characters"
+        error2.style.display = "block"
+        error2.innerHTML = "Must have atleast 8 characters"
     }
     else if(!alpha.test(passval) || !digit.test(passval) )
     {
-        error6.style.display = "block"
-        error6.innerHTML = "Should contain Numbers and Alphabets!!"
+        error2.style.display = "block"
+        error2.innerHTML = "Should contain Numbers and Alphabets!!"
     }
     else{
 
-        error6.style.display = "none"
-        error6.innerHTML = ""
+        error2.style.display = "none"
+        error2.innerHTML = ""
     }
 }
 
@@ -46,7 +46,7 @@ logform.addEventListener('submit',function(e){
     emailvalidate()
     passvalidate()
     
-    if(error5.innerHTML || error6.innerHTML )
+    if(error1.innerHTML || error2.innerHTML )
     {
         e.preventDefault()
     }

@@ -13,6 +13,18 @@ router.get('/otp-verification',userController.generateOtp)
 router.post('/otp-verification',userMiddleware.otpExpiry,userController.verifyOtp);
 router.get('/productView/:id',userMiddleware.isCheck,userController.viewProduct);
 
+router.get('/cartView',userController.userCart);
+router.post('/addToCart/:id/:size',userController.addToCart);
+router.patch('/updateQuantity',userController.updateQuantity);
+router.delete('/removeProduct/:id',userController.removeFromCart);
+
+router.get('/whishlistView',userController.userWhishlist);
+router.post('/addToWishlist/:id',userController.addToWishlist);
+
+router.get('/profileView',userController.loadUserProfile);
+router.put('/addAddress',userController.addAddress);
+
+
 
 
 
