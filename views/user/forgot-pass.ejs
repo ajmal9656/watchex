@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html class="no-js" lang="en">
 
 <head>
@@ -65,7 +65,7 @@
             <div class="container">
                 <div class="header-wrap header-space-between position-relative">
                     <div class="logo logo-width-1">
-                        <a href="index.html"><img src="/public/user/assets/imgs/page/Screenshot__242_-removebg-preview.png" alt="logo"></a>
+                        <a href="index.html"><img src="/public/user/assets/imgs/theme/logo.svg" alt="logo"></a>
                     </div>
                     <div class="main-menu main-menu-grow main-menu-padding-1 main-menu-lh-1 main-menu-mrg-1 hm3-menu-padding d-none d-lg-block hover-boder">
                         <nav>
@@ -275,7 +275,7 @@
         <div class="mobile-header-wrapper-inner">
             <div class="mobile-header-top">
                 <div class="mobile-header-logo">
-                    <a href="index.html"><img src="/public/user/assets/imgs/theme/logo.svg" alt="logo"></a>
+                    <a href="index.html"><img src="/public/user/assets/imgs/page/Screenshot__242_-removebg-preview.png" alt="logo"></a>
                 </div>
                 <div class="mobile-menu-close close-style-wrap close-style-position-inherit">
                     <button class="close-style search-close">
@@ -443,45 +443,31 @@
         </div>
         <section class="pt-150 pb-150">
             <div class="container">
-                <div class="row justify-content-center"><!-- Center the row content -->
+                <div class="row justify-content-center">
                     <div class="col-lg-10">
                         <div class="row">
-                            <div class="col-lg-5 mx-auto"><!-- Center the login form -->
-                                <div class="login_wrap widget-taber-content p-30 background-white border-radius-10 mb-md-5 mb-lg-0 mb-sm-5">
+                            <div class="col-lg-5 mx-auto">
+                                <div class="login_wrap widget-taber-content p-30 background-white border-radius-10 mb-md-5 mb-lg-0 mb-sm-5 text-center"> <!-- Center the form -->
                                     <div class="padding_eight_all bg-white">
                                         <div class="heading_s1">
-                                            <h3 class="mb-30">Login</h3>
+                                            <h3 class="mb-30">Enter your email</h3>
                                         </div>
+                                        
                                         <% if (locals.message) { %>
                                             <div class="text-center text-success" style="display: block;"><%= message %></div>
                                           <% } %>
-                                        <form action="/login" method="post" id="loginform">
+                                        <form action="/forgotPassword" method="post" id="otpform">
                                             <div class="form-group">
-                                                <input id="logEmail" type="text" required="" name="email" placeholder="Your Email">
-                                                <div id="error1"></div>
-                                            </div>
-                                            <div></div>
-                                            <div class="form-group ">
-                                                <input id="logPassword" type="password" name="password" placeholder="Password">
-                                                <div id="error2"></div>
-                                            </div>
-                                            <div class="login_footer form-group">
-                                                <div class="chek-form">
-                                                    <div class="custome-checkbox">
-                                                        <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox1" value="">
-                                                        <label class="form-check-label" for="exampleCheckbox1"><span>Remember me</span></label>
-                                                    </div>
-                                                </div>
-                                                <a class="text-muted" href="/forgotPassword">Forgot password?</a>
+                                                <input id="email" type="text" name="email" placeholder="Enter email">
                                             </div>
                                             <div class="form-group">
-                                                <button type="submit" class="btn btn-fill-out btn-block hover-up" name="login">Log in</button>
+                                                <button type="submit" class="btn btn-fill-out btn-block hover-up" name="email">Submit</button>
                                             </div>
                                         </form>
-                                        <div class="text-muted text-center">Don't have an account? <a href="/register">Register now</a></div>
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-lg-1"></div>
                         </div>
                     </div>
                 </div>
@@ -626,6 +612,16 @@
         </div>
     </div>
     <!-- Vendor JS-->
+
+   
+    
+    
+    
+    
+    
+
+
+
     <script src="/public/user/assets/js/vendor/modernizr-3.6.0.min.js"></script>
     <script src="/public/user/assets/js/vendor/jquery-3.6.0.min.js"></script>
     <script src="/public/user/assets/js/vendor/jquery-migrate-3.3.0.min.js"></script>

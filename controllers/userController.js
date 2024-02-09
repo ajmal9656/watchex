@@ -10,7 +10,9 @@ const cartHelper=require("../helpers/cartHelper");
 const cartModel = require("../models/cartModel");
 const whishlistHelper=require("../helpers/whishlistHelper");
 const categoryHelper=require("../helpers/cateroryHelper");
+const passHelper=require("../helpers/passwordHelper");
 const { response } = require("express");
+
 
 const loadhome = async (req, res) =>{
 
@@ -92,9 +94,9 @@ const insertUser = async (req, res) => {
     if(response.registeredData){
 
       req.session.userdata=response.registeredData;
-      req.session.email=response.registeredData.email;
+      
 
-      res.redirect("/otp-verification");
+      res.render("user/otp-verification");
     }
     else{
 
@@ -131,48 +133,22 @@ const insertUser = async (req, res) => {
   //   res.send(error.message);
   // }
 };
-const generateOtp = async (req, res) => {
-  // let otp = "";
+// const generateOtp = async (req, res) => {
 
-  // for (let i = 0; i < 6; i++) {
-  //   otp += Math.floor(Math.random() * 10);
-  // }
-  // req.session.otp = otp;
-  // req.session.expirationTime = Date.now() + 60 * 1000;
+//   const email =req.session.userdata.email;
+ 
 
-  otpHelper.otpGeneration().then((response)=>{
-    req.session.otp=response.otp;
-    req.session.expirationTime=response.expirationTime;
-    console.log(req.session.otp);
-    console.log(req.session.expirationTime)
+//   otpHelper.otpGeneration(email).then((response)=>{
+//     req.session.otp=response.otp;
+//     req.session.expirationTime=response.expirationTime;
 
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: EMAIL,
-        pass: PASSWORD,
-      },
-    });
-  
-    const mailOptions = {
-      from: EMAIL,
-      to: req.session.email,
-      subject: "OTP Verification",
-      text: `Your otp is ${req.session.otp}`,
-    };
-  
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.error(error);
-      } else {
-        console.log("Email sent: " + info.response);
-        
-        
-      }
-    });
+    
 
-    res.render("user/otp-verification");})
-  };
+    
+
+    
+//     res.render("user/otp-verification");})
+//   };
 
   
 
@@ -198,6 +174,113 @@ const verifyOtp = async (req, res) => {
       res.render("user/otp-verification",{message:"Invalid OTP"})
   }
 };
+
+const loadForgotPass = async(req,res)=>{
+  const message=req.flash("message")
+  res.render("user/forgot-pass",{message:message});
+
+
+}
+
+const forgotPassword=async(req,res)=>{
+
+  const email = req.body.email;
+
+  const check = await User.findOne({ email: email });
+              
+              if (check) {
+                req.session.email=email;
+
+                otpHelper.otpGeneration(email).then((response)=>{
+                  req.session.otp=response.otp;
+    req.session.expirationTime=response.expirationTime;
+
+    console.log(req.session.otp);
+    console.log(req.session.expirationTime);
+
+    
+
+    
+    
+                  res.render("user/otp-page");
+
+    
+                })
+                
+                
+                 
+              
+                
+
+                
+    }
+    else{
+
+      req.flash("message","Email not found");
+        
+        res.redirect("/forgotPassword")
+    }}
+
+  
+
+// const sendOtp = async (req, res) => {
+ 
+
+//     const email =req.session.email;
+   
+  
+//     otpHelper.otpGeneration(email).then((response)=>{
+//       req.session.otp=response.otp;
+//       req.session.expirationTime=response.expirationTime;
+  
+      
+  
+      
+  
+      
+//       res.render("user/otp-page");})
+    
+//   };
+
+const otpVerification =async(req,res)=>{
+  
+
+  const storedOtp = req.session.otp;
+  
+  const enteredOtp = req.body.otp;
+
+
+  if (storedOtp === enteredOtp) {
+    
+    
+      // delete req.session.email;
+      
+      res.render("user/new-password")
+    
+  } else {
+    
+      res.render("user/otp-page",{message:"Invalid OTP"})
+  }
+
+}
+
+const confirmPassword = async(req,res)=>{
+
+  const email = req.session.email;
+  const password = req.body.password1;
+  passHelper.setNewPassword(email,password).then((response)=>{
+
+    delete req.session.email;
+
+    req.flash("message","Password reset successfully");
+
+
+    res.redirect("/login")
+
+  })
+
+}
+
 
 const loaduserhome = async (req, res) => {
   const user=req.body;
@@ -439,7 +522,6 @@ module.exports = {
   loadregister,
   insertUser,
   loadhome,
-  generateOtp,
   verifyOtp,
   loaduserhome,
   userlogout,
@@ -452,5 +534,9 @@ module.exports = {
   loadUserProfile,
   addAddress,deleteAddress,
   loadEditAddress,
-  editAddress
+  editAddress,
+  loadForgotPass,
+  forgotPassword,
+  otpVerification,
+  confirmPassword
 };

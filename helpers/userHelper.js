@@ -138,8 +138,7 @@ const editAddress=async(userId,addressId)=>{
       
 
     }}]);
-    console.log("hihwbfllllllllllll");
-    console.log(result)
+    
     resolve(result);
 
     

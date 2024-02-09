@@ -2,9 +2,25 @@ const otpExpiry = (req,res,next)=>{
     const expirationTime=req.session.expirationTime;
     if(Date.now()>=expirationTime){
         req.session.otp=null;
+        
         console.log("time expired");
+        console.log(req.session.otp);
         req.flash("message","Time expired");
         res.redirect("/login");
+    }
+    else{
+        next();
+    }
+}
+const forgotOtpExpiry = (req,res,next)=>{
+    const expirationTime=req.session.expirationTime;
+    if(Date.now()>=expirationTime){
+        req.session.otp=null;
+        
+        console.log("time expired");
+        console.log(req.session.otp);
+        req.flash("message","Time expired");
+        res.redirect("/forgotPassword");
     }
     else{
         next();
@@ -81,5 +97,6 @@ module.exports={
     otpExpiry,
     isLogin,
     isLogout,isRegistered,
-    isCheck
+    isCheck,
+    forgotOtpExpiry
 }
