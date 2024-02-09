@@ -394,6 +394,42 @@ else{
 
     }
 
+    const deleteAddress = async(req,res)=>{
+      const addressId = req.params.id;
+      const userId= req.session.user._id;
+      console.log("deletion`")
+      console.log(userId)
+
+
+      userHelper.addressDeletion(addressId,userId).then((response)=>{
+
+        res.json({status:true})
+
+      })
+
+    }
+
+
+const loadEditAddress = async (req, res) => {
+      const addressId = req.query.addressId;
+      const userId= req.session.user._id;
+     userHelper.editAddress(userId,addressId).then((response)=>{
+      res.render("user/edit-address", { userData:response });
+
+     })
+      
+      
+    };
+
+ const editAddress = async(req,res)  =>{
+  const addressId = req.query.addressId;
+      const userId= req.session.user._id;
+      const body= req.body;
+      userHelper.postEditAddress(userId,addressId,body).then((response)=>{
+        res.redirect("/profileView");
+  
+       })
+ } 
     
 
 
@@ -414,5 +450,7 @@ module.exports = {
   updateQuantity,
   removeFromCart,
   loadUserProfile,
-  addAddress
+  addAddress,deleteAddress,
+  loadEditAddress,
+  editAddress
 };

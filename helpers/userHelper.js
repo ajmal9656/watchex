@@ -1,7 +1,7 @@
 const productModel = require("../models/productModel");
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
-
+const ObjectId = require('mongoose').Types.ObjectId;
 
 const loginHelper = async (userData) => {
   return new Promise(async (resolve, reject) => {
@@ -109,10 +109,67 @@ const addUserAddress=async(userId,body)=>{
   })
 }
 
+const addressDeletion = async(addressId,userId)=>{
+  return new Promise(async(resolve,reject)=>{
+
+    const result = await User.updateOne({_id:userId},{$pull:{address:{_id:addressId}}});
+
+    console.log(result)
+
+    resolve(result);
+
+
+  })
+}
+
+const editAddress=async(userId,addressId)=>{
+  return new Promise(async(resolve,reject)=>{
+
+    const result = await User.aggregate([{$match:{_id:new ObjectId(userId)}},{$unwind:"$address"},{
+      $match:{"address._id":new ObjectId(addressId)}
+    },{$project:{
+      "address._id":1,
+      "address.name":1,
+      "address.house":1,
+      "address.city":1,
+      "address.state":1,
+      "address.country":1,
+      "address.pincode":1
+      
+
+    }}]);
+    console.log("hihwbfllllllllllll");
+    console.log(result)
+    resolve(result);
+
+    
+
+
+
+  })
+
+}
+
+const postEditAddress=async(userId,addressId,body)=>{
+  return new Promise(async(resolve,reject)=>{
+    const result = await User.updateOne(
+      { _id: new ObjectId(userId), 'address._id': new ObjectId(addressId) }, // Filter
+      { $set: { 'address.$': body } } // Update
+  );
+
+  console.log("res")
+  console.log(result)
+
+  resolve(result);
+  })
+}
+
 module.exports = {
   loginHelper,
   signUpHelper,
   getProductDetails,
   getUserDetails,
-  addUserAddress
+  addUserAddress,
+  addressDeletion,
+  editAddress,postEditAddress
 };

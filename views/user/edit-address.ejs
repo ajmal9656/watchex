@@ -451,17 +451,8 @@
                             <div class="col-md-4">
                                 <div class="dashboard-menu">
                                     <ul class="nav flex-column" role="tablist">
-                                        <li class="nav-item">
-                                            <a class="nav-link active" id="dashboard-tab" data-bs-toggle="tab"
-                                                href="#dashboard" role="tab" aria-controls="dashboard"
-                                                aria-selected="false"><i
-                                                    class="fi-rs-settings-sliders mr-10"></i>Dashboard</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" id="orders-tab" data-bs-toggle="tab" href="#orders"
-                                                role="tab" aria-controls="orders" aria-selected="false"><i
-                                                    class="fi-rs-shopping-bag mr-10"></i>Orders</a>
-                                        </li>
+                                        
+                                        
                                         <li class="nav-item">
                                             <a class="nav-link" id="track-orders-tab" data-bs-toggle="tab"
                                                 href="#track-orders" role="tab" aria-controls="track-orders"
@@ -473,128 +464,17 @@
                                                 role="tab" aria-controls="address" aria-selected="true"><i
                                                     class="fi-rs-marker mr-10"></i>My Address</a>
                                         </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" id="account-detail-tab" data-bs-toggle="tab"
-                                                href="#account-detail" role="tab" aria-controls="account-detail"
-                                                aria-selected="true"><i class="fi-rs-user mr-10"></i>Account details</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="/logout"><i
-                                                    class="fi-rs-sign-out mr-10"></i>Logout</a>
-                                        </li>
+                                        
+                                       
                                     </ul>
                                 </div>
                             </div>
+                             
                             <div class="col-md-8">
                                 <div class="tab-content dashboard-content">
-                                    <div class="tab-pane fade active show " id="dashboard" role="tabpanel"
-                                        aria-labelledby="dashboard-tab">
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <h5 class="mb-0">Hello <%= userData.name %> !! </h5>
-                                            </div>
-                                            <div class="card-body">
-                                                <p>From your account dashboard. you can easily check &amp; view your <a
-                                                        href="#">recent orders</a>, manage your <a href="#">shipping and
-                                                        billing addresses</a> and <a href="#">edit your password and
-                                                        account details.</a></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab">
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <h5 class="mb-0">Your Orders</h5>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="table-responsive">
-                                                    <table class="table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Order</th>
-                                                                <th>Date</th>
-                                                                <th>Status</th>
-                                                                <th>Total</th>
-                                                                <th>Actions</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>#1357</td>
-                                                                <td>March 45, 2020</td>
-                                                                <td>Processing</td>
-                                                                <td>$125.00 for 2 item</td>
-                                                                <td><a href="#" class="btn-small d-block">View</a></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>#2468</td>
-                                                                <td>June 29, 2020</td>
-                                                                <td>Completed</td>
-                                                                <td>$364.00 for 5 item</td>
-                                                                <td><a href="#" class="btn-small d-block">View</a></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>#2366</td>
-                                                                <td>August 02, 2020</td>
-                                                                <td>Completed</td>
-                                                                <td>$280.00 for 3 item</td>
-                                                                <td><a href="#" class="btn-small d-block">View</a></td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="address-tab">
-                                        <div class="row">
-                                            <% for( let i = 0; i < userData.address.length; i++ ) { %>
-                                            
-                                                <% if (userData.address[i].addressType===0) { %>
-                                                 
-                                                
-                                                <div class="col-lg-6">
-                                                    <div class="card mb-3 mb-lg-0">
-                                                        <div class="card-header">
-                                                            <h5 class="mb-0">Billing Address</h5>
-                                                        </div>
-                                                        <div class="card-body">
-                                                            <address><%= userData.address[i].name %><br> <%= userData.address[i].house %>,<br> <%= userData.address[i].city %>
-                                                                <br><%= userData.address[i].state %> <br> <%= userData.address[i].pincode %> <br> <%= userData.address[i].country %>
-                                                            </address>
-                                                            <a href="/editAddress?addressId=<%= userData.address[i]._id %>" id="edit-address<%= userData.address[i]._id %>" class="btn btn-sm btn-dark rounded font-sm mt-15">Edit</a>
-                                                            
-                                                            <button id="delete-address<%= userData.address[i]._id %>" class="btn btn-sm btn-success rounded font-sm mt-15" onclick="deleteAddress('<%= userData.address[i]._id %>')">
-                                                                Delete
-                                                              </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <% } else { %>
-                                                 
-                                                <div class="col-lg-6">
-                                                    <div class="card">
-                                                        <div class="card-header">
-                                                            <h5 class="mb-0">Shipping Address</h5>
-                                                        </div>
-                                                        <div class="card-body">
-                                                            <address><%= userData.address[i].name %><br> <%= userData.address[i].house %>,<br> <%= userData.address[i].city %>
-                                                                <br><%= userData.address[i].state %> <br> <%= userData.address[i].pincode %> <br> <%= userData.address[i].country %>
-                                                            </address>
-
-                                                            <a href="/editAddress?addressId=<%= userData.address[i]._id %>" id="edit-address<%= userData.address[i]._id %>" class="btn btn-sm btn-dark rounded font-sm mt-15">Edit</a>
-                                                            
-                                                            <button id="delete-address<%= userData.address[i]._id %>" class="btn btn-sm btn-success rounded font-sm mt-15" onclick="deleteAddress('<%= userData.address[i]._id %>')">
-                                                                Delete
-                                                              </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <% } %>
-                                                <% } %>
-                                           
-                                        </div>
-                                    </div>
+                                   
+                                    
+                                    
                                     <div class="tab-pane fade" id="track-orders" role="tabpanel"
                                         aria-labelledby="track-orders-tab">
                                         <div class="card">
@@ -603,39 +483,39 @@
                                             </div>
                                             <div class="card-body">
 
-                                                <form method="post" action="/addAddress" id="myForm" name="enq">
+                                                <form method="post" action="/editAddress?addressId=<%= userData[0].address._id %>" id="myForm" name="enq">
                                                     <div class="row">
                                                         <div class="form-group col-md-12">
                                                             <label>Full Name <span class="required">*</span></label>
                                                             <input required="" class="form-control square" name="name"
-                                                                type="text">
+                                                                type="text" value="<%= userData[0].address.name %>">
                                                         </div>
 
 
                                                         <div class="form-group col-md-12">
                                                             <label>House<span class="required">*</span></label>
                                                             <input required="" class="form-control square" name="house"
-                                                                type="text">
+                                                                type="text" value="<%= userData[0].address.house %>">
                                                         </div>
                                                         <div class="form-group col-md-6">
                                                             <label>State<span class="required">*</span></label>
                                                             <input required="" class="form-control square" name="state"
-                                                                type="text">
+                                                                type="text" value="<%= userData[0].address.state %>">
                                                         </div>
                                                         <div class="form-group col-md-6">
                                                             <label>Country<span class="required">*</span></label>
                                                             <input required="" class="form-control square"
-                                                                name="country" type="text">
+                                                                name="country" type="text" value="<%= userData[0].address.country %>">
                                                         </div>
                                                         <div class="form-group col-md-6">
                                                             <label>City<span class="required">*</span></label>
                                                             <input required="" class="form-control square" name="city"
-                                                                type="text">
+                                                                type="text" value="<%= userData[0].address.city %>">
                                                         </div>
                                                         <div class="form-group col-md-6">
                                                             <label>Pin Code<span class="required">*</span></label>
                                                             <input required="" class="form-control square"
-                                                                name="pincode" type="text">
+                                                                name="pincode" type="text" value="<%= userData[0].address.pincode %>">
                                                         </div>
                                                         <div class="form-group col-md-4">
                                                             <label>Address Type<span class="required">*</span></label>
@@ -658,116 +538,8 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="tab-pane fade" id="address" role="tabpanel"
-                                        aria-labelledby="address-tab">
-                                        <div class="row">
-                                            <% for( let i = 0; i < userData.address.length; i++ ) { %>
-                                            
-                                            <% if (userData.address[i].addressType===0) { %>
-                                             
-                                            
-                                            <div class="col-lg-6">
-                                                <div class="card mb-3 mb-lg-0">
-                                                    <div class="card-header">
-                                                        <h5 class="mb-0">Billing Address</h5>
-                                                    </div>
-                                                    <div class="card-body">
-                                                        <address><%= userData.address[i].name %><br> <%= userData.address[i].house %>,<br> <%= userData.address[i].city %>
-                                                            <br><%= userData.address[i].state %> <br> <%= userData.address[i].pincode %> <br> <%= userData.address[i].country %>
-                                                        </address>
-                                                        
-                                                        <a href="#" class="btn-small" onclick="deleteAddress('<%= userData.address[i]._id %>')">Edit</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <% } else { %>
-                                             
-                                            <div class="col-lg-6">
-                                                <div class="card">
-                                                    <div class="card-header">
-                                                        <h5 class="mb-0">Shipping Address</h5>
-                                                    </div>
-                                                    <<div class="card-body">
-                                                        <address><%= userData.address[i].name %><br> <%= userData.address[i].house %>,<br> <%= userData.address[i].city %>
-                                                            <br><%= userData.address[i].state %> <br> <%= userData.address[i].pincode %> <br> <%= userData.address[i].country %>
-                                                        </address>
-                                                        
-                                                        <a href="#" class="btn-small" onclick="deleteAddress('<%= userData.address[i]._id %>')">Edit</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <% } %>
-                                            <% } %>
-                                        </div>
-                                    </div>
-                                    <div class="tab-pane fade" id="account-detail" role="tabpanel"
-                                        aria-labelledby="account-detail-tab">
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <h5>Account Details</h5>
-                                            </div>
-                                            <div class="card-body">
-
-                                                <form method="post" name="enq">
-                                                    <div class="row">
-                                                        <div class="form-group col-md-12">
-                                                            <label>Full Name <span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="name"
-                                                                type="text">
-                                                        </div>
-
-
-                                                        <div class="form-group col-md-12">
-                                                            <label>House<span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="house"
-                                                                type="text">
-                                                        </div>
-                                                        <div class="form-group col-md-6">
-                                                            <label>State<span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="state"
-                                                                type="text">
-                                                        </div>
-                                                        <div class="form-group col-md-6">
-                                                            <label>Country<span class="required">*</span></label>
-                                                            <input required="" class="form-control square"
-                                                                name="country" type="text">
-                                                        </div>
-                                                        <div class="form-group col-md-6">
-                                                            <label>City<span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="city"
-                                                                type="text">
-                                                        </div>
-                                                        <div class="form-group col-md-6">
-                                                            <label>Pin Code<span class="required">*</span></label>
-                                                            <input required="" class="form-control square"
-                                                                name="pincode" type="text">
-                                                        </div>
-                                                        <div class="form-group col-md-12">
-                                                            <label>Current Password <span
-                                                                    class="required">*</span></label>
-                                                            <input required="" class="form-control square"
-                                                                name="password" type="password">
-                                                        </div>
-                                                        <div class="form-group col-md-12">
-                                                            <label>New Password <span class="required">*</span></label>
-                                                            <input required="" class="form-control square"
-                                                                name="npassword" type="password">
-                                                        </div>
-                                                        <div class="form-group col-md-12">
-                                                            <label>Confirm Password <span
-                                                                    class="required">*</span></label>
-                                                            <input required="" class="form-control square"
-                                                                name="cpassword" type="password">
-                                                        </div>
-                                                        <div class="col-md-12">
-                                                            <button type="submit" class="btn btn-fill-out submit"
-                                                                name="submit" value="Submit">Save</button>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    
+                                    
                                 </div>
                             </div>
                         </div>
@@ -930,99 +702,8 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.js"></script>
     
     
-    <script>
-        $(document).ready(function () {
-            $("#myForm").submit(function (event) {
-                event.preventDefault();
-                var formData = $(this).serialize();
-                $.ajax({
-                    url: "/addAddress",
-                    method: "PUT",
-                    data: formData,
-                    success: (response) => {
-                        if (response.status) {
-                            Toastify({
-                                text: "Address Added",
-                                duration: 3000,
-                                gravity: "top", // top or bottom
-                                position: "center", // left, center or right
-                                stopOnFocus: true, // Prevents dismissing of toast on hover
-                                style: {
-                                    background: "linear-gradient(to right, aqua, blue)",
-                                },
-                            }).showToast();
-                            setTimeout(() => {
-                                location.reload();
-                            }, 1000);
-                        }else{
-                            Toastify({
-                                text: "Something wrong",
-                                duration: 3000,
-                                gravity: "top", // top or bottom
-                                position: "center", // left, center or right
-                                stopOnFocus: true, // Prevents dismissing of toast on hover
-                                style: {
-                                    background: "linear-gradient(to right, red, white)",
-                                },
-                            }).showToast();
-                        }
-                    }
-
-                })
-            })
-        })
-    </script>
-   <script>
-    function deleteAddress(addressId) {
-        console.log("jj")
-    //   swal("Are you sure you want to delete this address", {
-    //     buttons: ["cancel", "ok"],
-    //   }).then((res) => {
-    //     if (res) {
-          $.ajax({
-            url: "/deleteAddress/" + addressId,
-            type: "get",
-          }).done((res) => {
-            if (res) {
-              if (res.status) {  //to show green button and green toast message
-  
-                Toastify({
-                  text: "Address deleted successfully",
-                  duration: 3000,
-                  gravity: "top", // `top` or `bottom`
-                  position: "center", // `left`, `center` or `right`
-                  stopOnFocus: true, // Prevents dismissing of toast on hover
-                  style: {
-                    background: "green",
-                  },
-                }).showToast();
-                setTimeout(() => {
-                                location.reload();
-                            }, 1000);
-  
-                
-              } else {
-  
-                Toastify({
-                  text: "something went wrong",
-                  duration: 3000,
-                  gravity: "top", // `top` or `bottom`
-                  position: "center", // `left`, `center` or `right`
-                  stopOnFocus: true, // Prevents dismissing of toast on hover
-                  style: {
-                    background: "linear-gradient(to right, #00b09b, #96c93d)",
-                  },
-                }).showToast();
-  
-                
-              }
-              
-            }
-          });
-        }
-    //   });
-    // }
-  </script>
+    
+   
 </body>
 
 </html>

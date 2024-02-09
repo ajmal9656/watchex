@@ -23,6 +23,9 @@ router.post('/addToWishlist/:id',userController.addToWishlist);
 
 router.get('/profileView',userController.loadUserProfile);
 router.put('/addAddress',userController.addAddress);
+router.get('/deleteAddress/:id',userController.deleteAddress);
+router.get('/editAddress',userController.loadEditAddress);
+router.post('/editAddress',userController.editAddress);
 
 
 
