@@ -687,7 +687,7 @@
                                                     <div class="card-header">
                                                         <h5 class="mb-0">Shipping Address</h5>
                                                     </div>
-                                                    <<div class="card-body">
+                                                    <div class="card-body">
                                                         <address><%= userData.address[i].name %><br> <%= userData.address[i].house %>,<br> <%= userData.address[i].city %>
                                                             <br><%= userData.address[i].state %> <br> <%= userData.address[i].pincode %> <br> <%= userData.address[i].country %>
                                                         </address>
@@ -713,35 +713,21 @@
                                                         <div class="form-group col-md-12">
                                                             <label>Full Name <span class="required">*</span></label>
                                                             <input required="" class="form-control square" name="name"
-                                                                type="text">
+                                                                type="text" value="<%= userData.name %>">
                                                         </div>
 
 
                                                         <div class="form-group col-md-12">
-                                                            <label>House<span class="required">*</span></label>
+                                                            <label>Email<span class="required">*</span></label>
                                                             <input required="" class="form-control square" name="house"
-                                                                type="text">
+                                                                type="text" value="<%= userData.email %>">
                                                         </div>
-                                                        <div class="form-group col-md-6">
-                                                            <label>State<span class="required">*</span></label>
+                                                        <div class="form-group col-md-12">
+                                                            <label>Phone<span class="required">*</span></label>
                                                             <input required="" class="form-control square" name="state"
-                                                                type="text">
+                                                                type="text" value="<%= userData.mobile %>">
                                                         </div>
-                                                        <div class="form-group col-md-6">
-                                                            <label>Country<span class="required">*</span></label>
-                                                            <input required="" class="form-control square"
-                                                                name="country" type="text">
-                                                        </div>
-                                                        <div class="form-group col-md-6">
-                                                            <label>City<span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="city"
-                                                                type="text">
-                                                        </div>
-                                                        <div class="form-group col-md-6">
-                                                            <label>Pin Code<span class="required">*</span></label>
-                                                            <input required="" class="form-control square"
-                                                                name="pincode" type="text">
-                                                        </div>
+                                                        
                                                         <div class="form-group col-md-12">
                                                             <label>Current Password <span
                                                                     class="required">*</span></label>

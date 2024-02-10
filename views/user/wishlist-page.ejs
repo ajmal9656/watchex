@@ -726,7 +726,11 @@
                                         <td class="text-right" data-title="Cart">
                                             <button class="btn btn-sm"><i class="fi-rs-shopping-bag mr-5"></i>Add to cart</button>
                                         </td>
-                                        <td class="action" data-title="Remove"><a href="#"><i class="fi-rs-trash"></i></a></td>
+                                        <td>
+                                        <a onclick="removeFromWishlist('<%= products[i].product._id %>')" class="text-muted"
+                                            ><i class="fi-rs-trash"></i
+                                          ></a>
+                                        </td>
                                     </tr>
                                     <% } %>
                                     
@@ -886,6 +890,23 @@
     <!-- Template  JS -->
     <script src="./public/user/assets/js/main.js?v=3.4"></script>
     <script src="./public/user/assets/js/shop.js?v=3.4"></script>
+    <script>
+        const removeFromWishlist = (productId)=>{
+          $.ajax({
+            url:"/removeFromWishlist/"+productId,
+            method:"DELETE",
+            success: function (response){
+              if(response.status){
+                window.location.reload();
+  
+              }
+              else{
+                window.location.reload();
+              }
+            }
+          })
+        }
+      </script>
 </body>
 
 </html>

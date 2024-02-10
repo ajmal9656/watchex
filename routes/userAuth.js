@@ -28,6 +28,7 @@ router.delete('/removeProduct/:id',userController.removeFromCart);
 
 router.get('/whishlistView',userMiddleware.isCheck,userController.userWhishlist);
 router.post('/addToWishlist/:id',userController.addToWishlist);
+router.delete('/removeFromWishlist/:id',userController.removeFromWishlist);
 
 router.get('/profileView',userMiddleware.isCheck,userController.loadUserProfile);
 router.put('/addAddress',userController.addAddress);

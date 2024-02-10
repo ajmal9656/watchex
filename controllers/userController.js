@@ -328,18 +328,24 @@ const viewProduct = async(req,res)=>{
       const userId= req.session.user._id;
 
       const cartStatus = await cartHelper.checkCart(id,userId);
+      const wishListStatus = await whishlistHelper.checkWishlist(id,userId);
+
       userHelper.getProductDetails(id).then((response)=>{
 
         
 
           response.offerPrice=Math.round(response.product_price-(response.product_price*response.product_discount)/100);
 
-        console.log("hiiii");
-        console.log(response)
+        
         if(cartStatus){
-          console.log(cartStatus)
+       
           response.isCart = cartStatus;
-        console.log(response)
+        
+        }
+        if(wishListStatus){
+          
+          response.isWishlist = wishListStatus;
+        
         }
         
 
@@ -443,6 +449,21 @@ else{
   
     }) }
 
+    const removeFromWishlist = async (req,res)=>{
+
+      const productId= req.params.id;
+      const userId = req.session.user._id;
+      const result = await whishlistHelper.removeItem(userId,productId);
+    
+    if(result){
+      res.json({status:true})
+    }
+    else{
+      res.json({status:false})
+    }
+    
+      }
+
     const loadUserProfile = async(req,res)=>{
       const userId = req.session.user._id;
 
@@ -538,5 +559,6 @@ module.exports = {
   loadForgotPass,
   forgotPassword,
   otpVerification,
-  confirmPassword
+  confirmPassword,
+  removeFromWishlist
 };

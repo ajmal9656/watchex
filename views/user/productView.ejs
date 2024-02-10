@@ -1931,6 +1931,7 @@
                       </div>
                       <div class="bt-1 border-color-1 mt-30 mb-30"></div>
                       <div class="detail-extralink">
+                        <div class="product-extra-link2">
                         <% if (product.isCart) { %>
                         <div class="product-extra-link2">
                           <button
@@ -1940,22 +1941,11 @@
                           >
                             View cart
                           </button>
-                          <a
-                            aria-label="Add To Wishlist"
-                            class="action-btn hover-up"
-                            onclick="addToWishlist('<%= product._id %>')"
-                            ><i class="fi-rs-heart"></i
-                          ></a>
-                          <a
-                            aria-label="Compare"
-                            class="action-btn hover-up"
-                            href="shop-compare.html"
-                            ><i class="fi-rs-shuffle"></i
-                          ></a>
+                         
                         </div>
 
                         <% } else { %>
-                        <div class="product-extra-link2">
+                        
                           <button
                             type="submit"
                             class="button button-add-to-cart"
@@ -1963,7 +1953,29 @@
                           >
                             Add to cart
                           </button>
-                          <a
+                          
+                       
+
+                        <% } %>
+                        <% if (product.isWishlist) { %>
+                        
+                          <a aria-label="Add To Wishlist"
+                          class="action-btn hover-up"
+                          onclick="removeWishlist('<%= product._id %>')">
+                          <i class="fi-rs-heart"></i>
+                       </a>
+                       
+                        <a
+                          aria-label="Compare"
+                          class="action-btn hover-up"
+                          href="shop-compare.html"
+                          ><i class="fi-rs-shuffle"></i
+                        ></a>
+                        
+                        
+                        <% } else { %>
+                          
+                            <a
                             aria-label="Add To Wishlist"
                             class="action-btn hover-up"
                             onclick="addToWishlist('<%= product._id %>')"
@@ -1975,9 +1987,10 @@
                             href="shop-compare.html"
                             ><i class="fi-rs-shuffle"></i
                           ></a>
+                          
+                          
+                          <% } %>
                         </div>
-
-                        <% } %>
                       </div>
                       <ul class="product-meta font-xs color-grey mt-50">
                         <li class="mb-5">SKU: <a href="#">FWM15VKT</a></li>
@@ -3065,6 +3078,28 @@
         window.location.href = "/cartView";
       }
     </script>
+    <script>
+      function removeWishlist(productId) {
+          fetch("/removeFromWishlist/" + productId, {
+              method: 'DELETE'
+          })
+          .then(response => {
+              if (!response.status) {
+                  throw new Error('Network response was not ok');
+              }
+              // Handle successful response
+              // Redirect or update UI as needed
+              // window.location.href = "/successPage"; // Example redirect
+              location.reload();
+          })
+          .catch(error => {
+              console.error('There was a problem with your fetch operation:', error);
+              // Handle error response
+              // Display error message or retry request, etc.
+          });
+      }
+  </script>
+  
     <!-- toastify -->
     <script
       type="text/javascript"

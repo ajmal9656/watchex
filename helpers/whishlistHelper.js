@@ -49,8 +49,39 @@ const addProductToWishlist = async (productId,userId)=>{
 
 }
 
+const removeItem=async(userId,productId)=>{
+  return new Promise(async(resolve,reject)=>{
+
+    const removeItem = await whishlistModel.updateOne({user:userId},{$pull:{products:{productItemId:productId}}});
+
+    resolve(removeItem);
+
+  })
+
+}
+
+const checkWishlist = async(productId,userId)=>{
+  return new Promise(async(resolve,reject)=>{
+    try{
+
+    
+    const check = await whishlistModel.findOne({user:userId,"products.productItemId":productId});
+
+    if(check){
+      resolve(true);
+    }else{
+      resolve(false);
+    }}catch(error){
+      console.log(error);
+    }
+
+
+  })
+}
 
 module.exports={
     getAllWhishlistItems,
-    addProductToWishlist
+    addProductToWishlist,
+    removeItem,
+    checkWishlist
 }
