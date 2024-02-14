@@ -479,6 +479,11 @@
                                                 aria-selected="true"><i class="fi-rs-user mr-10"></i>Account details</a>
                                         </li>
                                         <li class="nav-item">
+                                            <a class="nav-link" id="account-detail-tab" data-bs-toggle="tab"
+                                                href="#accountsecurity" role="tab" aria-controls="account-detail"
+                                                aria-selected="true"><i class="fi-rs-user mr-10"></i>Accout Security</a>
+                                        </li>
+                                        <li class="nav-item">
                                             <a class="nav-link" href="/logout"><i
                                                     class="fi-rs-sign-out mr-10"></i>Logout</a>
                                         </li>
@@ -519,27 +524,17 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <tr>
-                                                                <td>#1357</td>
-                                                                <td>March 45, 2020</td>
-                                                                <td>Processing</td>
-                                                                <td>$125.00 for 2 item</td>
-                                                                <td><a href="#" class="btn-small d-block">View</a></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>#2468</td>
-                                                                <td>June 29, 2020</td>
-                                                                <td>Completed</td>
-                                                                <td>$364.00 for 5 item</td>
-                                                                <td><a href="#" class="btn-small d-block">View</a></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>#2366</td>
-                                                                <td>August 02, 2020</td>
-                                                                <td>Completed</td>
-                                                                <td>$280.00 for 3 item</td>
-                                                                <td><a href="#" class="btn-small d-block">View</a></td>
-                                                            </tr>
+                                                            <% for( let i = 0; i < orderData.length; i++ ) { %>
+                                                                <tr>
+                                                                    <td><%= orderData[i].orderId %></td>
+                                                                    <td><%= orderData[i].orderedOn %></td>
+                                                                    <td><%= orderData[i].status %></td>
+                                                                    <td>$<%= orderData[i].totalAmount %> for 2 item</td>
+                                                                    <td><a href="#" class="btn-small d-block">View</a></td>
+                                                                </tr>
+                                                            <% } %>
+                                                            
+                                                            
                                                         </tbody>
                                                     </table>
                                                 </div>
@@ -752,6 +747,49 @@
                                                     </div>
                                                 </form>
                                             </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="accountsecurity" role="tabpanel" aria-labelledby="address-tab">
+                                       
+                                        <div class="row">
+                                           
+                                            <div class="col-lg-8">
+                                                <div class="card mt-2 mb-3 mb-lg-0 black-border">
+                                                    <div class="card-header" >
+                                                        <h5 >Edit Password</h5>
+                                                    </div>
+                                                    <div class="card-body" >
+                                                        <form class="" method="post" action="/changepassword" id="passform">
+                                                            <div class="row">
+                                                                <div class="form-group col-md-12">
+                                                                    <label>Current Password <span class="required">*</span></label>
+                                                                    <input required="" id="currPassword" class="form-control square black-border" name="currentpassword" type="password" placeholder="currentpassword">
+                                                                    <div id="error1"></div>
+                                                                </div>
+                                                                <div class="form-group col-md-12">
+                                                                    <label>New Password <span class="required">*</span></label>
+                                                                    <input required="" id="password1" class="form-control square black-border" name="password1" type="password" placeholder="newpassword">
+                                                                    <div id="error2"></div>
+                                                                </div>
+                                                                <div class="form-group col-md-12">
+                                                                    <label>Confirm Password <span class="required">*</span></label>
+                                                                    <input required="" id="password2" class="form-control square black-border" name="password2" type="password" placeholder="confirm password">
+                                                                    <div id="error3"></div>
+                                                                </div>
+                                                                <div class="col-md-12">
+                                                                    <button type="submit" class="btn btn-fill-out "  name="submit" value="Submit">change</button>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                        
+                                                       
+                                                        
+                                                        
+                                                    </div>
+                                            
+                                                </div>
+                                            </div>
+                                            
                                         </div>
                                     </div>
                                 </div>
@@ -1009,6 +1047,79 @@
     //   });
     // }
   </script>
+     <script>
+        const pass1 = document.getElementById('password1');
+const pass2 = document.getElementById('password2');
+const error2 = document.getElementById('error2');
+const error3 = document.getElementById('error3');
+const myForm = document.getElementById('passform')
+
+
+function passvalidate(e){
+    const passval = pass1.value
+    const alpha = /[a-zA-Z]/
+    const digit = /\d/
+
+
+    error2.innerHTML = '';
+        
+
+
+    if(passval.length < 8)
+    {   
+        error2.style.display = "block"
+        error2.innerHTML = "Must have atleast 8 characters"
+        return false;
+    }
+    else if(!alpha.test(passval) || !digit.test(passval) )
+    {
+        error2.style.display = "block"
+        error2.innerHTML = "Should contain Numbers and Alphabets!!"
+        return false;
+    }
+    else{
+
+        error2.style.display = "none"
+        error2.innerHTML = ""
+        return true;
+    }
+}
+
+function passmatch(){
+    
+        error3.innerHTML = '';
+    if(pass1.value!=pass2.value){
+
+error3.style.display = "block"
+error3.innerHTML = "password doesn't match"
+return false;
+}
+return true;
+
+
+}
+
+
+
+pass1.addEventListener('blur',passvalidate)
+
+myForm.addEventListener('submit',function(e){
+    
+    const checkk=passvalidate();
+
+     const check = passmatch();
+
+     if(!check||!checkk){
+        e.preventDefault();
+     }
+     
+
+    
+
+    
+})
+
+    </script>
 </body>
 
 </html>

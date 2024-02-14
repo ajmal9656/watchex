@@ -1886,7 +1886,7 @@
                             <td class="cart_total_label">Cart Subtotal</td>
                             <td class="cart_total_amount">
                               <span class="font-lg fw-900 text-brand"
-                                >$240.00</span
+                                >$<%= totalAmount %></span
                               >
                             </td>
                           </tr>
@@ -1901,7 +1901,7 @@
                             <td class="cart_total_amount">
                               <strong
                                 ><span class="font-xl fw-900 text-brand"
-                                  >$240.00</span
+                                  >$<%= totalAmount %></span
                                 ></strong
                               >
                             </td>
@@ -1909,7 +1909,7 @@
                         </tbody>
                       </table>
                     </div>
-                    <a href="#" class="btn">
+                    <a href="/checkout" class="btn">
                       <i class="fi-rs-box-alt mr-10"></i> Proceed To CheckOut</a
                     >
                   </div>

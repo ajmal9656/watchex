@@ -36,6 +36,12 @@ router.get('/deleteAddress/:id',userMiddleware.isCheck,userController.deleteAddr
 router.get('/editAddress',userMiddleware.isCheck,userController.loadEditAddress);
 router.post('/editAddress',userController.editAddress);
 
+router.post('/changepassword',userMiddleware.isCheck,userController.changePassword);
+
+router.get('/checkout',userMiddleware.isCheck,userController.loadCheckout);
+router.post('/proceedPayment',userMiddleware.isCheck,userController.proceedPayment);
+router.get('/orderSuccess',userMiddleware.isCheck,userController.orderSuccess);
+
 
 
 

@@ -1,3 +1,4 @@
+const cartModel = require("../models/cartModel");
 const productModel = require("../models/productModel");
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
@@ -163,6 +164,18 @@ const postEditAddress=async(userId,addressId,body)=>{
   })
 }
 
+const getAllAddress= async(userId)=>{
+
+  return new Promise (async(resolve,reject)=>{
+    const userData = await User.findById(userId);
+
+    resolve(userData);
+  })
+
+}
+
+
+
 module.exports = {
   loginHelper,
   signUpHelper,
@@ -170,5 +183,7 @@ module.exports = {
   getUserDetails,
   addUserAddress,
   addressDeletion,
-  editAddress,postEditAddress
+  editAddress,postEditAddress,
+  getAllAddress
+  
 };

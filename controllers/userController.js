@@ -11,7 +11,10 @@ const cartModel = require("../models/cartModel");
 const whishlistHelper=require("../helpers/whishlistHelper");
 const categoryHelper=require("../helpers/cateroryHelper");
 const passHelper=require("../helpers/passwordHelper");
+const orderHelper=require("../helpers/orderHelper");
 const { response } = require("express");
+const moment = require("moment")
+
 
 
 const loadhome = async (req, res) =>{
@@ -23,8 +26,7 @@ const loadhome = async (req, res) =>{
   product.offerPrice=Math.round(product.product_price-(product.product_price*product.product_discount)/100);}
   const categoryData = await categoryHelper.getAllCategory();
 
-console.log("helloo")
-  console.log(productData);
+
   
 
 
@@ -195,8 +197,7 @@ const forgotPassword=async(req,res)=>{
                   req.session.otp=response.otp;
     req.session.expirationTime=response.expirationTime;
 
-    console.log(req.session.otp);
-    console.log(req.session.expirationTime);
+    
 
     
 
@@ -285,7 +286,7 @@ const confirmPassword = async(req,res)=>{
 const loaduserhome = async (req, res) => {
   const user=req.body;
    userHelper.loginHelper(user).then((response)=>{
-    console.log(response);
+    
     if(response.logId){
       
       
@@ -367,14 +368,16 @@ const viewProduct = async(req,res)=>{
 
 
  const userCart = async (req,res)=>{
-  const user = req.session.user;
-  cartHelper.getAllCartItems(user._id).then((response)=>{
+  const user = req.session.user._id;
+  cartHelper.getAllCartItems(user).then(async(response)=>{
     for(const products of response){
 
       products.product.offerPrice=Math.round(products.product.product_price-(products.product.product_price*products.product.product_discount)/100);}
 
+  let totalandSubTotal = await cartHelper.totalSubtotal(user, response)  
+
     
-    res.render("user/cart-page",{products:response});
+    res.render("user/cart-page",{products:response,totalAmount:totalandSubTotal});
   })
 
   
@@ -386,7 +389,7 @@ const viewProduct = async(req,res)=>{
   const productId = req.params.id;
   const size = req.params.size;
   const userId = req.session.user._id;
-  console.log(userId)
+  
 
   cartHelper.addProductToCart(productId,userId,size).then((response)=>{
 
@@ -431,6 +434,13 @@ else{
     const user = req.session.user;
 
     whishlistHelper.getAllWhishlistItems(user._id).then((response)=>{
+      for(const products of response){
+
+        products.product.offerPrice=Math.round(products.product.product_price-(products.product.product_price*products.product.product_discount)/100);}
+
+     
+
+
       res.render("user/wishlist-page",{products:response});
     })
 
@@ -439,7 +449,7 @@ else{
   const addToWishlist = async(req,res)=>{
     const productId = req.params.id;
     const userId = req.session.user._id;
-    console.log(userId)
+    
   
     whishlistHelper.addProductToWishlist(productId,userId).then((response)=>{
   
@@ -467,8 +477,15 @@ else{
     const loadUserProfile = async(req,res)=>{
       const userId = req.session.user._id;
 
-      userHelper.getUserDetails(userId).then((response)=>{
-        res.render("user/account",{userData:response});
+      userHelper.getUserDetails(userId).then(async(response)=>{
+
+        const orderData= await orderHelper.getOrderDetails(userId);
+
+        const orderedDate = moment(orderData.orderedOn).format('DD-MM-YY');
+
+        orderData.formattedDate=orderedDate;
+
+        res.render("user/account",{userData:response,orderData});
 
       })
 
@@ -483,7 +500,7 @@ else{
       const body = req.body;
 
       const add = await userHelper.addUserAddress(userId,body);
-      console.log(add)
+      
 
       if(add){
         res.json({status:true})
@@ -501,8 +518,7 @@ else{
     const deleteAddress = async(req,res)=>{
       const addressId = req.params.id;
       const userId= req.session.user._id;
-      console.log("deletion`")
-      console.log(userId)
+      
 
 
       userHelper.addressDeletion(addressId,userId).then((response)=>{
@@ -534,6 +550,72 @@ const loadEditAddress = async (req, res) => {
   
        })
  } 
+
+ const changePassword = async(req,res)=>{
+
+  const userId= req.session.user._id;
+  const body = req.body;
+
+  passHelper.confirmNewPassword(userId,body).then(async(response)=>{
+
+    res.redirect("/profileView")
+
+  })
+
+
+ }
+
+ const loadCheckout = async (req,res)=>{
+  const userId = req.session.user._id;
+
+  const userData =  await userHelper.getAllAddress(userId);
+  const cartData =  await cartHelper.getAllCartItems(userId);
+  for(const products of cartData){
+
+    products.product.subTotal=products.quantity*Math.round(products.product.product_price-(products.product.product_price*products.product.product_discount)/100);}
+    let totalandSubTotal = await cartHelper.totalSubtotal(userId, cartData)
+
+
+  res.render("user/checkout-page",{userData,cartItems:cartData,totalandSubTotal})
+
+
+
+
+ }
+
+ const proceedPayment =async(req,res)=>{
+
+  const userId = req.session.user._id;
+  const body = req.body;
+  const cartItems = await cartModel.findOne({user:userId});
+  
+
+  const result = await orderHelper.placeOrder(userId,body,cartItems);
+
+if(result){
+
+  const cart = await cartHelper.clearAllCartItems(userId);
+  if(cart){
+    res.json({url:"/orderSuccess"});
+
+
+  }
+
+
+
+  
+
+}
+
+  
+
+ }
+
+ const orderSuccess = (req,res)=>{
+  res.render("user/orderSuccess")
+ }
+
+
     
 
 
@@ -560,5 +642,8 @@ module.exports = {
   forgotPassword,
   otpVerification,
   confirmPassword,
-  removeFromWishlist
+  removeFromWishlist,
+  loadCheckout,
+  proceedPayment,
+  orderSuccess,changePassword
 };

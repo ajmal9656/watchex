@@ -719,10 +719,15 @@
                                             <p class="font-xs"><%= products[i].product.product_description %>
                                             </p>
                                         </td>
-                                        <td class="price" data-title="Price"><span><%= products[i].product.product_price %></span></td>
+                                        <td class="price" data-title="Price"><span><%= products[i].product.offerPrice %></span></td>
                                         <td class="text-center" data-title="Stock">
-                                            <span class="color3 font-weight-bold">In Stock</span>
+                                            <% if (products[i].product.total_quantity >= 1) { %>
+                                                <span class="color3 font-weight-bold" style="color: green;">In Stock</span>
+                                            <% } else { %>
+                                                <span class="color3 font-weight-bold" style="color: red;">Out Of Stock</span>
+                                            <% } %>
                                         </td>
+                                        
                                         <td class="text-right" data-title="Cart">
                                             <button class="btn btn-sm"><i class="fi-rs-shopping-bag mr-5"></i>Add to cart</button>
                                         </td>

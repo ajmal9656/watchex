@@ -115,6 +115,36 @@ const removeItem=async(userId,productId)=>{
   })
 
 }
+const totalSubtotal=async(userId, cartItems)=>{
+  return new Promise(async(resolve,reject)=>{
+
+    let cart = await cartModel.findOne({ user: userId })
+      let total = 0
+      if (cart) {
+        if (cartItems.length) {
+          for (let i = 0; i < cartItems.length; i++) {
+            total = total + (cartItems[i].quantity *Math.round((cartItems[i].product.product_price-(cartItems[i].product.product_price*cartItems[i].product.product_discount)/100) ))
+          }
+        }
+        cart.totalAmount = total
+        await cart.save()
+        console.log(total);
+        resolve(total)
+      } else {
+        resolve(total)
+      }
+  })
+
+}
+
+const clearAllCartItems = (userId)=>{
+  return new Promise(async(resolve,reject)=>{
+
+    const removeCartItems = await cartModel.deleteOne({_id:userId});
+    resolve(removeCartItems)
+
+  })
+}
 
 
 
@@ -123,5 +153,6 @@ module.exports={
     addProductToCart,
     checkCart,
     quantityUpdation,
-    removeItem
+    removeItem,totalSubtotal,
+    clearAllCartItems
 }
