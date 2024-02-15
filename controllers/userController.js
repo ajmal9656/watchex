@@ -370,6 +370,7 @@ const viewProduct = async(req,res)=>{
  const userCart = async (req,res)=>{
   const user = req.session.user._id;
   cartHelper.getAllCartItems(user).then(async(response)=>{
+    
     for(const products of response){
 
       products.product.offerPrice=Math.round(products.product.product_price-(products.product.product_price*products.product.product_discount)/100);}
@@ -480,10 +481,25 @@ else{
       userHelper.getUserDetails(userId).then(async(response)=>{
 
         const orderData= await orderHelper.getOrderDetails(userId);
+        
+        for(const order of orderData){
+          order.formattedDate = moment(order.orderedOn).format("MMM Do, YYYY");
+          
+          let quantity = 0;
+          for(const product of order.products){
+            quantity+= Number(product.quantity);
+          }
+          order.quantity = quantity;
+          
 
-        const orderedDate = moment(orderData.orderedOn).format('DD-MM-YY');
+       
 
-        orderData.formattedDate=orderedDate;
+        }
+        
+
+
+
+        
 
         res.render("user/account",{userData:response,orderData});
 
@@ -594,8 +610,11 @@ const loadEditAddress = async (req, res) => {
 
 if(result){
 
+
+
   const cart = await cartHelper.clearAllCartItems(userId);
   if(cart){
+
     res.json({url:"/orderSuccess"});
 
 
@@ -611,8 +630,21 @@ if(result){
 
  }
 
+ 
+
  const orderSuccess = (req,res)=>{
   res.render("user/orderSuccess")
+ }
+
+
+ const cancelOrder= async(req,res)=>{
+  const orderId = req.params.id;
+  orderHelper.orderCancellation(orderId).then((response)=>{
+
+    res.json(response)
+
+  })
+
  }
 
 
@@ -645,5 +677,6 @@ module.exports = {
   removeFromWishlist,
   loadCheckout,
   proceedPayment,
-  orderSuccess,changePassword
+  orderSuccess,changePassword,
+  cancelOrder
 };

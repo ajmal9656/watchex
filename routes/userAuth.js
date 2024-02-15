@@ -41,6 +41,7 @@ router.post('/changepassword',userMiddleware.isCheck,userController.changePasswo
 router.get('/checkout',userMiddleware.isCheck,userController.loadCheckout);
 router.post('/proceedPayment',userMiddleware.isCheck,userController.proceedPayment);
 router.get('/orderSuccess',userMiddleware.isCheck,userController.orderSuccess);
+router.patch('/cancelOrder/:id',userController.cancelOrder);
 
 
 

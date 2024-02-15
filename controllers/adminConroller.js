@@ -6,6 +6,8 @@ const categoryModel = require("../models/categoryModel");
 const productModel = require("../models/productModel");
 const adminModel = require("../models/adminModel");
 const { response } = require("express");
+const orderHelper = require("../helpers/orderHelper");
+const moment = require("moment")
 
 const loadAdmin = function (req, res) {
   if (req.session.admin) {
@@ -272,6 +274,56 @@ const editProduct = async (req, res) => {
   }
 };
 
+const loadOrders = async(req,res)=>{
+
+  const allOrders = await orderHelper.getAllOrders();
+
+  for(const order of allOrders){
+    order.formattedDate = moment(order.orderedOn).format("MMM Do, YYYY");
+  }
+  
+
+  res.render("admin/orders",{allOrders});
+
+
+
+}
+
+const changeOrderStatus = async (req,res)=>{
+  const orderId = req.body.orderId;
+  const changeStatus = req.body.status;
+
+  await orderHelper.orderStatusChange(orderId,changeStatus).then((result)=>{
+    
+    res.json({status:true})
+
+  })
+}
+
+const loadOrderDetails = async(req,res)=>{
+
+  const orderId = req.params.id;
+
+  orderHelper.getOrders(orderId).then((response)=>{
+
+    for(const order of response){
+
+      order.formattedDate = moment(order.orderedOn).format("MMM Do, YYYY");
+
+
+    }
+
+    
+
+    res.render("admin/order-details",{orderDetails:response})
+
+
+  })
+
+
+
+}
+
 module.exports = {
   userList,
   blockOrUnblockUser,
@@ -289,4 +341,7 @@ module.exports = {
   loadEditProduct,
   editProduct,
   logoutAdmin,
+  loadOrders,
+  changeOrderStatus,
+  loadOrderDetails
 };

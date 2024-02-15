@@ -80,8 +80,7 @@ const quantityUpdation =async(productId,userId,quantity)=>{
 
     const cart = await cartModel.findOne({user:userId});
 
-    console.log("skjcfhsjhc");
-    console.log(cart)
+    
 
     const product = cart.products.find((item)=>{
       return item.productItemId.toString()==productId;
@@ -128,7 +127,7 @@ const totalSubtotal=async(userId, cartItems)=>{
         }
         cart.totalAmount = total
         await cart.save()
-        console.log(total);
+      
         resolve(total)
       } else {
         resolve(total)
@@ -140,10 +139,34 @@ const totalSubtotal=async(userId, cartItems)=>{
 const clearAllCartItems = (userId)=>{
   return new Promise(async(resolve,reject)=>{
 
-    const removeCartItems = await cartModel.deleteOne({_id:userId});
+    const removeCartItems = await cartModel.deleteOne({user:userId});
     resolve(removeCartItems)
 
   })
+}
+
+const getCart=async(userId)=>{
+  return new Promise (async(resolve,reject)=>{
+    const allCartData= await cartModel.aggregate([
+        {
+          $match: { user: new ObjectId(userId) }
+        },
+        {
+          $unwind: "$products"
+        },                       
+        {
+          $project: {
+            item: "$products.productItemId",
+            quantity: "$products.quantity",
+            size:"$products.size",
+          }
+        }
+        
+      ]);
+      resolve(allCartData);
+
+})
+
 }
 
 
@@ -154,5 +177,6 @@ module.exports={
     checkCart,
     quantityUpdation,
     removeItem,totalSubtotal,
-    clearAllCartItems
+    clearAllCartItems,
+    getCart
 }
