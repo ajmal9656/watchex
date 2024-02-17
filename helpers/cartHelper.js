@@ -101,7 +101,7 @@ const quantityUpdation = async (productId, userId, quantity,size) => {
     }
     const sizeCount = findValueForSize(productSizeCount, size);
 
-    console.log(sizeCount);
+    
 
 
 
@@ -199,18 +199,24 @@ const getCart = async (userId) => {
 
 const userCartCount = async (userId) => {
   return new Promise(async (resolve, reject) => {
-    const result = await cartModel.aggregate([
+    const result = await cartModel.aggregate([{$match:{user:new ObjectId(userId)}},
       {
         $project: {
           numberOfProducts: { $size: "$products" }
         }
       }
     ])
+    console.log(result)
     
-    resolve(result[0].numberOfProducts)
+    if (result.length > 0) {
+      resolve(result[0].numberOfProducts) ;
+    } else {
+      resolve(0) ; // Return 0 if no products are found in the cart
+    }
     
   });
 };
+    
 
 module.exports = {
   getAllCartItems,

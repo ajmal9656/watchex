@@ -1,6 +1,9 @@
 const productSchema=require("../models/productModel");
 const categorySchema=require("../models/categoryModel");
 const fs = require('fs');
+const { resolve } = require("path");
+const productModel = require("../models/productModel");
+const { Console } = require("console");
 
 
 const productList=async()=>{
@@ -163,6 +166,27 @@ const getAllProducts = async ()=>{
  
 
 }
+const stockUpdation=async(allCartData)=>{
+  return new Promise(async(resolve,reject)=>{
+    
+
+    for(const order of allCartData){
+      let item = order.item;
+      let quantity=order.quantity;
+      let size = order.size;
+
+       let product = await productModel.findOne({_id:item});
+       if (product && product.product_quantity && product.product_quantity[size]) {
+        product.product_quantity[size].quantity -= quantity;
+
+        // Save the updated product
+        await product.save();
+      }
+    }
+    resolve("stock updated successfully");
+
+  })
+}
 
 
 
@@ -175,6 +199,6 @@ module.exports={
     deleteProduct,
     checkDuplicateProduct,
     editImages,
-    getAllProducts
+    getAllProducts,stockUpdation
 
 }

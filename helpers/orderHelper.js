@@ -10,7 +10,7 @@ const placeOrder = async(userId,body,cartItems)=>{
 
         
         const address = await userModel.findOne({_id:userId,"address._id":body.addressId},{"address.$":1,_id:0});
-        console.log(address)
+        
         const user = await userModel.findOne({ _id: userId });
 
 

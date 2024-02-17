@@ -288,7 +288,7 @@ const viewProduct = async (req, res) => {
 const userCart = async (req, res) => {
   const user = req.session.user._id;
   cartHelper.getAllCartItems(user).then(async (response) => {
-    console.log(response)
+    
     for (const products of response) {
       const size=products.size;
       if(products.quantity==products.product.product_quantity[size].quantity){
@@ -300,7 +300,7 @@ const userCart = async (req, res) => {
             100
       );
     }
-    console.log(response)
+    
 
     let totalandSubTotal = await cartHelper.totalSubtotal(user, response);
 
@@ -336,7 +336,7 @@ const updateQuantity = async (req, res) => {
     .then((response) => {
       
       if(response.sizeExceed){
-        console.log("jhdsbvwsaijcaokcaockajccls")
+        
         res.json({ status: false });
       }
       else{
@@ -496,10 +496,27 @@ const proceedPayment = async (req, res) => {
   const result = await orderHelper.placeOrder(userId, body, cartItems);
 
   if (result) {
-    const cart = await cartHelper.clearAllCartItems(userId);
-    if (cart) {
-      res.json({ url: "/orderSuccess" });
-    }
+
+    const allCartData = await cartHelper.getCart(userId);
+    
+    
+      const stockUpdation = await productHelper.stockUpdation(allCartData);
+
+      if(stockUpdation){
+        const cart = await cartHelper.clearAllCartItems(userId);
+        if (cart) {
+          res.json({ url: "/orderSuccess" });
+        }
+
+      }
+      
+    
+
+
+
+
+    
+    
   }
 };
 
