@@ -523,6 +523,7 @@
                                                                 <th>Status</th>
                                                                 <th>Total</th>
                                                                 <th>Actions</th>
+                                                                <th> View Details </th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -546,9 +547,13 @@
                                                                                         class="badge bg-danger rounded">Cancelled</span>
                                                                                 </td>
                                                                                 <% } %>
+                                                                                <td width="10%">
+                                                                                    <a href="/orderDetails/<%= orderData[i]._id %>" class="btn btn-md rounded font-sm">Details</a>
+                                                                                </td>
 
                                                                 </tr>
                                                             <% } %>
+                                                            
                                                             
                                                             
                                                         </tbody>
@@ -1162,7 +1167,7 @@ myForm.addEventListener('submit',function(e){
                         url: `/cancelOrder/${orderId}`,
                         type: 'PATCH'
                     }).done(response => {
-                        Swal.fire("Successfull", "Address Deleted", "success").then(() => {
+                        Swal.fire("Successfull", "Order Cancelled", "success").then(() => {
                             location.reload();
                         })
                     }).fail((error) => {

@@ -305,10 +305,18 @@ const loadOrderDetails = async(req,res)=>{
   const orderId = req.params.id;
 
   orderHelper.getOrders(orderId).then((response)=>{
+    response.formattedDate = moment(response.orderedOn).format("MMM Do, YYYY");
 
     for(const order of response){
 
-      order.formattedDate = moment(order.orderedOn).format("MMM Do, YYYY");
+      
+
+      for(const product of order.productDetails){
+        product.offerPrice=Math.round(product.product_price-(product.product_price*product.product_discount)/100);
+
+      }
+        
+      
 
 
     }

@@ -1933,7 +1933,7 @@
                       <div class="detail-extralink">
                         <div class="product-extra-link2">
                         <% if (product.isCart) { %>
-                        <div class="product-extra-link2">
+                        
                           <button
                             type="submit"
                             class="button button-add-to-cart"
@@ -1942,7 +1942,7 @@
                             View cart
                           </button>
                          
-                        </div>
+                       
 
                         <% } else { %>
                         
@@ -1979,8 +1979,7 @@
                             aria-label="Add To Wishlist"
                             class="action-btn hover-up"
                             onclick="addToWishlist('<%= product._id %>')"
-                            ><i class="fi-rs-heart"></i
-                          ></a>
+                            ><i class="fi-rs-heart" style="color: green;"></i></a>
                           <a
                             aria-label="Compare"
                             class="action-btn hover-up"

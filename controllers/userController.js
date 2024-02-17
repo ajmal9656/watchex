@@ -2,111 +2,102 @@ const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const { EMAIL, PASSWORD } = require("../env");
-const userHelper=require('../helpers/userHelper');
-const otpHelper=require('../helpers/otpHelper');
-const productHelper=require('../helpers/productHelper');
-const productModel=require("../models/productModel");
-const cartHelper=require("../helpers/cartHelper");
+const userHelper = require("../helpers/userHelper");
+const otpHelper = require("../helpers/otpHelper");
+const productHelper = require("../helpers/productHelper");
+const productModel = require("../models/productModel");
+const cartHelper = require("../helpers/cartHelper");
 const cartModel = require("../models/cartModel");
-const whishlistHelper=require("../helpers/whishlistHelper");
-const categoryHelper=require("../helpers/cateroryHelper");
-const passHelper=require("../helpers/passwordHelper");
-const orderHelper=require("../helpers/orderHelper");
+const whishlistHelper = require("../helpers/whishlistHelper");
+const categoryHelper = require("../helpers/cateroryHelper");
+const passHelper = require("../helpers/passwordHelper");
+const orderHelper = require("../helpers/orderHelper");
 const { response } = require("express");
-const moment = require("moment")
+const moment = require("moment");
 
-
-
-const loadhome = async (req, res) =>{
-
+const loadhome = async (req, res) => {
   const productData = await productHelper.getAllProducts();
 
-  for(const product of productData){
-
-  product.offerPrice=Math.round(product.product_price-(product.product_price*product.product_discount)/100);}
+  for (const product of productData) {
+    product.offerPrice = Math.round(
+      product.product_price -
+        (product.product_price * product.product_discount) / 100
+    );
+  }
   const categoryData = await categoryHelper.getAllCategory();
 
-
-  
-
-
-
   if (req.session.user) {
-    res.render("user/indexx",{message:"hi",product:productData,categories:categoryData});
-  } 
+    const userId = req.session.user._id;
+    const cartCount = await cartHelper.userCartCount(userId);
+    const wishlistCount = await whishlistHelper.userWishlistCount(userId);
+
+    res.render("user/indexx", {
+      message: "hi",
+      product: productData,
+      categories: categoryData,
+      cartcount:cartCount,
+      wishlistcount:wishlistCount
+    });
+  }
   // else if (req.session.admin) {
   //   res.render("admin/index");
   // }
-   else {
-
-
-    res.render("user/indexx",{product:productData,categories:categoryData});
+  else {
+    res.render("user/indexx", {
+      product: productData,
+      categories: categoryData,
+    });
   }
 };
 
 const loadlogin = function (req, res) {
   if (req.session.user) {
-    
-    res.redirect("/");}
+    res.redirect("/");
+  }
   //    else if (req.session.admin) {
   //   res.send("/adminhome");
   // }
-   else {
-    const message=req.flash("message")
-    res.render("user/login-page",{message:message});
-   
+  else {
+    const message = req.flash("message");
+    res.render("user/login-page", { message: message });
   }
 };
-
-
 
 const loadregister = function (req, res) {
-  const message=req.flash("message")
-  res.render("user/login-register",{message:message});
+  const message = req.flash("message");
+  res.render("user/login-register", { message: message });
 };
 
-const userlogout= function(req,res){
-  try{
-    if(req.session.user){
-      req.session.destroy((error)=>{
-        if(error){
-          res.redirect("/login")
-
-        }
-        else{
+const userlogout = function (req, res) {
+  try {
+    if (req.session.user) {
+      req.session.destroy((error) => {
+        if (error) {
+          res.redirect("/login");
+        } else {
           res.redirect("/");
         }
-      })
-    }else{
-      res.redirect("/login")
-
+      });
+    } else {
+      res.redirect("/login");
     }
-
-  }catch(error){
-    console.log(error)
-
+  } catch (error) {
+    console.log(error);
   }
-}
+};
 
 const insertUser = async (req, res) => {
-
   const user = req.body;
-  userHelper.signUpHelper(user).then((response)=>{
-    
-    if(response.registeredData){
-
-      req.session.userdata=response.registeredData;
-      
+  userHelper.signUpHelper(user).then((response) => {
+    if (response.registeredData) {
+      req.session.userdata = response.registeredData;
 
       res.render("user/otp-verification");
+    } else {
+      req.flash("message", response.errorMessage);
+      res.redirect("/register");
     }
-    else{
-
-      req.flash("message",response.errorMessage);
-      res.redirect("/register")
-    }
-
-  })
+  });
   // try {
   //   const { username, email, mobile, password } = req.body;
 
@@ -138,168 +129,108 @@ const insertUser = async (req, res) => {
 // const generateOtp = async (req, res) => {
 
 //   const email =req.session.userdata.email;
- 
 
 //   otpHelper.otpGeneration(email).then((response)=>{
 //     req.session.otp=response.otp;
 //     req.session.expirationTime=response.expirationTime;
 
-    
-
-    
-
-    
 //     res.render("user/otp-verification");})
 //   };
-
-  
-
-  
 
 const verifyOtp = async (req, res) => {
   const userData = req.session.userdata;
 
   const storedOtp = req.session.otp;
-  
-  const enteredOtp = req.body.otp;
 
+  const enteredOtp = req.body.otp;
 
   if (storedOtp === enteredOtp) {
     const result = await User.create(userData);
     if (result) {
       delete req.session.userdata;
-      req.flash("message","OTP verified.You can login now");
-      res.redirect("/login")
+      req.flash("message", "OTP verified.You can login now");
+      res.redirect("/login");
     }
   } else {
-    
-      res.render("user/otp-verification",{message:"Invalid OTP"})
+    res.render("user/otp-verification", { message: "Invalid OTP" });
   }
 };
 
-const loadForgotPass = async(req,res)=>{
-  const message=req.flash("message")
-  res.render("user/forgot-pass",{message:message});
+const loadForgotPass = async (req, res) => {
+  const message = req.flash("message");
+  res.render("user/forgot-pass", { message: message });
+};
 
-
-}
-
-const forgotPassword=async(req,res)=>{
-
+const forgotPassword = async (req, res) => {
   const email = req.body.email;
 
   const check = await User.findOne({ email: email });
-              
-              if (check) {
-                req.session.email=email;
 
-                otpHelper.otpGeneration(email).then((response)=>{
-                  req.session.otp=response.otp;
-    req.session.expirationTime=response.expirationTime;
+  if (check) {
+    req.session.email = email;
 
-    
+    otpHelper.otpGeneration(email).then((response) => {
+      req.session.otp = response.otp;
+      req.session.expirationTime = response.expirationTime;
 
-    
+      res.render("user/otp-page");
+    });
+  } else {
+    req.flash("message", "Email not found");
 
-    
-    
-                  res.render("user/otp-page");
-
-    
-                })
-                
-                
-                 
-              
-                
-
-                
-    }
-    else{
-
-      req.flash("message","Email not found");
-        
-        res.redirect("/forgotPassword")
-    }}
-
-  
+    res.redirect("/forgotPassword");
+  }
+};
 
 // const sendOtp = async (req, res) => {
- 
 
 //     const email =req.session.email;
-   
-  
+
 //     otpHelper.otpGeneration(email).then((response)=>{
 //       req.session.otp=response.otp;
 //       req.session.expirationTime=response.expirationTime;
-  
-      
-  
-      
-  
-      
+
 //       res.render("user/otp-page");})
-    
+
 //   };
 
-const otpVerification =async(req,res)=>{
-  
-
+const otpVerification = async (req, res) => {
   const storedOtp = req.session.otp;
-  
+
   const enteredOtp = req.body.otp;
 
-
   if (storedOtp === enteredOtp) {
-    
-    
-      // delete req.session.email;
-      
-      res.render("user/new-password")
-    
+    // delete req.session.email;
+
+    res.render("user/new-password");
   } else {
-    
-      res.render("user/otp-page",{message:"Invalid OTP"})
+    res.render("user/otp-page", { message: "Invalid OTP" });
   }
+};
 
-}
-
-const confirmPassword = async(req,res)=>{
-
+const confirmPassword = async (req, res) => {
   const email = req.session.email;
   const password = req.body.password1;
-  passHelper.setNewPassword(email,password).then((response)=>{
-
+  passHelper.setNewPassword(email, password).then((response) => {
     delete req.session.email;
 
-    req.flash("message","Password reset successfully");
+    req.flash("message", "Password reset successfully");
 
-
-    res.redirect("/login")
-
-  })
-
-}
-
+    res.redirect("/login");
+  });
+};
 
 const loaduserhome = async (req, res) => {
-  const user=req.body;
-   userHelper.loginHelper(user).then((response)=>{
-    
-    if(response.logId){
-      
-      
-        req.session.user=response.data;
+  const user = req.body;
+  userHelper.loginHelper(user).then((response) => {
+    if (response.logId) {
+      req.session.user = response.data;
       res.redirect("/");
-
-      
+    } else {
+      req.flash("message", response.errorMessage);
+      res.redirect("/login");
     }
-    else{
-      req.flash("message",response.errorMessage);
-      res.redirect("/login")
-    }
-  })
+  });
   // try {
   //   const { email, password } = req.body;
 
@@ -321,336 +252,267 @@ const loaduserhome = async (req, res) => {
   // }
 };
 
-const viewProduct = async(req,res)=>{
+const viewProduct = async (req, res) => {
   const id = req.params.id;
-  
-  
-    if(req.session.user){
-      const userId= req.session.user._id;
 
-      const cartStatus = await cartHelper.checkCart(id,userId);
-      const wishListStatus = await whishlistHelper.checkWishlist(id,userId);
+  if (req.session.user) {
+    const userId = req.session.user._id;
 
-      userHelper.getProductDetails(id).then((response)=>{
+    const cartStatus = await cartHelper.checkCart(id, userId);
+    const wishListStatus = await whishlistHelper.checkWishlist(id, userId);
 
-        
+    userHelper.getProductDetails(id).then((response) => {
+      response.offerPrice = Math.round(
+        response.product_price -
+          (response.product_price * response.product_discount) / 100
+      );
 
-          response.offerPrice=Math.round(response.product_price-(response.product_price*response.product_discount)/100);
+      if (cartStatus) {
+        response.isCart = cartStatus;
+      }
+      if (wishListStatus) {
+        response.isWishlist = wishListStatus;
+      }
 
-        
-        if(cartStatus){
-       
-          response.isCart = cartStatus;
-        
-        }
-        if(wishListStatus){
-          
-          response.isWishlist = wishListStatus;
-        
-        }
-        
+      res.render("user/productView", { product: response });
+    });
+  } else {
+    res.redirect("/login");
+  }
 
-      
-
-
-    res.render("user/productView",{product:response});})
-    }
-    else{
-      
-      res.redirect("/login")
-    }
-  
   // const products = await productModel.findById(id)
   // console.log(products);
   // res.render("user/productView",{product:products});
+};
 
-}
-
-
- const userCart = async (req,res)=>{
+const userCart = async (req, res) => {
   const user = req.session.user._id;
-  cartHelper.getAllCartItems(user).then(async(response)=>{
+  cartHelper.getAllCartItems(user).then(async (response) => {
+    console.log(response)
+    for (const products of response) {
+      const size=products.size;
+      if(products.quantity==products.product.product_quantity[size].quantity){
+        products.product.sizeLimit=true;
+      }
+      products.product.offerPrice = Math.round(
+        products.product.product_price -
+          (products.product.product_price * products.product.product_discount) /
+            100
+      );
+    }
+    console.log(response)
+
+    let totalandSubTotal = await cartHelper.totalSubtotal(user, response);
+
     
-    for(const products of response){
-
-      products.product.offerPrice=Math.round(products.product.product_price-(products.product.product_price*products.product.product_discount)/100);}
-
-  let totalandSubTotal = await cartHelper.totalSubtotal(user, response)  
 
     
-    res.render("user/cart-page",{products:response,totalAmount:totalandSubTotal});
-  })
 
-  
+    res.render("user/cart-page", {
+      products: response,
+      totalAmount: totalandSubTotal,
+    });
+  });
+};
 
- }
-
- const 
- addToCart = async(req,res)=>{
+const addToCart = async (req, res) => {
   const productId = req.params.id;
   const size = req.params.size;
   const userId = req.session.user._id;
-  
 
-  cartHelper.addProductToCart(productId,userId,size).then((response)=>{
+  cartHelper.addProductToCart(productId, userId, size).then((response) => {
+    res.json({ status: true });
+  });
+};
 
-    
-    res.json({status:true})
-
-
-  }) }
-
-  const updateQuantity = async(req,res)=>{
-    const productId = req.query.productId;
-    const quantity = parseInt(req.query.quantity);
-    const userId = req.session.user._id;
-
-    cartHelper.quantityUpdation(productId,userId,quantity).then((response)=>{
-
-      res.json({status:true})
-
-    }).catch((error)=>{
-      console.log(error)
-    })
-
-  }
-
-  const removeFromCart = async (req,res)=>{
-
-  const productId= req.params.id;
+const updateQuantity = async (req, res) => {
+  const productId = req.query.productId;
+  const size = req.query.size;
+  const quantity = parseInt(req.query.quantity);
   const userId = req.session.user._id;
-  const result = await cartHelper.removeItem(userId,productId);
 
-if(result){
-  res.json({status:true})
-}
-else{
-  res.json({status:false})
-}
+  cartHelper
+    .quantityUpdation(productId, userId, quantity,size)
+    .then((response) => {
+      
+      if(response.sizeExceed){
+        console.log("jhdsbvwsaijcaokcaockajccls")
+        res.json({ status: false });
+      }
+      else{
+        res.json({ status: true });
 
-  }
-
-
-  const userWhishlist = async(req,res)=>{
-    const user = req.session.user;
-
-    whishlistHelper.getAllWhishlistItems(user._id).then((response)=>{
-      for(const products of response){
-
-        products.product.offerPrice=Math.round(products.product.product_price-(products.product.product_price*products.product.product_discount)/100);}
-
-     
-
-
-      res.render("user/wishlist-page",{products:response});
+      }
+      
     })
+    .catch((error) => {
+      console.log(error);
+    });
+};
 
+const removeFromCart = async (req, res) => {
+  const productId = req.params.id;
+  const userId = req.session.user._id;
+  const result = await cartHelper.removeItem(userId, productId);
+
+  if (result) {
+    res.json({ status: true });
+  } else {
+    res.json({ status: false });
   }
+};
 
-  const addToWishlist = async(req,res)=>{
-    const productId = req.params.id;
-    const userId = req.session.user._id;
-    
-  
-    whishlistHelper.addProductToWishlist(productId,userId).then((response)=>{
-  
-      
-      res.json({status:true})
-  
-  
-    }) }
+const userWhishlist = async (req, res) => {
+  const user = req.session.user;
 
-    const removeFromWishlist = async (req,res)=>{
-
-      const productId= req.params.id;
-      const userId = req.session.user._id;
-      const result = await whishlistHelper.removeItem(userId,productId);
-    
-    if(result){
-      res.json({status:true})
+  whishlistHelper.getAllWhishlistItems(user._id).then((response) => {
+    for (const products of response) {
+      products.product.offerPrice = Math.round(
+        products.product.product_price -
+          (products.product.product_price * products.product.product_discount) /
+            100
+      );
     }
-    else{
-      res.json({status:false})
-    }
-    
+
+    res.render("user/wishlist-page", { products: response });
+  });
+};
+
+const addToWishlist = async (req, res) => {
+  const productId = req.params.id;
+  const userId = req.session.user._id;
+
+  whishlistHelper.addProductToWishlist(productId, userId).then((response) => {
+    res.json({ status: true });
+  });
+};
+
+const removeFromWishlist = async (req, res) => {
+  const productId = req.params.id;
+  const userId = req.session.user._id;
+  const result = await whishlistHelper.removeItem(userId, productId);
+
+  if (result) {
+    res.json({ status: true });
+  } else {
+    res.json({ status: false });
+  }
+};
+
+const loadUserProfile = async (req, res) => {
+  const userId = req.session.user._id;
+
+  userHelper.getUserDetails(userId).then(async (response) => {
+    const orderData = await orderHelper.getOrderDetails(userId);
+
+    for (const order of orderData) {
+      order.formattedDate = moment(order.orderedOn).format("MMM Do, YYYY");
+
+      let quantity = 0;
+      for (const product of order.products) {
+        quantity += Number(product.quantity);
       }
-
-    const loadUserProfile = async(req,res)=>{
-      const userId = req.session.user._id;
-
-      userHelper.getUserDetails(userId).then(async(response)=>{
-
-        const orderData= await orderHelper.getOrderDetails(userId);
-        
-        for(const order of orderData){
-          order.formattedDate = moment(order.orderedOn).format("MMM Do, YYYY");
-          
-          let quantity = 0;
-          for(const product of order.products){
-            quantity+= Number(product.quantity);
-          }
-          order.quantity = quantity;
-          
-
-       
-
-        }
-        
-
-
-
-        
-
-        res.render("user/account",{userData:response,orderData});
-
-      })
-
-      
-
-      
-
+      order.quantity = quantity;
     }
 
-    const addAddress = async(req,res)=>{
-      const userId=req.session.user._id;
-      const body = req.body;
+    res.render("user/account", { userData: response, orderData });
+  });
+};
 
-      const add = await userHelper.addUserAddress(userId,body);
-      
+const addAddress = async (req, res) => {
+  const userId = req.session.user._id;
+  const body = req.body;
 
-      if(add){
-        res.json({status:true})
-      }
-        
+  const add = await userHelper.addUserAddress(userId, body);
 
-       
+  if (add) {
+    res.json({ status: true });
+  }
+};
 
-      
+const deleteAddress = async (req, res) => {
+  const addressId = req.params.id;
+  const userId = req.session.user._id;
 
-
-
-    }
-
-    const deleteAddress = async(req,res)=>{
-      const addressId = req.params.id;
-      const userId= req.session.user._id;
-      
-
-
-      userHelper.addressDeletion(addressId,userId).then((response)=>{
-
-        res.json({status:true})
-
-      })
-
-    }
-
+  userHelper.addressDeletion(addressId, userId).then((response) => {
+    res.json({ status: true });
+  });
+};
 
 const loadEditAddress = async (req, res) => {
-      const addressId = req.query.addressId;
-      const userId= req.session.user._id;
-     userHelper.editAddress(userId,addressId).then((response)=>{
-      res.render("user/edit-address", { userData:response });
-
-     })
-      
-      
-    };
-
- const editAddress = async(req,res)  =>{
   const addressId = req.query.addressId;
-      const userId= req.session.user._id;
-      const body= req.body;
-      userHelper.postEditAddress(userId,addressId,body).then((response)=>{
-        res.redirect("/profileView");
-  
-       })
- } 
-
- const changePassword = async(req,res)=>{
-
-  const userId= req.session.user._id;
-  const body = req.body;
-
-  passHelper.confirmNewPassword(userId,body).then(async(response)=>{
-
-    res.redirect("/profileView")
-
-  })
-
-
- }
-
- const loadCheckout = async (req,res)=>{
   const userId = req.session.user._id;
+  userHelper.editAddress(userId, addressId).then((response) => {
+    res.render("user/edit-address", { userData: response });
+  });
+};
 
-  const userData =  await userHelper.getAllAddress(userId);
-  const cartData =  await cartHelper.getAllCartItems(userId);
-  for(const products of cartData){
-
-    products.product.subTotal=products.quantity*Math.round(products.product.product_price-(products.product.product_price*products.product.product_discount)/100);}
-    let totalandSubTotal = await cartHelper.totalSubtotal(userId, cartData)
-
-
-  res.render("user/checkout-page",{userData,cartItems:cartData,totalandSubTotal})
-
-
-
-
- }
-
- const proceedPayment =async(req,res)=>{
-
+const editAddress = async (req, res) => {
+  const addressId = req.query.addressId;
   const userId = req.session.user._id;
   const body = req.body;
-  const cartItems = await cartModel.findOne({user:userId});
-  
+  userHelper.postEditAddress(userId, addressId, body).then((response) => {
+    res.redirect("/profileView");
+  });
+};
 
-  const result = await orderHelper.placeOrder(userId,body,cartItems);
+const changePassword = async (req, res) => {
+  const userId = req.session.user._id;
+  const body = req.body;
 
-if(result){
+  passHelper.confirmNewPassword(userId, body).then(async (response) => {
+    res.redirect("/profileView");
+  });
+};
 
+const loadCheckout = async (req, res) => {
+  const userId = req.session.user._id;
 
-
-  const cart = await cartHelper.clearAllCartItems(userId);
-  if(cart){
-
-    res.json({url:"/orderSuccess"});
-
-
+  const userData = await userHelper.getAllAddress(userId);
+  const cartData = await cartHelper.getAllCartItems(userId);
+  for (const products of cartData) {
+    products.product.subTotal =
+      products.quantity *
+      Math.round(
+        products.product.product_price -
+          (products.product.product_price * products.product.product_discount) /
+            100
+      );
   }
+  let totalandSubTotal = await cartHelper.totalSubtotal(userId, cartData);
 
+  res.render("user/checkout-page", {
+    userData,
+    cartItems: cartData,
+    totalandSubTotal,
+  });
+};
 
+const proceedPayment = async (req, res) => {
+  const userId = req.session.user._id;
+  const body = req.body;
+  const cartItems = await cartModel.findOne({ user: userId });
 
-  
+  const result = await orderHelper.placeOrder(userId, body, cartItems);
 
-}
+  if (result) {
+    const cart = await cartHelper.clearAllCartItems(userId);
+    if (cart) {
+      res.json({ url: "/orderSuccess" });
+    }
+  }
+};
 
-  
+const orderSuccess = (req, res) => {
+  res.render("user/orderSuccess");
+};
 
- }
-
- 
-
- const orderSuccess = (req,res)=>{
-  res.render("user/orderSuccess")
- }
-
-
- const cancelOrder= async(req,res)=>{
+const cancelOrder = async (req, res) => {
   const orderId = req.params.id;
-  orderHelper.orderCancellation(orderId).then((response)=>{
-
-    res.json(response)
-
-  })
-
- }
-
-
-    
-
-
+  orderHelper.orderCancellation(orderId).then((response) => {
+    res.json(response);
+  });
+};
 
 module.exports = {
   loadlogin,
@@ -662,12 +524,14 @@ module.exports = {
   userlogout,
   viewProduct,
   userCart,
-  addToCart,userWhishlist,
+  addToCart,
+  userWhishlist,
   addToWishlist,
   updateQuantity,
   removeFromCart,
   loadUserProfile,
-  addAddress,deleteAddress,
+  addAddress,
+  deleteAddress,
   loadEditAddress,
   editAddress,
   loadForgotPass,
@@ -677,6 +541,7 @@ module.exports = {
   removeFromWishlist,
   loadCheckout,
   proceedPayment,
-  orderSuccess,changePassword,
-  cancelOrder
+  orderSuccess,
+  changePassword,
+  cancelOrder,
 };

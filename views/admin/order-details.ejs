@@ -15,15 +15,15 @@
       
     
     <div class="card">
-        <% for( let i = 0; i < orderDetails.length; i++ ) { %>
+        
         <br>
         <header class="card-header">
             <div class="row align-items-center">
                 <div class="col-lg-6 col-md-6 mb-lg-0 mb-15">
                     <span>
-                        <i class="material-icons md-calendar_today"></i> <b><%= orderDetails[i].formattedDate %></b>
+                        <i class="material-icons md-calendar_today"></i> <b><%= orderDetails.formattedDate %></b>
                     </span> <br>
-                    <small class="text-muted" style="font-size: medium; font-weight: 400;">Order ID: <%= orderDetails[i].orderId %> </small>
+                    <small class="text-muted" style="font-size: medium; font-weight: 400;">Order ID: <%= orderDetails.orderId %> </small>
                 </div>
               
                 
@@ -45,12 +45,12 @@
                         <div class="text">
                             <h6 class="mb-1">Customer</h6>
                             <p class="mb-1">
-                                <%= orderDetails[i].address.name %> 
+                                <%= orderDetails[0].address.name %> 
                                <template class="__cf_email__"
                                     data-cfemail="e2838e879aa2879a838f928e87cc818d8f">[email&#160;protected]</template>
                                 <br> 
                             </p>
-                            <a href="/admin/userProfile/<%= orderDetails[i].user %>">View profile</a>
+                            <a href="/admin/userProfile/<%= orderDetails[0].user %>">View profile</a>
                         </div>
                     </article>
                 </div> 
@@ -62,12 +62,12 @@
                         <div class="text">
                             <h6 class="mb-1">Order info</h6>
                             <p class="mb-1">
-                                Shipping: Fargo express <br> Pay method: <%= orderDetails[i].paymentMethod %> <br> Status: <%= orderDetails[i].status %>
+                                Shipping: Fargo express <br> Pay method: <%= orderDetails[0].paymentMethod %> <br> Status: <%= orderDetails[0].status %>
                             </p>
                             
                         </div>
                     </article>
-                </div> 
+                </div>   
                 <div class="col-md-4" style=" text-align: center;">
                     <article class="icontext align-items-start">
                         <span class="icon icon-sm rounded-circle bg-primary-light">
@@ -76,10 +76,13 @@
                         <div class="text">
                             <h6 class="mb-1">Deliver to</h6>
                             <p class="mb-1">
-                                City: <%= orderDetails[i].address.city %>  
+                                House: <%= orderDetails[0].address.house %>  
                             </p>
                             <p class="mb-1">
-                                Pincode : <%= orderDetails[i].address.pincode %>
+                                City: <%= orderDetails[0].address.city %>  
+                            </p>
+                            <p class="mb-1">
+                                Pincode : <%= orderDetails[0].address.pincode %>
                             </p>
                             
                         </div>
@@ -103,6 +106,7 @@
 
 <tbody>
     <% for( let i = 0; i < orderDetails.length; i++ ) { %>
+    
         <tr style="text-align: center;">
             <td>
                 <a class="itemside" href="#">
@@ -112,32 +116,39 @@
                     <div class="info"><%= orderDetails[i].productDetails[0].product_name %></div>
                 </a>
             </td>
-            <td><%= orderDetails[i].productDetails[0].product_price %></td>
-            <td><%= orderDetails[i].products.quantity %></td>
-            <td class="text-end"><%= orderDetails[i].totalAmount %></td>
+            <td>$<%= orderDetails[i].productDetails[0].offerPrice %></td>
+            <td><%= orderDetails[i].products.quantity %> </td>
+            <td>
+                <% var totalPrice = orderDetails[i].productDetails[0].offerPrice * orderDetails[i].products.quantity; %>
+                $<%= totalPrice %>
+            </td>
+            
         </tr>
+        <% } %>
         <tr style="text-align: center;">
             <td colspan="4">
                 <article class="float-end">
                     <dl class="dlist">
                         <dt>Grand total:</dt>
-                        <dd><b class="h5"><%= orderDetails[i].totalAmount %></b></dd>
+                        <dd><b class="h5">$<%= orderDetails[0].totalAmount %></b></dd>
                     </dl>
                     <dl class="dlist">
                         <dt class="text-muted">Status:</dt>
                         <dd>
-                            <span class="badge rounded-pill alert-success text-success"><%= orderDetails[i].status %></span>
+                            <span class="badge rounded-pill alert-success text-success"><%= orderDetails[0].status %></span>
                         </dd>
                     </dl>
                 </article>
             </td>
         </tr>
-    <% } %>
+        
+    
 </tbody>
 
 
 
                         </table>
+                        
 
                     </div> 
                 </div> 
@@ -145,9 +156,13 @@
 
             </div>
             
+
+           
+            
+            
         
         </div> 
-        <% } %>
+        
     </div> 
 </section> 
 <%- include("../partials/admin/admin-footer") %>

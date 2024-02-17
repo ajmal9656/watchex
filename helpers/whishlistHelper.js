@@ -78,10 +78,25 @@ const checkWishlist = async(productId,userId)=>{
 
   })
 }
+const userWishlistCount = async (userId) => {
+  return new Promise(async (resolve, reject) => {
+    const result = await whishlistModel.aggregate([
+      {
+        $project: {
+          numberOfProducts: { $size: "$products" }
+        }
+      }
+    ])
+    
+    resolve(result[0].numberOfProducts)
+    
+  });
+};
 
 module.exports={
     getAllWhishlistItems,
     addProductToWishlist,
     removeItem,
-    checkWishlist
+    checkWishlist,
+    userWishlistCount
 }
