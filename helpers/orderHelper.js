@@ -120,7 +120,7 @@ const orderCancellation=async(orderId)=>{
         const result = await orderModel.findOneAndUpdate({_id:orderId},{$set:{status:"cancelled"}});
         resolve(result);
 
-    })
+    })  
 }
 
 
