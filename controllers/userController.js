@@ -531,6 +531,41 @@ const cancelOrder = async (req, res) => {
   });
 };
 
+const orderDetails = async(req,res) =>{
+
+  const orderId = req.params.id;
+
+  orderHelper.getSpecificOrder(orderId).then((response) => {
+
+    for(const order of response){
+      console.log(order);
+      for(const products of order.orderedProduct){
+        console.log("heloooooooooooo");
+        
+        products.offerPrice =
+      
+      Math.round(
+        products.product_price -
+          (products.product_price * products.product_discount) /
+            100
+      );
+      console.log(products);
+      }
+      
+      
+      
+    }    
+
+    res.render("user/each-orders",{productDetails:response})
+    
+  });
+};
+
+
+
+
+
+
 module.exports = {
   loadlogin,
   loadregister,
@@ -561,4 +596,5 @@ module.exports = {
   orderSuccess,
   changePassword,
   cancelOrder,
+  orderDetails
 };

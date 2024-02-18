@@ -42,6 +42,7 @@ router.get('/checkout',userMiddleware.isCheck,userController.loadCheckout);
 router.post('/proceedPayment',userMiddleware.isCheck,userController.proceedPayment);
 router.get('/orderSuccess',userMiddleware.isCheck,userController.orderSuccess);
 router.patch('/cancelOrder/:id',userController.cancelOrder);
+router.get('/orderDetails/:id',userMiddleware.isCheck,userController.orderDetails);
 
 
 

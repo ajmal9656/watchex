@@ -123,6 +123,25 @@ const orderCancellation=async(orderId)=>{
     })  
 }
 
+const getSpecificOrder=async(orderId)=>{
+    return new Promise(async(resolve,reject)=>{
+        const result = await orderModel.aggregate([{$match:{_id:new ObjectId(orderId)}},{$unwind:"$products"},
+    {$lookup:{from:"products",
+              localField:"products.product",
+              foreignField:"_id",
+              as:"orderedProduct"}}])
+
+
+              console.log("skvsjncsjkncskj")
+        
+
+              
+              resolve(result)
+    })
+    
+
+}
+
 
 module.exports={
     placeOrder,
@@ -130,5 +149,6 @@ module.exports={
     getAllOrders,
     orderStatusChange,
     getOrders,
-    orderCancellation
+    orderCancellation,
+    getSpecificOrder
 }
