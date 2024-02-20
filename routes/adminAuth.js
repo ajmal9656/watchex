@@ -34,4 +34,6 @@ router.get("/allOrders",adminMiddleware.isLogout,adminController.loadOrders);
 router.post("/orderStatus",adminController.changeOrderStatus);
 router.get("/orderDetails/:id",adminController.loadOrderDetails);
 
+router.post("/orderStatusChange",adminController.changeSpecificOrderStatus);
+
 module.exports=router;

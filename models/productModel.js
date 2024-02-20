@@ -51,10 +51,7 @@ const productSchema=new mongoose.Schema({
         type:Boolean,
         default:true
     },
-    productCart_status:{
-        type:Boolean,
-        default:false
-    },
+   
     total_quantity:{
         type:Number,
         default:0

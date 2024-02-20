@@ -132,7 +132,6 @@ const getSpecificOrder=async(orderId)=>{
               as:"orderedProduct"}}])
 
 
-              console.log("skvsjncsjkncskj")
         
 
               
@@ -141,6 +140,34 @@ const getSpecificOrder=async(orderId)=>{
     
 
 }
+const eachOrderCancellation = async (orderId, productId) => {
+    try {
+        const result = await orderModel.findOneAndUpdate(
+            { _id: orderId, "products.product": productId }, // Find the order by its ID and ensure the products array contains the specified product ID
+            { $set: { "products.$.orderStatus": "cancelled" } }, // Update the orderStatus of the matched product
+            { new: true } // Return the updated document after the update operation
+        );
+        return result;
+    } catch (error) {
+        throw error;
+    }
+};
+
+const specificOrderStatusChange=async(orderId,productId,changeStatus)=>{
+    return new Promise(async(resolve,reject)=>{
+        const result = await orderModel.findOneAndUpdate(
+            { _id: orderId, "products.product": productId }, // Find the order by its ID and ensure the products array contains the specified product ID
+            { $set: { "products.$.orderStatus": changeStatus } }, // Update the orderStatus of the matched product
+            { new: true } // Return the updated document after the update operation
+        );
+        console.log(result)
+        resolve(result);
+
+
+
+    })
+}
+
 
 
 module.exports={
@@ -150,5 +177,7 @@ module.exports={
     orderStatusChange,
     getOrders,
     orderCancellation,
-    getSpecificOrder
+    getSpecificOrder,
+    eachOrderCancellation,
+    specificOrderStatusChange
 }

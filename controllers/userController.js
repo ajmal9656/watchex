@@ -92,7 +92,14 @@ const insertUser = async (req, res) => {
     if (response.registeredData) {
       req.session.userdata = response.registeredData;
 
-      res.render("user/otp-verification");
+      otpHelper.otpGeneration(response.registeredData.email).then((response) => {
+        req.session.otp = response.otp;
+        req.session.expirationTime = response.expirationTime;
+  
+        res.render("user/otp-verification");
+      });
+
+      
     } else {
       req.flash("message", response.errorMessage);
       res.redirect("/register");
@@ -367,6 +374,8 @@ const userWhishlist = async (req, res) => {
 
   whishlistHelper.getAllWhishlistItems(user._id).then((response) => {
     for (const products of response) {
+
+      
       products.product.offerPrice = Math.round(
         products.product.product_price -
           (products.product.product_price * products.product.product_discount) /
@@ -538,9 +547,9 @@ const orderDetails = async(req,res) =>{
   orderHelper.getSpecificOrder(orderId).then((response) => {
 
     for(const order of response){
-      console.log(order);
+     
       for(const products of order.orderedProduct){
-        console.log("heloooooooooooo");
+        
         
         products.offerPrice =
       
@@ -549,7 +558,7 @@ const orderDetails = async(req,res) =>{
           (products.product_price * products.product_discount) /
             100
       );
-      console.log(products);
+      
       }
       
       
@@ -561,6 +570,14 @@ const orderDetails = async(req,res) =>{
   });
 };
 
+
+const cancelOrders = async (req, res) => {
+  const orderId = req.params.orderId;
+  const productId = req.params.productId;
+  orderHelper.eachOrderCancellation(orderId,productId).then((response) => {
+    res.json(response);
+  });
+};
 
 
 
@@ -596,5 +613,6 @@ module.exports = {
   orderSuccess,
   changePassword,
   cancelOrder,
-  orderDetails
+  orderDetails,
+  cancelOrders
 };

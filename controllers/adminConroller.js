@@ -124,7 +124,7 @@ const softDeleteCategory = async (req, res) => {
 const loadEditcategory = async (req, res) => {
   const id = req.query.catId;
   const catData = await categoryModel.findOne({ _id: id });
-  console.log(catData);
+  
   res.render("admin/editCategory", { category: catData });
 };
 
@@ -132,7 +132,7 @@ const editCategory = async (req, res) => {
   const id = req.params.id;
 
   const check = await categoryModel.findOne({ name: req.body.catName });
-  console.log(check);
+  
   const checks = await categoryModel.findOne({ _id: id });
 
   if (!check) {
@@ -183,7 +183,7 @@ const addProduct = async (req, res) => {
 
 const softDeleteProduct = (req, res) => {
   const id = req.params.id;
-  console.log(id);
+ 
   productListHelper
     .deleteProduct(id)
     .then((response) => {
@@ -306,8 +306,13 @@ const loadOrderDetails = async(req,res)=>{
 
   orderHelper.getOrders(orderId).then((response)=>{
     response.formattedDate = moment(response.orderedOn).format("MMM Do, YYYY");
+    
+
 
     for(const order of response){
+      
+
+
 
       
 
@@ -331,6 +336,21 @@ const loadOrderDetails = async(req,res)=>{
 
 
 }
+const changeSpecificOrderStatus = async (req,res)=>{
+  const orderId = req.body.orderId;
+  const productId = req.body.productId;
+
+  const changeStatus = req.body.status;
+  console.log(orderId)
+  console.log(productId)
+  console.log(changeStatus)
+
+  await orderHelper.specificOrderStatusChange(orderId,productId,changeStatus).then((result)=>{
+    
+    res.json({status:true})
+
+  })
+}
 
 module.exports = {
   userList,
@@ -351,5 +371,6 @@ module.exports = {
   logoutAdmin,
   loadOrders,
   changeOrderStatus,
-  loadOrderDetails
+  loadOrderDetails,
+  changeSpecificOrderStatus
 };
