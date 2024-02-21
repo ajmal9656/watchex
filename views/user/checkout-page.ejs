@@ -729,7 +729,9 @@
                                         </div>
                                         <% }) %>
                                     </div>
-                                </div>
+                                
+                                
+                            </div>
                     
                                 <!-- Order Details Section (Right Column) -->
                                 <div class="col-md-6">
@@ -794,6 +796,91 @@
                             </div>
                         </form>
                     </div>
+                    <form id="formId" action="/addressPost" method="post">
+
+                        <div class="ship_detail">
+                            <div class="form-group">
+                                <div class="chek-form">
+                                    <div class="custome-checkbox">
+                                        <!-- <input class="form-check-input" type="checkbox" name="checkbox" id="differentaddress"> -->
+                                        <label data-bs-toggle="collapse" data-target="#collapseAddress"
+                                            href="#collapseAddress" aria-controls="collapseAddress"
+                                            for="differentaddress"><button class="btn btn-primary">Create
+                                                New Address</button></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="collapseAddress" class="different_address collapse in">
+                                <div class="form-group">
+                                    <label>Full Name <span class="required">*</span></label>
+                                                <input required="" class="form-control square" name="name"
+                                                    type="text">
+                                </div>
+                                <p><span id="error1" style="display: none;"
+                                        class="mt-15 err text-danger"></span></p>
+
+                                <div class="form-group">
+                                    <label>House<span class="required">*</span></label>
+                                                <input required="" class="form-control square" name="house"
+                                                    type="text">
+                                </div>
+                                <p><span id="error2" style="display: none;"
+                                        class="mt-15 err text-danger"></span></p>
+
+                                <div class="form-group">
+                                    <label>State<span class="required">*</span></label>
+                                                <input required="" class="form-control square" name="state"
+                                                    type="text">
+                                </div>
+                                <p><span id="error3" style="display: none;"
+                                        class="mt-15 err text-danger"></span></p>
+
+                                <div class="form-group">
+                                    <label>Country<span class="required">*</span></label>
+                                                <input required="" class="form-control square"
+                                                    name="country" type="text">
+                                </div>
+                                <p><span id="error4" style="display: none;"
+                                        class="mt-15 err text-danger"></span></p>
+
+                                <div class="form-group">
+                                    <label>City<span class="required">*</span></label>
+                                                <input required="" class="form-control square" name="city"
+                                                    type="text">
+                                </div>
+                                <p><span id="error5" style="display: none;"
+                                        class="mt-15 err text-danger"></span></p>
+
+                                <div class="form-group">
+                                    <label>Pin Code<span class="required">*</span></label>
+                                    <input required="" class="form-control square"
+                                        name="pincode" type="text">
+                                </div>
+                                <p><span id="error6" style="display: none;"
+                                        class="mt-15 err text-danger"></span></p>
+
+                                <div class="form-group col-md-4">
+                                    <label>Address Type<span class="required">*</span></label>
+                                                <select name="addressType" id="address" class="form-select">
+                                                    <option value="0">
+                                                        Billing Address
+                                                    </option>
+                                                    <option value="1">
+                                                        Shipping Address
+                                                    </option>
+                                                </select>
+                                </div>
+                                <p><span id="error7" style="display: none;"
+                                        class="mt-15 err text-danger"></span></p>
+                                
+                                <div>
+                                    <button type="submit" class="btn btn-fill-out submit"
+                                                    name="submit" value="Submit">Save</button>
+                                </div><br>
+                            </div>
+                        </div>
+
+                    </form>
                     
                 </div>
             </div>
@@ -947,6 +1034,38 @@
     <!-- Template  JS -->
     <script src="./public/user/assets/js/main.js?v=3.4"></script>
     <script src="./public/user/assets/js/shop.js?v=3.4"></script>
+    <script>
+        $(document).ready(function(){
+            $('#formId').submit(function(event){
+                // Prevent default form submission
+                event.preventDefault();
+                
+                // Serialize the form data
+                var formData = $(this).serialize();
+                
+                // Send AJAX request
+                $.ajax({
+                    url: "/addressPost",
+                    method: "POST",
+                    data: formData,
+                    success: function(response){
+                        if(response.status){
+                window.location.reload();
+  
+              }
+              else{
+                window.location.reload();
+              }
+                    },
+                    error: function(xhr, status, error){
+                        // Handle error
+                        console.error(xhr.responseText);
+                    }
+                });
+            });
+            
+        });
+    </script>
     <script>
         $(document).ready(function () {
             $("#myForm").submit(function (e) {

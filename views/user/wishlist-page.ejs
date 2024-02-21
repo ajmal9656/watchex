@@ -729,7 +729,14 @@
                                         </td>
                                         
                                         <td class="text-right" data-title="Cart">
-                                            <button class="btn btn-sm"><i class="fi-rs-shopping-bag mr-5"></i>Add to cart</button>
+                                            <% if (products[i].isCart) { %>
+                                                
+                                                <button class="btn btn-sm"><i class="fi-rs-shopping-bag mr-5"></i>Contact us</button>
+                                            <% } else { %>
+                                                <button class="btn btn-sm"><i class="fi-rs-shopping-bag mr-5"></i>Add to cart</button>
+                                                
+                                            <% } %>
+                                            
                                         </td>
                                         <td>
                                         <a onclick="removeFromWishlist('<%= products[i].product._id %>')" class="text-muted"

@@ -1505,11 +1505,13 @@
                             </td>
                             <td class="text-center" data-title="Stock">
                               <div class="detail-qty border radius m-auto">
-                                <a href="#" class="qty-down"  onclick="incOrDecquantity('<%= products[i].product._id %>','-1','<%= products[i].size %>')"
+                                <% if (!products[i].product.sizelimit) { %>
+                                <a href="#" class="qty-down" id="quantityDec" onclick="incOrDecquantity('<%= products[i].product._id %>','-1','<%= products[i].size %>')"
                                   ><i class="fi-rs-angle-small-down"></i
                                 ></a>
+                                <% } %>
                                 <span class="qty-val"><%= products[i].quantity %></span>
-                                <% if (!products[i].product.sizeLimit) { %>
+                                <% if (!products[i].product.sizeexceed) { %>
                                   <a href="#" class="qty-up" id="quantityInc" onclick="incOrDecquantity('<%= products[i].product._id %>','1','<%= products[i].size %>')">
                                       <i class="fi-rs-angle-small-up"></i>
                                   </a>
@@ -2150,14 +2152,25 @@
           url:`/updateQuantity?productId=${productId}&quantity=${quantity}&size=${size}`,
           method:"patch",
           success: function (response){
-            if(response.status){
+            if(response){
+              if(response.sizeExceed){
               window.location.reload();
+              document.getElementById('quantityInc').style.display = "none";}
+
+              else if(response.sizeLimit){
+                window.location.reload();
+              document.getElementById('quantityDec').style.display = "none";
+
+
+              }
+              else{
+              window.location.reload();
+              
+            }
 
             }
-            else{
-              window.location.reload();
-              document.getElementById('quantityInc').style.display = "none";
-            }
+            
+            
           }
         })
       }

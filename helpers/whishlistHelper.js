@@ -80,7 +80,7 @@ const checkWishlist = async(productId,userId)=>{
 }
 const userWishlistCount = async (userId) => {
   return new Promise(async (resolve, reject) => {
-    const result = await whishlistModel.aggregate([
+    const result = await whishlistModel.aggregate([{$match:{user:new ObjectId(userId)}},
       {
         $project: {
           numberOfProducts: { $size: "$products" }
@@ -88,11 +88,15 @@ const userWishlistCount = async (userId) => {
       }
     ])
     
-    resolve(result[0].numberOfProducts)
+    if (result.length > 0) {
+      resolve(result[0].numberOfProducts) ;
+    } else {
+      resolve(0) ; // Return 0 if no products are found in the cart
+    }
     
   });
 };
-
+ 
 module.exports={
     getAllWhishlistItems,
     addProductToWishlist,

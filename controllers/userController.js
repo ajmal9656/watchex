@@ -92,12 +92,10 @@ const insertUser = async (req, res) => {
     if (response.registeredData) {
       req.session.userdata = response.registeredData;
 
-      otpHelper.otpGeneration(response.registeredData.email).then((response) => {
-        req.session.otp = response.otp;
-        req.session.expirationTime = response.expirationTime;
+      
   
-        res.render("user/otp-verification");
-      });
+        res.redirect("/otp-verification");
+      
 
       
     } else {
@@ -133,16 +131,16 @@ const insertUser = async (req, res) => {
   //   res.send(error.message);
   // }
 };
-// const generateOtp = async (req, res) => {
+const generateOtp = async (req, res) => {
 
-//   const email =req.session.userdata.email;
+  const email =req.session.userdata.email;
 
-//   otpHelper.otpGeneration(email).then((response)=>{
-//     req.session.otp=response.otp;
-//     req.session.expirationTime=response.expirationTime;
+  otpHelper.otpGeneration(email).then((response)=>{
+    req.session.otp=response.otp;
+    req.session.expirationTime=response.expirationTime;
 
-//     res.render("user/otp-verification");})
-//   };
+    res.render("user/otp-verification");})
+  };
 
 const verifyOtp = async (req, res) => {
   const userData = req.session.userdata;
@@ -162,6 +160,16 @@ const verifyOtp = async (req, res) => {
     res.render("user/otp-verification", { message: "Invalid OTP" });
   }
 };
+const resendOtp = async (req, res) => {
+
+  const email =req.session.userdata.email;
+
+  otpHelper.otpGeneration(email).then((response)=>{
+    req.session.otp=response.otp;
+    req.session.expirationTime=response.expirationTime;
+
+    res.json({status:true});})
+  };
 
 const loadForgotPass = async (req, res) => {
   const message = req.flash("message");
@@ -299,7 +307,10 @@ const userCart = async (req, res) => {
     for (const products of response) {
       const size=products.size;
       if(products.quantity==products.product.product_quantity[size].quantity){
-        products.product.sizeLimit=true;
+        products.product.sizeexceed=true;
+      }
+      if(products.quantity==1){
+        products.product.sizelimit=true;
       }
       products.product.offerPrice = Math.round(
         products.product.product_price -
@@ -344,7 +355,11 @@ const updateQuantity = async (req, res) => {
       
       if(response.sizeExceed){
         
-        res.json({ status: false });
+        res.json({ sizeExceed: true });
+      }
+      else if(response.sizeLimit){
+        res.json({ sizeLimit: true });
+
       }
       else{
         res.json({ status: true });
@@ -370,10 +385,19 @@ const removeFromCart = async (req, res) => {
 };
 
 const userWhishlist = async (req, res) => {
-  const user = req.session.user;
+  const userId = req.session.user._id;
 
-  whishlistHelper.getAllWhishlistItems(user._id).then((response) => {
+  whishlistHelper.getAllWhishlistItems(userId).then(async(response) => {
     for (const products of response) {
+      console.log(products)
+
+      const cartStatus = await cartHelper.checkCart(products.product._id,userId);
+      if (cartStatus) {
+        products.isCart = cartStatus;
+      } 
+      
+
+
 
       
       products.product.offerPrice = Math.round(
@@ -438,6 +462,19 @@ const addAddress = async (req, res) => {
     res.json({ status: true });
   }
 };
+
+const addAddressPost = async (req, res) => {
+  const userId = req.session.user._id;
+  const body = req.body;
+
+  const add = await userHelper.addUserAddress(userId, body);
+
+  if (add) {
+    res.json({ status: true });
+    
+  }
+};
+
 
 const deleteAddress = async (req, res) => {
   const addressId = req.params.id;
@@ -588,6 +625,8 @@ module.exports = {
   loadregister,
   insertUser,
   loadhome,
+  generateOtp,
+  resendOtp,
   verifyOtp,
   loaduserhome,
   userlogout,
@@ -614,5 +653,5 @@ module.exports = {
   changePassword,
   cancelOrder,
   orderDetails,
-  cancelOrders
+  cancelOrders,addAddressPost
 };

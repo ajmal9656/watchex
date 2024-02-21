@@ -107,14 +107,21 @@ const quantityUpdation = async (productId, userId, quantity,size) => {
 
     let newQuantity = product.quantity + parseInt(quantity);
 
-    if (newQuantity < 1) {
-      newQuantity = 1;
-    }
+    // if (newQuantity < 1) {
+    //   newQuantity = 1;
+    // }
     
     product.quantity = newQuantity;
     await cart.save();
 
     let sizes={};
+
+    if(product.quantity===1){
+      sizes.sizeLimit=true;
+      sizes.cart=cart;
+      resolve(sizes);
+
+    }
 
   if(product.quantity==sizeCount){
   
@@ -206,7 +213,7 @@ const userCartCount = async (userId) => {
         }
       }
     ])
-    console.log(result)
+    
     
     if (result.length > 0) {
       resolve(result[0].numberOfProducts) ;

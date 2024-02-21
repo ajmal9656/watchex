@@ -9,8 +9,10 @@ router.post('/login',userController.loaduserhome);
 router.get('/logout',userMiddleware.isLogout,userController.userlogout);
 router.get('/register',userMiddleware.isRegistered,userController.loadregister);
 router.post('/register',userController.insertUser);
-// router.get('/otp-verification',userController.generateOtp)
+router.get('/otp-verification',userController.generateOtp)
 router.post('/otp-verification',userMiddleware.otpExpiry,userController.verifyOtp);
+router.post('/resendOtp',userController.resendOtp);
+
 router.get('/forgotPassword',userController.loadForgotPass)
 router.post('/forgotPassword',userController.forgotPassword)
 // router.get('/otpEnter',userController.sendOtp)
@@ -35,6 +37,7 @@ router.put('/addAddress',userController.addAddress);
 router.get('/deleteAddress/:id',userMiddleware.isCheck,userController.deleteAddress);
 router.get('/editAddress',userMiddleware.isCheck,userController.loadEditAddress);
 router.post('/editAddress',userController.editAddress);
+router.post('/addressPost',userController.addAddressPost);
 
 router.post('/changepassword',userMiddleware.isCheck,userController.changePassword);
 
