@@ -184,30 +184,39 @@ const forgotPassword = async (req, res) => {
   if (check) {
     req.session.email = email;
 
-    otpHelper.otpGeneration(email).then((response) => {
-      req.session.otp = response.otp;
-      req.session.expirationTime = response.expirationTime;
+    
 
-      res.render("user/otp-page");
-    });
+      res.redirect("/otpEnter");
+   
   } else {
+
     req.flash("message", "Email not found");
 
     res.redirect("/forgotPassword");
   }
 };
 
-// const sendOtp = async (req, res) => {
+const sendOtp = async (req, res) => {
 
-//     const email =req.session.email;
+    const email =req.session.email;
 
-//     otpHelper.otpGeneration(email).then((response)=>{
-//       req.session.otp=response.otp;
-//       req.session.expirationTime=response.expirationTime;
+    otpHelper.otpGeneration(email).then((response)=>{
+      req.session.otp=response.otp;
+      req.session.expirationTime=response.expirationTime;
 
-//       res.render("user/otp-page");})
+      res.render("user/otp-page");})
 
-//   };
+  };
+  const resendOtpForgotPass = async (req, res) => {
+
+    const email =req.session.email;
+  
+    otpHelper.otpGeneration(email).then((response)=>{
+      req.session.otp=response.otp;
+      req.session.expirationTime=response.expirationTime;
+  
+      res.json({status:true});})
+    };
 
 const otpVerification = async (req, res) => {
   const storedOtp = req.session.otp;
@@ -626,6 +635,7 @@ module.exports = {
   insertUser,
   loadhome,
   generateOtp,
+  sendOtp,
   resendOtp,
   verifyOtp,
   loaduserhome,
@@ -653,5 +663,6 @@ module.exports = {
   changePassword,
   cancelOrder,
   orderDetails,
-  cancelOrders,addAddressPost
+  cancelOrders,addAddressPost,
+  resendOtpForgotPass
 };

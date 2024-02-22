@@ -13,11 +13,13 @@ router.get('/otp-verification',userController.generateOtp)
 router.post('/otp-verification',userMiddleware.otpExpiry,userController.verifyOtp);
 router.post('/resendOtp',userController.resendOtp);
 
+
 router.get('/forgotPassword',userController.loadForgotPass)
 router.post('/forgotPassword',userController.forgotPassword)
-// router.get('/otpEnter',userController.sendOtp)
+router.get('/otpEnter',userController.sendOtp)
 router.post('/otpEnter',userMiddleware.forgotOtpExpiry,userController.otpVerification);
 router.post('/newPassword',userController.confirmPassword)
+router.post('/resendOtpForgot',userController.resendOtpForgotPass);
 
 
 

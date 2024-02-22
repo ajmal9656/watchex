@@ -452,7 +452,7 @@
                                         <div class="heading_s1">
                                             <h3 class="mb-30">OTP Verification</h3>
                                         </div>
-                                        <span id="timer">1:00</span>
+                                        <span id="timer"></span>
                                         <% if (locals.message) { %>
                                             <div class="text-center text-success" style="display: block;"><%= message %></div>
                                           <% } %>
@@ -460,9 +460,29 @@
                                             <div class="form-group">
                                                 <input id="otp" type="password" name="otp" placeholder="Enter OTP">
                                             </div>
-                                            <div class="form-group">
-                                                <button type="submit" class="btn btn-fill-out btn-block hover-up" name="otpenter">Verify OTP</button>
-                                            </div>
+                                            <div class="form-group text-center">
+                                                <!-- Center align the buttons -->
+                                                <div
+                                                  id="buttonsContainer"
+                                                  style="display: flex; justify-content: center"
+                                                >
+                                                  <button
+                                                    id="verifyOTP"
+                                                    type="submit"
+                                                    class="btn btn-fill-out btn-block hover-up"
+                                                    name="otpenter"
+                                                  >
+                                                    Verify OTP
+                                                  </button>
+                                                  <a
+                                                    id="resendOTP"
+                                                    class="btn btn-fill-out btn-block hover-up text-center"
+                                                    style="display: none"
+                                                    onclick="resendOTPForgot()"
+                                                    >Resend OTP</a
+                                                  >
+                                                </div>
+                                              </div>
                                         </form>
                                     </div>
                                 </div>
@@ -612,52 +632,63 @@
         </div>
     </div>
     <!-- Vendor JS-->
-
+    <script>
+        var duration = 60;
+        var timerDisplay = document.getElementById("timer");
+        var verifyButton = document.getElementById("verifyOTP");
+        var resendButton = document.getElementById("resendOTP");
+  
+        function updateTimerDisplay() {
+          var minutes = Math.floor(duration / 60);
+          var seconds = duration % 60;
+  
+          if (seconds < 10) {
+            seconds = "0" + seconds;
+          }
+  
+          timerDisplay.textContent = minutes + ":" + seconds;
+        }
+  
+        function startTimer() {
+          updateTimerDisplay();
+          var timerInterval = setInterval(function () {
+            duration--;
+  
+            if (duration <= 0) {
+              clearInterval(timerInterval);
+              timerDisplay.textContent = "0:00";
+              verifyButton.style.display = "none"; // Hide the Verify OTP button
+              resendButton.style.display = "block"; // Show the Resend OTP button
+            } else {
+              updateTimerDisplay();
+            }
+          }, 1000);
+        }
+  
+        startTimer();
+      </script>
+      <script>
+        const resendOTPForgot = () => {
+          $.ajax({
+            url: "/resendOtpForgot",
+            method: "POST",
+            success: (response) => {
+              if (response.status) {
+                duration = 60;
+                startTimer();
+  
+                // Hide the Resend OTP button again
+                resendButton.style.display = "none";
+                verifyButton.style.display = "block";
+              } else {
+              }
+            },
+          });
+        };
+      </script>
    
     
-    <script>
-    // Set the timer duration in seconds
-    var duration = 60;
     
-    // Get the timer display element
-    var timerDisplay = document.getElementById('timer');
-    
-    // Function to update the timer display
-    function updateTimerDisplay() {
-        var minutes = Math.floor(duration / 60);
-        var seconds = duration % 60;
-    
-        // Add leading zero if seconds is less than 10
-        if (seconds < 10) {
-            seconds = '0' + seconds;
-        }
-    
-        timerDisplay.textContent = minutes + ':' + seconds;
-    }
-    
-    // Function to start the timer
-    function startTimer() {
-        // Update timer display initially
-        updateTimerDisplay();
-    
-        // Update the timer every second
-        var timerInterval = setInterval(function() {
-            duration--;
-    
-            // If the timer reaches zero, stop the timer
-            if (duration <= 0) {
-                clearInterval(timerInterval);
-                timerDisplay.textContent = '0:00'; // Update display to show 0:00 when time is up
-                alert('Time is up!'); // Alert the user when time is up
-            } else {
-                updateTimerDisplay();
-            }
-        }, 1000);
-    }
-    
-    // Start the timer when the page loads
-    startTimer();
-    </script>
     
     
     

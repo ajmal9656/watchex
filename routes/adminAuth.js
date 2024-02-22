@@ -36,4 +36,10 @@ router.get("/orderDetails/:id",adminController.loadOrderDetails);
 
 router.post("/orderStatusChange",adminController.changeSpecificOrderStatus);
 
+router.get("/coupons",adminMiddleware.isLogout,adminController.loadCoupons);
+router.post("/add-coupon",adminMiddleware.isLogout,adminController.addCoupon);
+router.get("/deleteCoupon/:id",adminMiddleware.isLogout,adminController.deleteCoupon);
+router.get("/edit-coupon/:id",adminMiddleware.isLogout,adminController.getEditCoupon);
+router.post("/edit-coupon",adminMiddleware.isLogout,adminController.postEditCoupon);
+
 module.exports=router;

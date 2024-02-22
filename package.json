@@ -26,6 +26,7 @@
     "nodemailer": "^6.9.8",
     "nodemon": "^3.0.3",
     "session": "^0.1.0",
-    "sharp": "^0.33.2"
+    "sharp": "^0.33.2",
+    "voucher-code-generator": "^1.3.0"
   }
 }
