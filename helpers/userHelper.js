@@ -173,6 +173,31 @@ const getAllAddress= async(userId)=>{
   })
 
 }
+const addressDetails=async(addressId,userId)=>{
+  return new Promise(async(resolve,reject)=>{
+      const result = await User.findOne({_id:userId,'address._id':addressId},{ 'address.$': 1 } );
+      console.log(result)
+
+      if(result){
+          resolve(result);
+      }
+
+  })
+}
+
+const addressEdit=async(userId,body)=>{
+  return new Promise(async(resolve,reject)=>{
+    
+    const result = await User.updateOne(
+      { _id: new ObjectId(userId), 'address._id': new ObjectId(body.addressId) }, // Filter
+      { $set: { 'address.$': body } } // Update
+  );
+
+  
+
+  resolve(result);
+  })
+}
 
 
 
@@ -184,6 +209,8 @@ module.exports = {
   addUserAddress,
   addressDeletion,
   editAddress,postEditAddress,
-  getAllAddress
+  getAllAddress,
+  addressDetails,
+  addressEdit
   
 };

@@ -44,12 +44,16 @@ router.post('/addressPost',userController.addAddressPost);
 router.post('/changepassword',userMiddleware.isCheck,userController.changePassword);
 
 router.get('/checkout',userMiddleware.isCheck,userController.loadCheckout);
+router.get('/editAddress/:id',userMiddleware.isCheck,userController.getEditAddress);
+router.post('/edit-address',userMiddleware.isCheck,userController.postEditAddress);
 router.post('/proceedPayment',userMiddleware.isCheck,userController.proceedPayment);
 router.get('/orderSuccess',userMiddleware.isCheck,userController.orderSuccess);
 router.patch('/cancelOrder/:id',userController.cancelOrder);
 router.get('/orderDetails/:id',userMiddleware.isCheck,userController.orderDetails); 
 
 router.patch('/cancelOrders/:orderId/:productId',userController.cancelOrders);
+
+router.post('/applyCoupon',userMiddleware.isCheck,userController.applyCoupon);
 
 
 

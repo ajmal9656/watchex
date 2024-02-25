@@ -5,7 +5,8 @@ const productModel=require("../models/productModel");
 const ObjectId = require('mongoose').Types.ObjectId;
 
 
-const placeOrder = async(userId,body,cartItems)=>{
+const 
+placeOrder = async(userId,body,cartItems)=>{
     return new Promise(async(resolve,reject)=>{
 
         
@@ -117,8 +118,15 @@ const getOrders=async(orderId)=>{
 
 const orderCancellation=async(orderId)=>{
     return new Promise(async(resolve,reject)=>{
+
+
+
+
         const result = await orderModel.findOneAndUpdate({_id:orderId},{$set:{status:"cancelled"}});
         resolve(result);
+
+        
+
 
     })  
 }

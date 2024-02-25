@@ -3,7 +3,9 @@ const categorySchema=require("../models/categoryModel");
 const fs = require('fs');
 const { resolve } = require("path");
 const productModel = require("../models/productModel");
+const orderModel = require("../models/orderModel");
 const { Console } = require("console");
+const objectId = require('mongoose').Types.ObjectId;
 
 
 const productList=async()=>{
@@ -174,6 +176,7 @@ const stockUpdation=async(allCartData)=>{
       let item = order.item;
       let quantity=order.quantity;
       let size = order.size;
+     
 
        let product = await productModel.findOne({_id:item});
        if (product && product.product_quantity && product.product_quantity[size]) {
@@ -187,6 +190,55 @@ const stockUpdation=async(allCartData)=>{
 
   })
 }
+const stockIncreasion=async(orderId,productId)=>{
+  return new Promise(async(resolve,reject)=>{
+    console.log(orderId);
+    console.log(productId);
+
+    const allOrders = await orderModel.aggregate([{$match:{_id:new objectId(orderId)}},{$unwind:"$products"},{$match:{"products.product":new objectId(productId)}},{
+      $project: {
+        item: "$products.product",
+        quantity: "$products.quantity",
+        size: "$products.size",
+      },
+    }])
+    
+    
+
+    
+      let item = allOrders[0].item;
+      let quantity=allOrders[0].quantity;
+      let size = allOrders[0].size;
+
+      
+
+       let product = await productModel.findOne({_id:item});
+       if (product && product.product_quantity && product.product_quantity[size]) {
+        product.product_quantity[size].quantity += quantity;
+
+        // Save the updated product
+        await product.save();
+      }
+    
+    resolve("stock updated successfully");
+
+  })
+}
+
+const stockChecking=async(productId,size)=>{
+  return new Promise(async(resolve,reject)=>{
+     const product =await productModel.findById(productId);
+     
+     if(product.product_quantity[size].quantity<=0){
+      console.log(product.product_quantity[size].quantity);
+      resolve({status:false})
+
+
+     }
+    
+    resolve({status:true})
+  })
+}
 
 
 
@@ -197,8 +249,11 @@ module.exports={
     getAddProduct,
     productAdd,
     deleteProduct,
+    stockChecking,
     checkDuplicateProduct,
     editImages,
-    getAllProducts,stockUpdation
+    getAllProducts,stockUpdation,
+    stockIncreasion,
+    
 
 }

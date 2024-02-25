@@ -902,9 +902,16 @@
     <!-- Template  JS -->
     <script src="./public/user/assets/js/main.js?v=3.4"></script>
     <script src="./public/user/assets/js/shop.js?v=3.4"></script>
+
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script>
         const removeFromWishlist = (productId)=>{
-          $.ajax({
+
+            swal("Are you sure you want to do this?",{
+                    buttons:["NO","YES"]
+                }).then((res)=>{
+                    if(res){
+                        $.ajax({
             url:"/removeFromWishlist/"+productId,
             method:"DELETE",
             success: function (response){
@@ -917,6 +924,10 @@
               }
             }
           })
+
+                    }
+                })
+          
         }
       </script>
 </body>

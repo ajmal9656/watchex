@@ -1,4 +1,5 @@
 const cartModel = require("../models/cartModel");
+const couponModel = require("../models/couponModel");
 const productModel = require("../models/productModel");
 const ObjectId = require("mongoose").Types.ObjectId;
 
@@ -153,23 +154,32 @@ const totalSubtotal = async (userId, cartItems) => {
     let cart = await cartModel.findOne({ user: userId });
     let total = 0;
     if (cart) {
-      if (cartItems.length) {
-        for (let i = 0; i < cartItems.length; i++) {
-          total =
-            total +
-            cartItems[i].quantity *
-              Math.round(
-                cartItems[i].product.product_price -
-                  (cartItems[i].product.product_price *
-                    cartItems[i].product.product_discount) /
-                    100
-              );
+      if(cart.coupon===null){
+        if (cartItems.length) {
+          for (let i = 0; i < cartItems.length; i++) {
+            total =
+              total +
+              cartItems[i].quantity *
+                Math.round(
+                  cartItems[i].product.product_price -
+                    (cartItems[i].product.product_price *
+                      cartItems[i].product.product_discount) /
+                      100
+                );
+          }
         }
-      }
-      cart.totalAmount = total;
-      await cart.save();
+        cart.totalAmount = total;
+        
+        await cart.save();
+  
+        resolve(total);
 
-      resolve(total);
+      }else{
+        total = cart.totalAmount;
+        resolve(total);
+      }
+      
+     
     } else {
       resolve(total);
     }
@@ -223,6 +233,24 @@ const userCartCount = async (userId) => {
     
   });
 };
+
+const removeCoupon= async (user) =>{
+  return new Promise(async(resolve,reject)=>{
+    const cart = await cartModel.findOne({user:user});
+    if(cart){
+    if(cart.coupon!=null){
+      var couponCode = cart.coupon;
+      cart.coupon=null;
+      await cart.save();
+
+      const removeUserFromCoupon = await couponModel.updateOne({code:couponCode},{$pull:{usedBy:user}})
+
+    }}
+    resolve({status:true});
+
+    
+  })
+}
     
 
 module.exports = {
@@ -234,5 +262,6 @@ module.exports = {
   totalSubtotal,
   clearAllCartItems,
   getCart,
-  userCartCount
+  userCartCount,
+  removeCoupon
 };

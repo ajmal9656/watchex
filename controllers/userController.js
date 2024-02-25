@@ -12,6 +12,7 @@ const whishlistHelper = require("../helpers/whishlistHelper");
 const categoryHelper = require("../helpers/cateroryHelper");
 const passHelper = require("../helpers/passwordHelper");
 const orderHelper = require("../helpers/orderHelper");
+const couponHelper = require("../helpers/couponHelper");
 const { response } = require("express");
 const moment = require("moment");
 
@@ -327,6 +328,8 @@ const userCart = async (req, res) => {
             100
       );
     }
+
+    const removeCouponFromCart = await cartHelper.removeCoupon(user);
     
 
     let totalandSubTotal = await cartHelper.totalSubtotal(user, response);
@@ -347,9 +350,18 @@ const addToCart = async (req, res) => {
   const size = req.params.size;
   const userId = req.session.user._id;
 
-  cartHelper.addProductToCart(productId, userId, size).then((response) => {
-    res.json({ status: true });
-  });
+  const stockCheck = await productHelper.stockChecking(productId,size);
+  if(!stockCheck.status){
+    res.json({ status: false });
+  }
+  else{
+
+    cartHelper.addProductToCart(productId, userId, size).then((response) => {
+      res.json({ status: true });
+    });
+  }
+
+  
 };
 
 const updateQuantity = async (req, res) => {
@@ -525,6 +537,9 @@ const loadCheckout = async (req, res) => {
 
   const userData = await userHelper.getAllAddress(userId);
   const cartData = await cartHelper.getAllCartItems(userId);
+  const couponData = await couponHelper.getAllCoupons();
+
+
   for (const products of cartData) {
     products.product.subTotal =
       products.quantity *
@@ -535,13 +550,59 @@ const loadCheckout = async (req, res) => {
       );
   }
   let totalandSubTotal = await cartHelper.totalSubtotal(userId, cartData);
+ 
 
   res.render("user/checkout-page", {
     userData,
     cartItems: cartData,
     totalandSubTotal,
+    coupons:couponData
   });
 };
+
+const applyCoupon = async (req, res) => {
+  try {
+
+    const userId = req.session.user._id;
+    const couponCode = req.body.couponCode;
+    console.log(couponCode)
+
+    const result = await couponHelper.applyCoupon(userId, couponCode);
+    
+    console.log("reascjna");
+    console.log(result)
+    res.json(result);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const getEditAddress = async(req,res)=>{
+  const addressId= req.params.id;
+  const userId= req.session.user._id;
+  
+
+  userHelper.addressDetails(addressId,userId).then((response)=>{
+    
+    res.json(response)
+  }).catch((error)=>{
+    console.log(error)
+  })
+
+}
+const postEditAddress = async(req,res)=>{
+  
+  const body= req.body;
+  const userId= req.session.user._id;
+
+  userHelper.addressEdit(userId,body).then((response)=>{
+    console.log(response)
+    res.redirect("/checkout")
+  }).catch((error)=>{
+    console.log(error)
+  })
+
+}
 
 const proceedPayment = async (req, res) => {
   const userId = req.session.user._id;
@@ -581,7 +642,8 @@ const orderSuccess = (req, res) => {
 
 const cancelOrder = async (req, res) => {
   const orderId = req.params.id;
-  orderHelper.orderCancellation(orderId).then((response) => {
+  orderHelper.orderCancellation(orderId).then(async(response) => {
+    
     res.json(response);
   });
 };
@@ -620,7 +682,8 @@ const orderDetails = async(req,res) =>{
 const cancelOrders = async (req, res) => {
   const orderId = req.params.orderId;
   const productId = req.params.productId;
-  orderHelper.eachOrderCancellation(orderId,productId).then((response) => {
+  orderHelper.eachOrderCancellation(orderId,productId).then(async(response) => {
+    const stockUpdation = await productHelper.stockIncreasion(orderId,productId);
     res.json(response);
   });
 };
@@ -664,5 +727,8 @@ module.exports = {
   cancelOrder,
   orderDetails,
   cancelOrders,addAddressPost,
-  resendOtpForgotPass
+  resendOtpForgotPass,
+  applyCoupon,
+  getEditAddress,
+  postEditAddress
 };

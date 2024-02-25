@@ -1,6 +1,8 @@
 const { response } = require("express");
 const couponModel = require("../models/couponModel");
 const couponCode = require("voucher-code-generator");
+const cartModel = require("../models/cartModel");
+const ObjectId = require("mongoose").Types.ObjectId;
 const moment = require("moment");
 
 const getAllCoupons =async(req,res)=>{
@@ -64,7 +66,7 @@ const couponEdit=async(body)=>{
     return new Promise(async(resolve,reject)=>{
         const result = await couponModel.findOne({_id:body.couponId});
 
-          result.couponName = body.couponName
+            result.couponName = body.couponName
             result.discount = body.couponAmount
             result.expiryDate = body.couponExpiry
             await result.save();
@@ -76,6 +78,56 @@ const couponEdit=async(body)=>{
 
     })
 }
+
+const applyCoupon=async(userId, couponCode)=>{
+    return new Promise(async (resolve, reject) => {
+        const coupon = await couponModel.findOne({ code: couponCode })
+        console.log(coupon)
+        if(coupon){
+            if (coupon.isActive === "Active") {
+                if (!coupon.usedBy.includes(userId)) {
+                  const cart = await cartModel.findOne({ user: new ObjectId(userId)});
+                  
+      
+                  if(cart.coupon===null){ 
+                    console.log("sgsfg")
+                      const discount = coupon.discount;
+          
+                      cart.totalAmount = cart.totalAmount - discount;
+                      cart.coupon = couponCode;
+              
+                      await cart.save();
+                      console.log(cart)
+              
+                      coupon.usedBy.push(userId);
+                      await coupon.save();
+              
+                      resolve({
+                        discount,
+                        cart,
+                        status: true,
+                        message: "Coupon applied successfully",
+                      });}
+                      else{
+                          resolve({ status: false, message: "Coupon limit Exceeded" });
+                      }
+                  
+                 
+                } else {
+                  resolve({ status: false, message: "This coupon is already used" });
+                }
+              } else {
+                resolve({ status: false, message: "Coupon Expired" });
+              }
+
+        }else{
+            resolve({ status: false, message: "Invalid Coupon Code" });
+
+        }
+        
+      });
+    
+}
  
 
 module.exports = {
@@ -83,5 +135,5 @@ module.exports = {
     couponAdd,
     couponDeletion,
     couponDetails,
-    couponEdit
+    couponEdit,applyCoupon
   };
