@@ -408,23 +408,24 @@
             </div>
             <div class="header-right">
               <div class="search-style-2">
-                <form action="#">
-                  <select class="select-active">
-                    <option>All Categories</option>
-                    <option>Women's</option>
-                    <option>Men's</option>
-                    <option>Cellphones</option>
-                    <option>Computer</option>
-                    <option>Electronics</option>
-                    <option>Accessories</option>
-                    <option>Home & Garden</option>
-                    <option>Luggage</option>
-                    <option>Shoes</option>
-                    <option>Mother & Kids</option>
-                  </select>
-                  <input type="text" placeholder="Search for items..." />
-                </form>
+             
+                <div>
+                  <form action="#" method="post">
+                      <div class="header-search-wrapper">
+                          
+                          <div>
+                              <input type="search" class="form-control" id="searchInput"
+                                  placeholder="Search in..." required autocomplete="off">
+                              <a href="#" class="search-toggle" role="button">
+                                  <i class="icon-search"></i>
+                              </a>
+                          </div>
+                      </div><!-- End .header-search-wrapper -->
+                  </form>
+                  <ul id="suggestionList"></ul>
               </div>
+           
+            </div>
               <% if (locals.message) { %>
                 <div class="header-action-right">
                   <div class="header-action-2">
@@ -1050,63 +1051,9 @@
                       <a href="page-about.html">About</a>
                     </li>
                     <li>
-                      <a href="shop-grid-right.html"
-                        >Shop <i class="fi-rs-angle-down"></i
-                      ></a>
-                      <ul class="sub-menu">
-                        <li>
-                          <a href="shop-grid-right.html"
-                            >Shop Grid – Right Sidebar</a
-                          >
-                        </li>
-                        <li>
-                          <a href="shop-grid-left.html"
-                            >Shop Grid – Left Sidebar</a
-                          >
-                        </li>
-                        <li>
-                          <a href="shop-list-right.html"
-                            >Shop List – Right Sidebar</a
-                          >
-                        </li>
-                        <li>
-                          <a href="shop-list-left.html"
-                            >Shop List – Left Sidebar</a
-                          >
-                        </li>
-                        <li><a href="shop-fullwidth.html">Shop - Wide</a></li>
-                        <li>
-                          <a href="#"
-                            >Single Product <i class="fi-rs-angle-right"></i
-                          ></a>
-                          <ul class="level-menu">
-                            <li>
-                              <a href="shop-product-right.html"
-                                >Product – Right Sidebar</a
-                              >
-                            </li>
-                            <li>
-                              <a href="shop-product-left.html"
-                                >Product – Left Sidebar</a
-                              >
-                            </li>
-                            <li>
-                              <a href="shop-product-full.html"
-                                >Product – No sidebar</a
-                              >
-                            </li>
-                          </ul>
-                        </li>
-                        <li><a href="shop-filter.html">Shop – Filter</a></li>
-                        <li>
-                          <a href="shop-wishlist.html">Shop – Wishlist</a>
-                        </li>
-                        <li><a href="shop-cart.html">Shop – Cart</a></li>
-                        <li>
-                          <a href="shop-checkout.html">Shop – Checkout</a>
-                        </li>
-                        <li><a href="shop-compare.html">Shop – Compare</a></li>
-                      </ul>
+                      <a href="/shopProduct"
+                        >Shop </a>
+                      
                     </li>
                     <li class="position-static">
                       <a href="#">Mega menu <i class="fi-rs-angle-down"></i></a>
@@ -1411,7 +1358,7 @@
         <div class="mobile-header-content-area">
           <div class="mobile-search search-style-3 mobile-header-border">
             <form action="#">
-              <input type="text" placeholder="Search for items…" />
+              <input type="text" placeholder="Search for items…" name="payload" />
               <button type="submit"><i class="fi-rs-search"></i></button>
             </form>
           </div>
@@ -4574,5 +4521,61 @@
     <!-- Template  JS -->
     <script src="./public/user/assets/js/main.js?v=3.4"></script>
     <script src="./public/user/assets/js/shop.js?v=3.4"></script>
+
+    <script>
+      document.addEventListener('click', function (event) {
+              const suggestionList = document.getElementById('suggestionList');
+              const isClickInside = suggestionList.contains(event.target);
+  
+              if (!isClickInside) {
+                  suggestionList.innerHTML = ''; // Hide the suggestions by clearing the innerHTML
+              }
+          });
+  
+          let searchElement = document.getElementById('searchInput');
+          searchElement.onkeyup = function () {
+              let searchWord = searchElement.value;
+              console.log("searchWord", searchWord);
+              if (searchWord != '') {
+                  loadData(searchWord);
+              } else {
+                  document.getElementById('suggestionList').innerHTML = ''
+              }
+  
+          }
+  
+          function loadData(query = '') {
+const data = $(this).serialize()
+              
+              $.ajax({
+                        url: `/searchProduct/${query}`,
+                       method: 'POST',
+                       data:data,
+                        headers: {
+                      'Content-Type': 'application/json'
+                  }
+                    })
+                  
+                  .then((data) => {
+                    console.log(data)
+                      console.log("res block start");
+                      let searchResult = data.searchResult;
+                      console.log("Hiii", searchResult);
+  
+                      let html = ''
+                      console.log(data.searchResult.length);
+                      if (data.searchResult.length > 0) {
+            for (let i = 0; i < data.searchResult.length; i++) {
+              console.log("in loop", data.searchResult[i].productName);
+              html += `<a00 href="/productDisplay/${data.searchResult[i]._id}"><li style="display:flex;justify-content:space-evenly;text-align: center; border-bottom: 2px solid #acb1b5; width:80%% ;padding:10px"> ${data.searchResult[i].product_name} <img  class="img-thumbnail" width="50" src="/public/uploads/${data.searchResult[i].image[0]}" alt="no image avalable"></li></a>`;
+              document.getElementById('suggestionList').innerHTML = html
+
+            }
+          }
+                      console.log("end");
+                  })
+          }
+    </script>
   </body>
 </html>
+ 

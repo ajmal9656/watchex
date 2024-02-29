@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const adminController=require("../controllers/adminConroller");
+const offerController=require("../controllers/offerController");
 const adminMiddleware = require("../middleware/adminMiddleware");
 const multerMiddleware = require("../middleware/multer");
 
@@ -41,5 +42,18 @@ router.post("/add-coupon",adminMiddleware.isLogout,adminController.addCoupon);
 router.get("/deleteCoupon/:id",adminMiddleware.isLogout,adminController.deleteCoupon);
 router.get("/edit-coupon/:id",adminMiddleware.isLogout,adminController.getEditCoupon);
 router.post("/edit-coupon",adminMiddleware.isLogout,adminController.postEditCoupon);
+
+router.get("/categoryOffers",adminMiddleware.isLogout,offerController.loadCategoryOffers);
+router.post("/add-offer",adminMiddleware.isLogout,offerController.addCategoryOffer);
+router.get("/edit-offer/:id",adminMiddleware.isLogout,offerController.getEditOffer);
+router.post("/edit-offer",adminMiddleware.isLogout,offerController.postEditOffer);
+router.get("/deleteCategoryOffer/:id",adminMiddleware.isLogout,offerController.softDeleteCategoryOffer);
+
+
+router.get("/productOffers",adminMiddleware.isLogout,offerController.loadProductOffers);
+router.post("/add-prodOffer",adminMiddleware.isLogout,offerController.addProductOffer);
+router.get("/edit-prodOffer/:id",adminMiddleware.isLogout,offerController.getEditOffer);
+router.post("/edit-prodOffer",adminMiddleware.isLogout,offerController.postEditProductOffer);
+router.get("/deleteProductOffer/:id",adminMiddleware.isLogout,offerController.softDeleteProductOffer);
 
 module.exports=router;

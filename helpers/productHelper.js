@@ -240,6 +240,15 @@ const stockChecking=async(productId,size)=>{
   })
 }
 
+const getAllProduct = async()=>{
+  return new Promise(async(resolve,reject)=>{
+    const result=await productModel.find();
+    resolve(result);
+  })
+
+}
+
+
 
 
 
@@ -254,6 +263,7 @@ module.exports={
     editImages,
     getAllProducts,stockUpdation,
     stockIncreasion,
+    getAllProduct
     
 
 }

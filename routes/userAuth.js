@@ -24,6 +24,7 @@ router.post('/resendOtpForgot',userController.resendOtpForgotPass);
 
 
 router.get('/productView/:id',userMiddleware.isCheck,userController.viewProduct);
+router.get('/shopProduct',userMiddleware.isCheck,userController.loadAllProduct);
 
 router.get('/cartView',userMiddleware.isCheck,userController.userCart);
 router.post('/addToCart/:id/:size',userController.addToCart);
@@ -53,7 +54,12 @@ router.get('/orderDetails/:id',userMiddleware.isCheck,userController.orderDetail
 
 router.patch('/cancelOrders/:orderId/:productId',userController.cancelOrders);
 
-router.post('/applyCoupon',userMiddleware.isCheck,userController.applyCoupon);
+
+router.post('/searchProduct/:query',userController.searchProduct);
+// router.get('/productDisplay/:id',userMiddleware.isCheck,userController.productDisplay);
+
+
+
 
 
 

@@ -277,6 +277,27 @@ const loaduserhome = async (req, res) => {
   // }
 };
 
+const loadAllProduct = async(req,res)=>{
+  const productData = await productHelper.getAllProducts();
+
+  for (const product of productData) {
+    product.offerPrice = Math.round(
+      product.product_price -
+        (product.product_price * product.product_discount) / 100
+    );
+  }
+  const categoryData = await categoryHelper.getAllCategory();
+  res.render("user/shop-product", {
+    message: "hi",
+    product: productData,
+    categories: categoryData,
+    // cartcount:cartCount,
+    // wishlistcount:wishlistCount
+  });
+
+
+}
+
 const viewProduct = async (req, res) => {
   const id = req.params.id;
 
@@ -688,6 +709,19 @@ const cancelOrders = async (req, res) => {
   });
 };
 
+const searchProduct =async(req,res)=>{
+  let payload = req.params.query.trim();
+  try {
+    let searchResult = await productModel.find({ product_name: { $regex: new RegExp('^' + payload + '.*', 'i') } }).exec();
+    searchResult = searchResult.slice(0, 5);
+    console.log(searchResult)
+    res.json({ searchResult:searchResult })
+  } catch (error) {
+    res.status(500).render('error', { error  , layout: false});
+  }
+
+}
+
 
 
 
@@ -730,5 +764,7 @@ module.exports = {
   resendOtpForgotPass,
   applyCoupon,
   getEditAddress,
-  postEditAddress
+  postEditAddress,
+  loadAllProduct,
+  searchProduct
 };

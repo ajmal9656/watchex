@@ -102,16 +102,21 @@
                         <!-- Add the following code to display the preview of all images within the image editing div -->
                         <div class="card-body">
                             <div class="row">
-                                <% if(Array.isArray(product.image) && product.image.length> 0) { %>
+                                <% if(Array.isArray(product.image) && product.image.length > 0) { %>
                                     <% for(let i=0; i<product.image.length; i++) { %>
-                                        <div class="col-6">
-                                            <img src="/public/uploads/<%= product.image[i] %>"
-                                                style="width: 100px; height: 72px;" alt="">
+                                        <div class="col-6 mb-3">
+                                            <div class="image-container">
+                                                <img src="/public/uploads/<%= product.image[i] %>"
+                                                    style="width: 100px; height: 72px;" alt="">
+                                                    <span class="delete-icon"
+                                                    onclick="deleteImage('<%= product._id %>', '<%= product.image[i] %>')">❌</span>
+                                            </div>
                                         </div>
-                                        <% } %>
-                                            <% } %>
+                                    <% } %>
+                                <% } %>
                             </div>
                         </div>
+                        
                     </div> <!-- card end// -->
                 </div> <!-- card end// -->
         

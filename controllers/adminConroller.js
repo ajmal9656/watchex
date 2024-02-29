@@ -8,6 +8,7 @@ const adminModel = require("../models/adminModel");
 const { response } = require("express");
 const orderHelper = require("../helpers/orderHelper");
 const couponHelper = require("../helpers/couponHelper");
+const offerHelper = require("../helpers/offerHelper");
 const moment = require("moment")
 
 const loadAdmin = function (req, res) {
@@ -428,6 +429,9 @@ const postEditCoupon = async(req,res)=>{
 }
 
 
+
+
+
 module.exports = {
   userList,
   blockOrUnblockUser,
@@ -452,5 +456,6 @@ module.exports = {
   loadCoupons,
   addCoupon,
   deleteCoupon,getEditCoupon,
-  postEditCoupon
+  postEditCoupon,
+  
 };
