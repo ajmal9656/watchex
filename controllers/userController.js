@@ -581,22 +581,7 @@ const loadCheckout = async (req, res) => {
   });
 };
 
-const applyCoupon = async (req, res) => {
-  try {
 
-    const userId = req.session.user._id;
-    const couponCode = req.body.couponCode;
-    console.log(couponCode)
-
-    const result = await couponHelper.applyCoupon(userId, couponCode);
-    
-    console.log("reascjna");
-    console.log(result)
-    res.json(result);
-  } catch (error) {
-    console.log(error);
-  }
-};
 
 const getEditAddress = async(req,res)=>{
   const addressId= req.params.id;
@@ -762,7 +747,7 @@ module.exports = {
   orderDetails,
   cancelOrders,addAddressPost,
   resendOtpForgotPass,
-  applyCoupon,
+ 
   getEditAddress,
   postEditAddress,
   loadAllProduct,

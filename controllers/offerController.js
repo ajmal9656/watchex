@@ -8,6 +8,12 @@ const loadCategoryOffers = async(req,res)=>{
     try{
       const offers = await offerHelper.getAllCatOffers();
       const category = await categoryHelper.getAllCategory();
+
+      for(const offer of offers){
+        offer.formattedStartDate = formatDate(offer.startingDate.toString())
+        offer.formattedEndDate = formatDate(offer.endingDate.toString())
+      }
+
   
       res.render("admin/category-offer",{offers,category})
   
@@ -23,6 +29,11 @@ const loadCategoryOffers = async(req,res)=>{
     try{
       const offers = await offerHelper.getAllProdOffers();
       const product = await productHelper.getAllProduct();
+
+      for(const offer of offers){
+        offer.formattedStartDate = formatDate(offer.startingDate.toString())
+        offer.formattedEndDate = formatDate(offer.endingDate.toString())
+      }
 
       console.log(product)
   
@@ -65,6 +76,10 @@ const loadCategoryOffers = async(req,res)=>{
     const offerId= req.params.id;
   
     offerHelper.offerDetails(offerId).then((response)=>{
+      
+        response.formattedStartDate = formatDate(response.startingDate.toString())
+        response.formattedEndDate = formatDate(response.endingDate.toString())
+      
       console.log(response)
       res.json(response)
     }).catch((error)=>{
@@ -155,6 +170,19 @@ const loadCategoryOffers = async(req,res)=>{
     });
   };
 
+  function formatDate(dateString) {
+    // Create a Date object from the string
+    const date = new Date(dateString);
+  
+    // Get the year, month, and day components
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Add leading zero if needed
+    const day = String(date.getDate()).padStart(2, "0"); // Add leading zero if needed
+  
+    // Format the date in YYYY/MM/DD format
+    return `${year}-${month}-${day}`;
+  }
+
 
   module.exports={
     loadCategoryOffers,
@@ -165,6 +193,7 @@ const loadCategoryOffers = async(req,res)=>{
   softDeleteCategoryOffer,
   addProductOffer,
   postEditProductOffer,
-  softDeleteProductOffer
+  softDeleteProductOffer,
+  
 
   }

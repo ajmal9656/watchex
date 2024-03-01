@@ -42,7 +42,7 @@ const categoryOfferAdd=async(body)=>{
 
 const offerDetails=async(offerId)=>{
     return new Promise(async(resolve,reject)=>{
-        const result = await offerModel.findOne({_id:offerId});
+        const result = await offerModel.findOne({_id:offerId}).lean();
 
         if(result){
             resolve(result);

@@ -50,17 +50,17 @@
                                           <td width="15%">
                                             <%= offers[i].productOffer.discount %>
                                           </td>
-                                        <td width="20%">
-                                            <%= offers[i].startingDate %>
+                                        <td width="15%">
+                                            <%= offers[i].formattedStartDate %>
                                         </td>
-                                        <td width="10%">
-                                            <%= offers[i].endingDate%>
+                                        <td width="15%">
+                                            <%= offers[i].formattedEndDate%>
                                         </td>
                                        
-                                        <td width="10%"><a onclick="getOfferData('<%= offers[i]._id %>')"
+                                        <td width="15%"><a onclick="getOfferData('<%= offers[i]._id %>')"
                                                 class="btn btn-sm btn-success rounded font-sm mt-15" type="button"  data-bs-toggle="modal" data-bs-target="#editCoupon"
                                                 data-bs-whatever="@getbootstrap">Edit</a></td>
-                                                <td width="20%">
+                                                <td width="15%">
                                                     <% if (offers[i].status) { %>
                                                       <button id="delete-productOffer<%= offers[i]._id %>" class="btn btn-sm btn-success rounded font-sm mt-15" onclick="deleteProductOffer('<%= offers[i]._id %>')">
                                                         Listed
@@ -155,10 +155,16 @@
                         <label for="recipient-name" class="col-form-label">Offer Name</label>
                         <input type="text" class="form-control" name="offerName" id="offerNme">
                     </div>
+                    
                     <div class="mb-3">
-                        <label for="recipient-name" class="col-form-label">Product</label>
-                        <input type="text" class="form-control" name="product" id="product">
-                    </div>
+                      <label for="recipient-name" class="col-form-label">Product</label>
+                      <select name="product" id="product" class="form-select">
+                        <% for( let i = 0; i < product.length; i++ ) { %>
+                          <option class="form-option" value="<%= product[i]._id %>"><%= product[i].product_name %></option>
+                          <% } %>
+                      </select>
+                      
+                    </div>
                     <!-- <div class="mb-3">
                         <label for="recipient-name" class="col-form-label">Coupon Code</label>
                         <input type="text" class="form-control" name="couponCode" id="couponCode">
@@ -215,8 +221,8 @@
                     document.getElementById('product').value = res.productOffer.product;
                     // document.getElementById('couponCode').value = res.code;
                     document.getElementById('offerAmont').value = res.productOffer.discount;
-                    document.getElementById('offerStart').value = res.startingDate;
-                    document.getElementById('offerEnd').value = res.endingDate;
+                    document.getElementById('offerStart').value = res.formattedStartDate;
+                    document.getElementById('offerEnd').value = res.formattedEndDate;
                     document.getElementById('offerIdd').value = res._id;
 
                     $("#editCoupon").modal("show");
@@ -260,7 +266,7 @@
                   position: "center", // left, center or right
                   stopOnFocus: true, // Prevents dismissing of toast on hover
                   style: {
-                    background: "green",
+                    background: "linear-gradient(to right, #00b09b, #96c93d)",
                   },
                 }).showToast();
 
@@ -279,7 +285,7 @@
                   position: "center", // left, center or right
                   stopOnFocus: true, // Prevents dismissing of toast on hover
                   style: {
-                    background: "linear-gradient(to right, #00b09b, #96c93d)",
+                    background: "red",
                   },
                 }).showToast();
 

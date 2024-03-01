@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const userController=require("../controllers/userController");
-const userMiddleware = require("../middleware/userMiddleware")
+const userMiddleware = require("../middleware/userMiddleware");
+const couponController=require("../controllers/couponController");
+
 
 router.get('/',userMiddleware.isRegistered,userController.loadhome)
 router.get('/login',userController.loadlogin);
@@ -43,6 +45,8 @@ router.post('/editAddress',userController.editAddress);
 router.post('/addressPost',userController.addAddressPost);
 
 router.post('/changepassword',userMiddleware.isCheck,userController.changePassword);
+
+router.post('/applyCoupon',couponController.applyCoupon)
 
 router.get('/checkout',userMiddleware.isCheck,userController.loadCheckout);
 router.get('/editAddress/:id',userMiddleware.isCheck,userController.getEditAddress);
