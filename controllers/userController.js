@@ -2,6 +2,7 @@ const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const { EMAIL, PASSWORD } = require("../env");
+const { KEY_ID, KEY_SECRET } = require("../env");
 const userHelper = require("../helpers/userHelper");
 const otpHelper = require("../helpers/otpHelper");
 const productHelper = require("../helpers/productHelper");
@@ -13,19 +14,20 @@ const categoryHelper = require("../helpers/cateroryHelper");
 const passHelper = require("../helpers/passwordHelper");
 const orderHelper = require("../helpers/orderHelper");
 const couponHelper = require("../helpers/couponHelper");
+const offerHelper = require("../helpers/offerHelper");
+const offerModel = require("../models/offerModel");
 const { response } = require("express");
 const moment = require("moment");
+const razorpay = require("razorpay")
 
 const loadhome = async (req, res) => {
   const productData = await productHelper.getAllProducts();
-
-  for (const product of productData) {
-    product.offerPrice = Math.round(
-      product.product_price -
-        (product.product_price * product.product_discount) / 100
-    );
-  }
   const categoryData = await categoryHelper.getAllCategory();
+
+  const productDetails = await productHelper.AllProductOfferCheck(productData);
+
+  
+  
 
   if (req.session.user) {
     const userId = req.session.user._id;
@@ -34,10 +36,10 @@ const loadhome = async (req, res) => {
 
     res.render("user/indexx", {
       message: "hi",
-      product: productData,
+      product: productDetails,
       categories: categoryData,
-      cartcount:cartCount,
-      wishlistcount:wishlistCount
+      cartcount: cartCount,
+      wishlistcount: wishlistCount,
     });
   }
   // else if (req.session.admin) {
@@ -93,12 +95,7 @@ const insertUser = async (req, res) => {
     if (response.registeredData) {
       req.session.userdata = response.registeredData;
 
-      
-  
-        res.redirect("/otp-verification");
-      
-
-      
+      res.redirect("/otp-verification");
     } else {
       req.flash("message", response.errorMessage);
       res.redirect("/register");
@@ -133,15 +130,15 @@ const insertUser = async (req, res) => {
   // }
 };
 const generateOtp = async (req, res) => {
+  const email = req.session.userdata.email;
 
-  const email =req.session.userdata.email;
+  otpHelper.otpGeneration(email).then((response) => {
+    req.session.otp = response.otp;
+    req.session.expirationTime = response.expirationTime;
 
-  otpHelper.otpGeneration(email).then((response)=>{
-    req.session.otp=response.otp;
-    req.session.expirationTime=response.expirationTime;
-
-    res.render("user/otp-verification");})
-  };
+    res.render("user/otp-verification");
+  });
+};
 
 const verifyOtp = async (req, res) => {
   const userData = req.session.userdata;
@@ -162,15 +159,15 @@ const verifyOtp = async (req, res) => {
   }
 };
 const resendOtp = async (req, res) => {
+  const email = req.session.userdata.email;
 
-  const email =req.session.userdata.email;
+  otpHelper.otpGeneration(email).then((response) => {
+    req.session.otp = response.otp;
+    req.session.expirationTime = response.expirationTime;
 
-  otpHelper.otpGeneration(email).then((response)=>{
-    req.session.otp=response.otp;
-    req.session.expirationTime=response.expirationTime;
-
-    res.json({status:true});})
-  };
+    res.json({ status: true });
+  });
+};
 
 const loadForgotPass = async (req, res) => {
   const message = req.flash("message");
@@ -185,12 +182,8 @@ const forgotPassword = async (req, res) => {
   if (check) {
     req.session.email = email;
 
-    
-
-      res.redirect("/otpEnter");
-   
+    res.redirect("/otpEnter");
   } else {
-
     req.flash("message", "Email not found");
 
     res.redirect("/forgotPassword");
@@ -198,26 +191,25 @@ const forgotPassword = async (req, res) => {
 };
 
 const sendOtp = async (req, res) => {
+  const email = req.session.email;
 
-    const email =req.session.email;
+  otpHelper.otpGeneration(email).then((response) => {
+    req.session.otp = response.otp;
+    req.session.expirationTime = response.expirationTime;
 
-    otpHelper.otpGeneration(email).then((response)=>{
-      req.session.otp=response.otp;
-      req.session.expirationTime=response.expirationTime;
+    res.render("user/otp-page");
+  });
+};
+const resendOtpForgotPass = async (req, res) => {
+  const email = req.session.email;
 
-      res.render("user/otp-page");})
+  otpHelper.otpGeneration(email).then((response) => {
+    req.session.otp = response.otp;
+    req.session.expirationTime = response.expirationTime;
 
-  };
-  const resendOtpForgotPass = async (req, res) => {
-
-    const email =req.session.email;
-  
-    otpHelper.otpGeneration(email).then((response)=>{
-      req.session.otp=response.otp;
-      req.session.expirationTime=response.expirationTime;
-  
-      res.json({status:true});})
-    };
+    res.json({ status: true });
+  });
+};
 
 const otpVerification = async (req, res) => {
   const storedOtp = req.session.otp;
@@ -277,7 +269,7 @@ const loaduserhome = async (req, res) => {
   // }
 };
 
-const loadAllProduct = async(req,res)=>{
+const loadAllProduct = async (req, res) => {
   const productData = await productHelper.getAllProducts();
 
   for (const product of productData) {
@@ -294,9 +286,7 @@ const loadAllProduct = async(req,res)=>{
     // cartcount:cartCount,
     // wishlistcount:wishlistCount
   });
-
-
-}
+};
 
 const viewProduct = async (req, res) => {
   const id = req.params.id;
@@ -307,11 +297,8 @@ const viewProduct = async (req, res) => {
     const cartStatus = await cartHelper.checkCart(id, userId);
     const wishListStatus = await whishlistHelper.checkWishlist(id, userId);
 
-    userHelper.getProductDetails(id).then((response) => {
-      response.offerPrice = Math.round(
-        response.product_price -
-          (response.product_price * response.product_discount) / 100
-      );
+    userHelper.getProductDetails(id).then(async(response) => {
+      const productDetails = await productHelper.productOfferCheck(response);
 
       if (cartStatus) {
         response.isCart = cartStatus;
@@ -320,7 +307,7 @@ const viewProduct = async (req, res) => {
         response.isWishlist = wishListStatus;
       }
 
-      res.render("user/productView", { product: response });
+      res.render("user/productView", { product: productDetails });
     });
   } else {
     res.redirect("/login");
@@ -334,33 +321,18 @@ const viewProduct = async (req, res) => {
 const userCart = async (req, res) => {
   const user = req.session.user._id;
   cartHelper.getAllCartItems(user).then(async (response) => {
+
+    const productDetails = await cartHelper.cartProductOfferCheck(response);
     
-    for (const products of response) {
-      const size=products.size;
-      if(products.quantity==products.product.product_quantity[size].quantity){
-        products.product.sizeexceed=true;
-      }
-      if(products.quantity==1){
-        products.product.sizelimit=true;
-      }
-      products.product.offerPrice = Math.round(
-        products.product.product_price -
-          (products.product.product_price * products.product.product_discount) /
-            100
-      );
-    }
+    
+
 
     const removeCouponFromCart = await cartHelper.removeCoupon(user);
-    
 
-    let totalandSubTotal = await cartHelper.totalSubtotal(user, response);
-
-    
-
-    
+    let totalandSubTotal = await cartHelper.totalSubtotal(user, productDetails);
 
     res.render("user/cart-page", {
-      products: response,
+      products: productDetails,
       totalAmount: totalandSubTotal,
     });
   });
@@ -371,18 +343,14 @@ const addToCart = async (req, res) => {
   const size = req.params.size;
   const userId = req.session.user._id;
 
-  const stockCheck = await productHelper.stockChecking(productId,size);
-  if(!stockCheck.status){
+  const stockCheck = await productHelper.stockChecking(productId, size);
+  if (!stockCheck.status) {
     res.json({ status: false });
-  }
-  else{
-
+  } else {
     cartHelper.addProductToCart(productId, userId, size).then((response) => {
       res.json({ status: true });
     });
   }
-
-  
 };
 
 const updateQuantity = async (req, res) => {
@@ -392,22 +360,15 @@ const updateQuantity = async (req, res) => {
   const userId = req.session.user._id;
 
   cartHelper
-    .quantityUpdation(productId, userId, quantity,size)
+    .quantityUpdation(productId, userId, quantity, size)
     .then((response) => {
-      
-      if(response.sizeExceed){
-        
+      if (response.sizeExceed) {
         res.json({ sizeExceed: true });
-      }
-      else if(response.sizeLimit){
+      } else if (response.sizeLimit) {
         res.json({ sizeLimit: true });
-
-      }
-      else{
+      } else {
         res.json({ status: true });
-
       }
-      
     })
     .catch((error) => {
       console.log(error);
@@ -429,27 +390,12 @@ const removeFromCart = async (req, res) => {
 const userWhishlist = async (req, res) => {
   const userId = req.session.user._id;
 
-  whishlistHelper.getAllWhishlistItems(userId).then(async(response) => {
-    for (const products of response) {
-      console.log(products)
+  whishlistHelper.getAllWhishlistItems(userId).then(async (response) => {
+    const productDetails = await whishlistHelper.wishlistProductOfferCheck(userId,response);
+    console.log(productDetails)
+    
 
-      const cartStatus = await cartHelper.checkCart(products.product._id,userId);
-      if (cartStatus) {
-        products.isCart = cartStatus;
-      } 
-      
-
-
-
-      
-      products.product.offerPrice = Math.round(
-        products.product.product_price -
-          (products.product.product_price * products.product.product_discount) /
-            100
-      );
-    }
-
-    res.render("user/wishlist-page", { products: response });
+    res.render("user/wishlist-page", { products: productDetails });
   });
 };
 
@@ -513,10 +459,8 @@ const addAddressPost = async (req, res) => {
 
   if (add) {
     res.json({ status: true });
-    
   }
 };
-
 
 const deleteAddress = async (req, res) => {
   const addressId = req.params.id;
@@ -560,55 +504,46 @@ const loadCheckout = async (req, res) => {
   const cartData = await cartHelper.getAllCartItems(userId);
   const couponData = await couponHelper.getAllCoupons();
 
+  const productDetails = await cartHelper.cartProductOfferCheck(cartData);
 
-  for (const products of cartData) {
-    products.product.subTotal =
-      products.quantity *
-      Math.round(
-        products.product.product_price -
-          (products.product.product_price * products.product.product_discount) /
-            100
-      );
-  }
-  let totalandSubTotal = await cartHelper.totalSubtotal(userId, cartData);
- 
+  
+  let totalandSubTotal = await cartHelper.totalSubtotal(userId, productDetails);
 
   res.render("user/checkout-page", {
     userData,
-    cartItems: cartData,
+    cartItems: productDetails,
     totalandSubTotal,
-    coupons:couponData
+    coupons: couponData,
   });
 };
 
+const getEditAddress = async (req, res) => {
+  const addressId = req.params.id;
+  const userId = req.session.user._id;
 
+  userHelper
+    .addressDetails(addressId, userId)
+    .then((response) => {
+      res.json(response);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+const postEditAddress = async (req, res) => {
+  const body = req.body;
+  const userId = req.session.user._id;
 
-const getEditAddress = async(req,res)=>{
-  const addressId= req.params.id;
-  const userId= req.session.user._id;
-  
-
-  userHelper.addressDetails(addressId,userId).then((response)=>{
-    
-    res.json(response)
-  }).catch((error)=>{
-    console.log(error)
-  })
-
-}
-const postEditAddress = async(req,res)=>{
-  
-  const body= req.body;
-  const userId= req.session.user._id;
-
-  userHelper.addressEdit(userId,body).then((response)=>{
-    console.log(response)
-    res.redirect("/checkout")
-  }).catch((error)=>{
-    console.log(error)
-  })
-
-}
+  userHelper
+    .addressEdit(userId, body)
+    .then((response) => {
+      console.log(response);
+      res.redirect("/checkout");
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
 
 const proceedPayment = async (req, res) => {
   const userId = req.session.user._id;
@@ -618,27 +553,16 @@ const proceedPayment = async (req, res) => {
   const result = await orderHelper.placeOrder(userId, body, cartItems);
 
   if (result) {
-
     const allCartData = await cartHelper.getCart(userId);
-    
-    
-      const stockUpdation = await productHelper.stockUpdation(allCartData);
 
-      if(stockUpdation){
-        const cart = await cartHelper.clearAllCartItems(userId);
-        if (cart) {
-          res.json({ url: "/orderSuccess" });
-        }
+    const stockUpdation = await productHelper.stockUpdation(allCartData);
 
+    if (stockUpdation) {
+      const cart = await cartHelper.clearAllCartItems(userId);
+      if (cart) {
+        res.json({ url: "/orderSuccess" });
       }
-      
-    
-
-
-
-
-    
-    
+    }
   }
 };
 
@@ -648,68 +572,49 @@ const orderSuccess = (req, res) => {
 
 const cancelOrder = async (req, res) => {
   const orderId = req.params.id;
-  orderHelper.orderCancellation(orderId).then(async(response) => {
-    
+  orderHelper.orderCancellation(orderId).then(async (response) => {
     res.json(response);
   });
 };
 
-const orderDetails = async(req,res) =>{
-
+const orderDetails = async (req, res) => {
   const orderId = req.params.id;
 
-  orderHelper.getSpecificOrder(orderId).then((response) => {
-
-    for(const order of response){
-     
-      for(const products of order.orderedProduct){
-        
-        
-        products.offerPrice =
-      
-      Math.round(
-        products.product_price -
-          (products.product_price * products.product_discount) /
-            100
-      );
-      
-      }
-      
-      
-      
-    }    
-
-    res.render("user/each-orders",{productDetails:response})
+  orderHelper.getSpecificOrder(orderId).then(async(response) => {
+    const productDetails = await orderHelper.orderProductOfferCheck(response);
     
+
+    res.render("user/each-orders", { productDetails: response });
   });
 };
-
 
 const cancelOrders = async (req, res) => {
   const orderId = req.params.orderId;
   const productId = req.params.productId;
-  orderHelper.eachOrderCancellation(orderId,productId).then(async(response) => {
-    const stockUpdation = await productHelper.stockIncreasion(orderId,productId);
-    res.json(response);
-  });
+  orderHelper
+    .eachOrderCancellation(orderId, productId)
+    .then(async (response) => {
+      const stockUpdation = await productHelper.stockIncreasion(
+        orderId,
+        productId
+      );
+      res.json(response);
+    });
 };
 
-const searchProduct =async(req,res)=>{
+const searchProduct = async (req, res) => {
   let payload = req.params.query.trim();
   try {
-    let searchResult = await productModel.find({ product_name: { $regex: new RegExp('^' + payload + '.*', 'i') } }).exec();
+    let searchResult = await productModel
+      .find({ product_name: { $regex: new RegExp("^" + payload + ".*", "i") } })
+      .exec();
     searchResult = searchResult.slice(0, 5);
-    console.log(searchResult)
-    res.json({ searchResult:searchResult })
+    console.log(searchResult);
+    res.json({ searchResult: searchResult });
   } catch (error) {
-    res.status(500).render('error', { error  , layout: false});
+    res.status(500).render("error", { error, layout: false });
   }
-
-}
-
-
-
-
+};
 
 module.exports = {
   loadlogin,
@@ -745,11 +650,12 @@ module.exports = {
   changePassword,
   cancelOrder,
   orderDetails,
-  cancelOrders,addAddressPost,
+  cancelOrders,
+  addAddressPost,
   resendOtpForgotPass,
- 
+
   getEditAddress,
   postEditAddress,
   loadAllProduct,
-  searchProduct
+  searchProduct,
 };

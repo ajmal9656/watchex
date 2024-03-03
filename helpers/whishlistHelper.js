@@ -1,5 +1,7 @@
 const whishlistModel = require("../models/whishlistModel");
 const productModel = require("../models/productModel");
+const offerModel = require("../models/offerModel");
+const cartHelper = require("../helpers/cartHelper")
 
 const ObjectId = require('mongoose').Types.ObjectId;
 
@@ -96,11 +98,102 @@ const userWishlistCount = async (userId) => {
     
   });
 };
+
+const wishlistProductOfferCheck=async(userId,response)=>{
+  return new Promise(async(resolve,reject)=>{
+    const currentDate = Date.now();
+    console.log(response)
+    for (const products of response) {
+      
+
+      const cartStatus = await cartHelper.checkCart(
+        products.product._id,
+        userId
+      );
+      if (cartStatus) {
+        products.isCart = cartStatus;
+      }
+
+      const prodOffers = await offerModel.findOne({
+        "productOffer.product": products.product._id,
+        status: true,
+        startingDate: { $lte: currentDate },
+        endingDate: { $gte: currentDate },
+    });
+    console.log("jkadvnjnv",prodOffers)
+    const catOffers = await offerModel.findOne({
+        "categoryOffer.category": products.product.product_category,
+        status: true,
+        startingDate: { $lte: currentDate },
+        endingDate: { $gte: currentDate },
+    });
+
+    if (prodOffers && catOffers) {
+      console.log("aljkdcajc")
+        if (prodOffers.productOffer.discount >= catOffers.categoryOffer.discount) {
+            let discount =
+                parseInt(products.product.product_discount) +
+                parseInt(prodOffers.productOffer.discount);
+
+            products.product.offerPrice = Math.round(
+                products.product.product_price - (products.product.product_price * discount) / 100
+            );
+
+        } else {
+          console.log("tttttt")
+            let discount =
+                parseInt(products.product.product_discount) +
+                parseInt(catOffers.categoryOffer.discount);
+                console.log(discount)
+
+            products.product.offerPrice = Math.round(
+                products.product.product_price - (products.product.product_price * discount) / 100
+            );
+            console.log(products.product.offerPrice)
+
+        }
+
+    } else if (prodOffers) {
+      console.log("djfisjinvsjcv")
+        let discount =
+            parseInt(products.product.product_discount) +
+            parseInt(prodOffers.productOffer.discount);
+
+        products.product.offerPrice = Math.round(
+            products.product.product_price - (products.product.product_price * discount) / 100
+        );
+    } else if (catOffers) {
+        let discount =
+            parseInt(products.product.product_discount) +
+            parseInt(catOffers.categoryOffer.discount);
+
+        products.product.offerPrice = Math.round(
+            products.product.product_price - (products.product.product_price * discount) / 100
+        );
+    } else {
+      console.log("else")
+        products.product.offerPrice = Math.round(
+            products.product.product_price - (products.product.product_price * products.product.product_discount) / 100
+        );
+    }
+
+
+
+
+
+
+      
+    }
+    resolve(response)
+
+  })
+}
  
 module.exports={
     getAllWhishlistItems,
     addProductToWishlist,
     removeItem,
     checkWishlist,
-    userWishlistCount
+    userWishlistCount,
+    wishlistProductOfferCheck
 }

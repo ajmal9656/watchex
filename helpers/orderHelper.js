@@ -2,11 +2,12 @@ const cartModel=require("../models/cartModel");
 const orderModel=require("../models/orderModel");
 const userModel=require("../models/userModel");
 const productModel=require("../models/productModel");
+const { Promise } = require("mongoose");
 const ObjectId = require('mongoose').Types.ObjectId;
+const offerModel = require("../models/offerModel");
 
 
-const 
-placeOrder = async(userId,body,cartItems)=>{
+const placeOrder = async(userId,body,cartItems)=>{
     return new Promise(async(resolve,reject)=>{
 
         
@@ -53,16 +54,26 @@ placeOrder = async(userId,body,cartItems)=>{
     })
 }
 
-const getOrderDetails=async(userId)=>{
-    return new Promise(async(resolve,reject)=>{
-        const result = await orderModel.find({user:new ObjectId(userId)});
-        if(result){
+// const getOrderDetails=async(userId)=>{
+//     return new Promise(async(resolve,reject)=>{
+//         const result = await orderModel.find({user:new ObjectId(userId)});
+//         if(result){
             
-            resolve(result);
-        }
-    })
+//             resolve(result);
+//         }
+//     })
 
-}
+// }
+
+const getOrderDetails = async (userId) => {
+    try {
+        const result = await orderModel.find({ user: new ObjectId(userId) });
+        return result;
+    } catch (error) {
+        throw error;
+    }
+};
+
 
 const getAllOrders = async(req,res)=>{
     return new Promise(async(resolve,reject)=>{
@@ -131,23 +142,46 @@ const orderCancellation=async(orderId)=>{
     })  
 }
 
-const getSpecificOrder=async(orderId)=>{
-    return new Promise(async(resolve,reject)=>{
-        const result = await orderModel.aggregate([{$match:{_id:new ObjectId(orderId)}},{$unwind:"$products"},
-    {$lookup:{from:"products",
-              localField:"products.product",
-              foreignField:"_id",
-              as:"orderedProduct"}}])
+const getSpecificOrder = async (orderId) => {
+    try {
+        const result = await orderModel.aggregate([
+            { $match: { _id: new ObjectId(orderId) } },
+            { $unwind: "$products" },
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "products.product",
+                    foreignField: "_id",
+                    as: "orderedProduct"
+                }
+            }
+        ]);
+        
+        return result;
+    } catch (error) {
+        throw error;
+    }
+};
+
+
+
+// const getSpecificOrder=async(orderId)=>{
+//     return new Promise(async(resolve,reject)=>{
+//         const result = await orderModel.aggregate([{$match:{_id:new ObjectId(orderId)}},{$unwind:"$products"},
+//     {$lookup:{from:"products",
+//               localField:"products.product",
+//               foreignField:"_id",
+//               as:"orderedProduct"}}])
 
 
         
 
               
-              resolve(result)
-    })
+//               resolve(result)
+//     })
     
 
-}
+// }
 const eachOrderCancellation = async (orderId, productId) => {
     try {
         const result = await orderModel.findOneAndUpdate(
@@ -175,6 +209,152 @@ const specificOrderStatusChange=async(orderId,productId,changeStatus)=>{
 
     })
 }
+const orderProductOfferCheck = async (response) => {
+    try {
+        const currentDate = Date.now();
+        for (const order of response) {
+            for (const products of order.orderedProduct) {
+                const prodOffers = await offerModel.findOne({
+                    "productOffer.product": products._id,
+                    status: true,
+                    startingDate: { $lte: currentDate },
+                    endingDate: { $gte: currentDate },
+                });
+                const catOffers = await offerModel.findOne({
+                    "categoryOffer.category": products.product_category,
+                    status: true,
+                    startingDate: { $lte: currentDate },
+                    endingDate: { $gte: currentDate },
+                });
+
+                if (prodOffers && catOffers) {
+                    if (prodOffers.productOffer.discount >= catOffers.categoryOffer.discount) {
+                        let discount =
+                            parseInt(products.product_discount) +
+                            parseInt(prodOffers.productOffer.discount);
+
+                        products.offerPrice = Math.round(
+                            products.product_price - (products.product_price * discount) / 100
+                        );
+
+                    } else {
+                        let discount =
+                            parseInt(products.product_discount) +
+                            parseInt(catOffers.categoryOffer.discount);
+
+                        products.offerPrice = Math.round(
+                            products.product_price - (products.product_price * discount) / 100
+                        );
+
+                    }
+
+                } else if (prodOffers) {
+                    let discount =
+                        parseInt(products.product_discount) +
+                        parseInt(prodOffers.productOffer.discount);
+
+                    products.offerPrice = Math.round(
+                        products.product_price - (products.product_price * discount) / 100
+                    );
+                } else if (catOffers) {
+                    let discount =
+                        parseInt(products.product_discount) +
+                        parseInt(catOffers.categoryOffer.discount);
+
+                    products.offerPrice = Math.round(
+                        products.product_price - (products.product_price * discount) / 100
+                    );
+                } else {
+                    products.offerPrice = Math.round(
+                        products.product_price - (products.product_price * products.product_discount) / 100
+                    );
+                }
+            }
+        }
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
+
+// const orderProductOfferCheck=async(response)=>{
+//     return new Promise(async(resolve,reject)=>{
+//         const currentDate = Date.now();
+//         for (const order of response) {
+//             for (const products of order.orderedProduct) {
+//                 const prodOffers = await offerModel.findOne({
+//                     "productOffer.product": products._id,
+//                     status: true,
+//                     startingDate: { $lte: currentDate },
+//                     endingDate: { $gte: currentDate },
+//                   });
+//                   const catOffers = await offerModel.findOne({
+//                     "categoryOffer.category": products.product_category,
+//                     status: true,
+//                     startingDate: { $lte: currentDate },
+//                     endingDate: { $gte: currentDate },
+//                   });
+                  
+                  
+              
+//                   if (prodOffers && catOffers) {
+//                     if(prodOffers.productOffer.discount>=catOffers.categoryOffer.discount){
+//                       let discount =
+//                       parseInt(products.product_discount) +
+//                       parseInt(prodOffers.productOffer.discount)
+                    
+//                     products.offerPrice = Math.round(
+//                       products.product_price - (products.product_price * discount) / 100
+//                     );
+              
+//                     }else{
+//                       let discount =
+//                       parseInt(products.product_discount) +
+//                       parseInt(catOffers.categoryOffer.discount);
+                    
+//                     products.offerPrice = Math.round(
+//                       products.product_price - (products.product_price * discount) / 100
+//                     );
+              
+//                     }
+                    
+//                   } else if (prodOffers) {
+//                     let discount =
+//                       parseInt(products.product_discount) +
+//                       parseInt(prodOffers.productOffer.discount);
+                    
+//                     products.offerPrice = Math.round(
+//                       products.product_price - (products.product_price * discount) / 100
+//                     );
+//                   } else if (catOffers) {
+                    
+//                       let discount =
+//                         parseInt(products.product_discount) +
+//                         parseInt(catOffers.categoryOffer.discount);
+                      
+//                       products.offerPrice = Math.round(
+//                         products.product_price - (products.product_price * discount) / 100
+//                       );
+                    
+//                   } else {
+//                     products.offerPrice = Math.round(
+//                       products.product_price -
+//                         (products.product_price * products.product_discount) / 100
+//                     );
+//                   }
+
+
+
+
+
+             
+//             }
+//           }
+//           resolve(response)
+
+//     })
+// }
 
 
 
@@ -187,5 +367,6 @@ module.exports={
     orderCancellation,
     getSpecificOrder,
     eachOrderCancellation,
-    specificOrderStatusChange
+    specificOrderStatusChange,
+    orderProductOfferCheck
 }

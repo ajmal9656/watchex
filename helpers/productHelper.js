@@ -4,6 +4,7 @@ const fs = require('fs');
 const { resolve } = require("path");
 const productModel = require("../models/productModel");
 const orderModel = require("../models/orderModel");
+const offerModel = require("../models/offerModel");
 const { Console } = require("console");
 const objectId = require('mongoose').Types.ObjectId;
 
@@ -248,6 +249,150 @@ const getAllProduct = async()=>{
 
 }
 
+const AllProductOfferCheck=(productData)=>{
+  return new Promise(async(resolve,reject)=>{
+    const currentDate = Date.now();
+
+  for (const product of productData) {
+    const prodOffers = await offerModel.findOne({
+      "productOffer.product": product._id,
+      status: true,
+      startingDate: { $lte: currentDate },
+      endingDate: { $gte: currentDate },
+    });
+    const catOffers = await offerModel.findOne({
+      "categoryOffer.category": product.product_category,
+      status: true,
+      startingDate: { $lte: currentDate },
+      endingDate: { $gte: currentDate },
+    });
+    
+    
+
+    if (prodOffers && catOffers) {
+      if(prodOffers.productOffer.discount>=catOffers.categoryOffer.discount){
+        let discount =
+        parseInt(product.product_discount) +
+        parseInt(prodOffers.productOffer.discount)
+      
+      product.offerPrice = Math.round(
+        product.product_price - (product.product_price * discount) / 100
+      );
+
+      }else{
+        let discount =
+        parseInt(product.product_discount) +
+        parseInt(catOffers.categoryOffer.discount);
+      
+      product.offerPrice = Math.round(
+        product.product_price - (product.product_price * discount) / 100
+      );
+
+      }
+      
+    } else if (prodOffers) {
+      let discount =
+        parseInt(product.product_discount) +
+        parseInt(prodOffers.productOffer.discount);
+      
+      product.offerPrice = Math.round(
+        product.product_price - (product.product_price * discount) / 100
+      );
+    } else if (catOffers) {
+      
+        let discount =
+          parseInt(product.product_discount) +
+          parseInt(catOffers.categoryOffer.discount);
+        
+        product.offerPrice = Math.round(
+          product.product_price - (product.product_price * discount) / 100
+        );
+      
+    } else {
+      product.offerPrice = Math.round(
+        product.product_price -
+          (product.product_price * product.product_discount) / 100
+      );
+    }
+    
+  }
+  resolve(productData)
+  })
+
+}
+
+const productOfferCheck=(product)=>{
+  return new Promise(async(resolve,reject)=>{
+    const currentDate = Date.now();
+
+  
+    const prodOffers = await offerModel.findOne({
+      "productOffer.product": product._id,
+      status: true,
+      startingDate: { $lte: currentDate },
+      endingDate: { $gte: currentDate },
+    });
+    const catOffers = await offerModel.findOne({
+      "categoryOffer.category": product.product_category,
+      status: true,
+      startingDate: { $lte: currentDate },
+      endingDate: { $gte: currentDate },
+    });
+    
+    
+
+    if (prodOffers && catOffers) {
+      if(prodOffers.productOffer.discount>=catOffers.categoryOffer.discount){
+        let discount =
+        parseInt(product.product_discount) +
+        parseInt(prodOffers.productOffer.discount)
+      
+      product.offerPrice = Math.round(
+        product.product_price - (product.product_price * discount) / 100
+      );
+
+      }else{
+        let discount =
+        parseInt(product.product_discount) +
+        parseInt(catOffers.categoryOffer.discount);
+      
+      product.offerPrice = Math.round(
+        product.product_price - (product.product_price * discount) / 100
+      );
+
+      }
+      
+    } else if (prodOffers) {
+      let discount =
+        parseInt(product.product_discount) +
+        parseInt(prodOffers.productOffer.discount);
+      
+      product.offerPrice = Math.round(
+        product.product_price - (product.product_price * discount) / 100
+      );
+    } else if (catOffers) {
+      
+        let discount =
+          parseInt(product.product_discount) +
+          parseInt(catOffers.categoryOffer.discount);
+        
+        product.offerPrice = Math.round(
+          product.product_price - (product.product_price * discount) / 100
+        );
+      
+    } else {
+      product.offerPrice = Math.round(
+        product.product_price -
+          (product.product_price * product.product_discount) / 100
+      );
+    }
+    
+  
+  resolve(product)
+  })
+
+}
+
 
 
 
@@ -263,7 +408,8 @@ module.exports={
     editImages,
     getAllProducts,stockUpdation,
     stockIncreasion,
-    getAllProduct
+    getAllProduct,productOfferCheck,
+    AllProductOfferCheck
     
 
 }

@@ -1,6 +1,7 @@
 const cartModel = require("../models/cartModel");
 const couponModel = require("../models/couponModel");
 const productModel = require("../models/productModel");
+const offerModel = require("../models/offerModel");
 const ObjectId = require("mongoose").Types.ObjectId;
 
 const getAllCartItems = async (userId) => {
@@ -159,13 +160,13 @@ const totalSubtotal = async (userId, cartItems) => {
           for (let i = 0; i < cartItems.length; i++) {
             total =
               total +
-              cartItems[i].quantity *
-                Math.round(
-                  cartItems[i].product.product_price -
-                    (cartItems[i].product.product_price *
-                      cartItems[i].product.product_discount) /
-                      100
-                );
+              parseInt(cartItems[i].quantity) *parseInt(cartItems[i].product.offerPrice);
+                // Math.round(
+                //   cartItems[i].product.product_price -
+                //     (cartItems[i].product.product_price *
+                //       cartItems[i].product.product_discount) /
+                //       100
+                // );
           }
         }
         cart.totalAmount = total;
@@ -251,6 +252,97 @@ const removeCoupon= async (user) =>{
     
   })
 }
+
+const cartProductOfferCheck=async(response)=>{
+
+  return new Promise(async(resolve,reject)=>{
+    const currentDate = Date.now();
+
+
+
+    
+
+  for (const products of response) {
+    const size = products.size;
+      if (
+        products.quantity == products.product.product_quantity[size].quantity
+      ) {
+        products.product.sizeexceed = true;
+      }
+      if (products.quantity == 1) {
+        products.product.sizelimit = true;
+      }
+
+
+
+
+
+
+    const prodOffers = await offerModel.findOne({
+      "productOffer.product": products.product._id,
+      status: true,
+      startingDate: { $lte: currentDate },
+      endingDate: { $gte: currentDate },
+    });
+    const catOffers = await offerModel.findOne({
+      "categoryOffer.category": products.product.product_category,
+      status: true,
+      startingDate: { $lte: currentDate },
+      endingDate: { $gte: currentDate },
+    });
+    
+    
+
+    if (prodOffers && catOffers) {
+      if(prodOffers.productOffer.discount>=catOffers.categoryOffer.discount){
+        let discount =
+        parseInt(products.product.product_discount) +
+        parseInt(prodOffers.productOffer.discount)
+      
+        products.product.offerPrice = Math.round(
+          products.product.product_price - (products.product.product_price * discount) / 100
+      );
+
+      }else{
+        let discount =
+        parseInt(products.product.product_discount) +
+        parseInt(catOffers.categoryOffer.discount);
+      
+        products.product.offerPrice = Math.round(
+          products.product.product_price - (products.product.product_price * discount) / 100
+      );
+
+      }
+      
+    } else if (prodOffers) {
+      let discount =
+        parseInt(products.product.product_discount) +
+        parseInt(prodOffers.productOffer.discount);
+      
+        products.product.offerPrice = Math.round(
+          products.product.product_price - (products.product.product_price * discount) / 100
+      );
+    } else if (catOffers) {
+      
+        let discount =
+          parseInt(products.product.product_discount) +
+          parseInt(catOffers.categoryOffer.discount);
+        
+          products.product.offerPrice = Math.round(
+            products.product.product_price - (products.product.product_price * discount) / 100
+        );
+      
+    } else {
+      products.product.offerPrice = Math.round(
+        products.product.product_price -
+          (products.product.product_price * products.product.product_discount) / 100
+      );
+    }
+    
+  }
+  resolve(response)
+  })
+}
     
 
 module.exports = {
@@ -263,5 +355,6 @@ module.exports = {
   clearAllCartItems,
   getCart,
   userCartCount,
-  removeCoupon
+  removeCoupon,
+  cartProductOfferCheck
 };
