@@ -51,12 +51,16 @@ router.post('/applyCoupon',couponController.applyCoupon)
 router.get('/checkout',userMiddleware.isCheck,userController.loadCheckout);
 router.get('/editAddress/:id',userMiddleware.isCheck,userController.getEditAddress);
 router.post('/edit-address',userMiddleware.isCheck,userController.postEditAddress);
-router.post('/proceedPayment',userMiddleware.isCheck,userController.proceedPayment);
+router.post('/placeOrder',userMiddleware.isCheck,userController.proceedPayment);
+router.post('/createorder',userMiddleware.isCheck,userController.createOrder);
+router.post('/paymentSuccess',userMiddleware.isCheck,userController.paymentSuccess);
 router.get('/orderSuccess',userMiddleware.isCheck,userController.orderSuccess);
 router.patch('/cancelOrder/:id',userController.cancelOrder);
 router.get('/orderDetails/:id',userMiddleware.isCheck,userController.orderDetails); 
 
 router.patch('/cancelOrders/:orderId/:productId',userController.cancelOrders);
+
+
 
 
 router.post('/searchProduct/:query',userController.searchProduct);

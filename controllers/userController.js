@@ -18,7 +18,11 @@ const offerHelper = require("../helpers/offerHelper");
 const offerModel = require("../models/offerModel");
 const { response } = require("express");
 const moment = require("moment");
-const razorpay = require("razorpay")
+const Razorpay = require("razorpay")
+var razorpay = new Razorpay({
+  key_id: "rzp_test_3xAnxikxa5xZNZ",
+  key_secret: "ok69vIQiyLSK9Y7aEzAL2Zax",
+});
 
 const loadhome = async (req, res) => {
   const productData = await productHelper.getAllProducts();
@@ -565,6 +569,47 @@ const proceedPayment = async (req, res) => {
     }
   }
 };
+const createOrder = async (req, res) => {
+  try {
+    const amount = parseInt(req.body.totalPrice);
+    console.log(amount);
+    const order = await razorpay.orders.create({
+      amount: amount * 100,
+      currency: "INR",
+      receipt: req.session.user._id,
+    });
+
+    console.log(order);
+
+    res.json({ orderId: order });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const paymentSuccess = (req, res) => {
+  try {
+    const { paymentid, signature, orderId } = req.body;
+    const { createHmac } = require("node:crypto");
+
+    const hash = createHmac("sha256", "ok69vIQiyLSK9Y7aEzAL2Zax")
+      .update(orderId + "|" + paymentid)
+      .digest("hex");
+
+    if (hash === signature) {
+      console.log("success");
+      res.status(200).json({ success: true, message: "Payment successful" });
+    } else {
+      console.log("skbvsbnc")
+      console.log("error");
+      res.json({ success: false, message: "Invalid payment details" });
+    }
+  } catch (error) {
+    console.log("afasfgvrgvskbvsbnc")
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
 
 const orderSuccess = (req, res) => {
   res.render("user/orderSuccess");
@@ -648,7 +693,9 @@ module.exports = {
   proceedPayment,
   orderSuccess,
   changePassword,
+  paymentSuccess,
   cancelOrder,
+  createOrder,
   orderDetails,
   cancelOrders,
   addAddressPost,
