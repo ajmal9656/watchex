@@ -343,6 +343,92 @@ const cartProductOfferCheck=async(response)=>{
   resolve(response)
   })
 }
+
+const offerCheck=async(response)=>{
+
+  return new Promise(async(resolve,reject)=>{
+    const currentDate = Date.now();
+    
+    console.log("response")
+    console.log(response)
+
+
+
+    
+
+  for (const products of response.products) {
+    
+
+
+
+
+
+
+    const prodOffers = await offerModel.findOne({
+      "productOffer.product": products.productItemId._id,
+      status: true,
+      startingDate: { $lte: currentDate },
+      endingDate: { $gte: currentDate },
+    });
+    const catOffers = await offerModel.findOne({
+      "categoryOffer.category": products.productItemId.product_category,
+      status: true,
+      startingDate: { $lte: currentDate },
+      endingDate: { $gte: currentDate },
+    });
+    
+    
+
+    if (prodOffers && catOffers) {
+      if(prodOffers.productOffer.discount>=catOffers.categoryOffer.discount){
+        let discount =
+        parseInt(products.productItemId.product_discount) +
+        parseInt(prodOffers.productOffer.discount)
+      
+        products.productItemId.offerPrice = Math.round(
+          products.productItemId.product_price - (products.productItemId.product_price * discount) / 100
+      );
+
+      }else{
+        let discount =
+        parseInt(products.productItemId.product_discount) +
+        parseInt(catOffers.categoryOffer.discount);
+      
+        products.productItemId.offerPrice = Math.round(
+          products.productItemId.product_price - (products.productItemId.product_price * discount) / 100
+      );
+
+      }
+      
+    } else if (prodOffers) {
+      let discount =
+        parseInt(products.productItemId.product_discount) +
+        parseInt(prodOffers.productOffer.discount);
+      
+        products.productItemId.offerPrice = Math.round(
+          products.productItemId.product_price - (products.productItemId.product_price * discount) / 100
+      );
+    } else if (catOffers) {
+      
+        let discount =
+          parseInt(products.productItemId.product_discount) +
+          parseInt(catOffers.categoryOffer.discount);
+        
+          products.productItemId.offerPrice = Math.round(
+            products.productItemId.product_price - (products.productItemId.product_price * discount) / 100
+        );
+      
+    } else {
+      products.productItemId.offerPrice = Math.round(
+        products.productItemId.product_price -
+          (products.productItemId.product_price * products.productItemId.product_discount) / 100
+      );
+    }
+    
+  }
+  resolve(response)
+  })
+}
     
 
 module.exports = {
@@ -356,5 +442,6 @@ module.exports = {
   getCart,
   userCartCount,
   removeCoupon,
-  cartProductOfferCheck
+  cartProductOfferCheck,
+  offerCheck
 };

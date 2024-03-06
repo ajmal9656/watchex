@@ -81,9 +81,10 @@ const loadCoupons = async(req,res)=>{
   
       const userId = req.session.user._id;
       const couponCode = req.body.couponCode;
+      const totalAmount = parseInt(req.params.totalAmount);
       console.log(couponCode)
   
-      const result = await couponHelper.applyCoupon(userId, couponCode);
+      const result = await couponHelper.applyCoupon(userId, couponCode,totalAmount);
       
       
       res.json(result);

@@ -37,6 +37,7 @@ router.post("/orderStatus",adminController.changeOrderStatus);
 router.get("/orderDetails/:id",adminController.loadOrderDetails);
 
 router.post("/orderStatusChange",adminController.changeSpecificOrderStatus);
+router.post("/approveReturn/:subTotal",adminController.acceptReturn);
 
 router.get("/coupons",adminMiddleware.isLogout,couponController.loadCoupons);
 router.post("/add-coupon",adminMiddleware.isLogout,couponController.addCoupon);
@@ -56,5 +57,9 @@ router.post("/add-prodOffer",adminMiddleware.isLogout,offerController.addProduct
 router.get("/edit-prodOffer/:id",adminMiddleware.isLogout,offerController.getEditOffer);
 router.post("/edit-prodOffer",adminMiddleware.isLogout,offerController.postEditProductOffer);
 router.get("/deleteProductOffer/:id",adminMiddleware.isLogout,offerController.softDeleteProductOffer);
+
+
+router.get("/salesReport",adminMiddleware.isLogout,adminController.loadSalesReport);
+router.post("/salesReportDateSort",adminMiddleware.isLogout,adminController.loadSalesReportDateSort);
 
 module.exports=router;

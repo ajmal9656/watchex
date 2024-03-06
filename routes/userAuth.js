@@ -46,7 +46,7 @@ router.post('/addressPost',userController.addAddressPost);
 
 router.post('/changepassword',userMiddleware.isCheck,userController.changePassword);
 
-router.post('/applyCoupon',couponController.applyCoupon)
+router.post('/applyCoupon/:totalAmount',couponController.applyCoupon)
 
 router.get('/checkout',userMiddleware.isCheck,userController.loadCheckout);
 router.get('/editAddress/:id',userMiddleware.isCheck,userController.getEditAddress);
@@ -58,7 +58,11 @@ router.get('/orderSuccess',userMiddleware.isCheck,userController.orderSuccess);
 router.patch('/cancelOrder/:id',userController.cancelOrder);
 router.get('/orderDetails/:id',userMiddleware.isCheck,userController.orderDetails); 
 
-router.patch('/cancelOrders/:orderId/:productId',userController.cancelOrders);
+
+router.patch('/cancelOrders/:orderId/:productId/:subTotal',userController.cancelOrders);
+router.patch('/returnOrders/:orderId/:productId',userController.returnOrders);
+
+router.get('/wallet',userMiddleware.isCheck,userController.loadWallet);
 
 
 

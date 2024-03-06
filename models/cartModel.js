@@ -10,7 +10,7 @@ const cartModel=mongoose.Schema({
         {
             productItemId:{
                 type:mongoose.Schema.Types.ObjectId,
-                ref:'products',
+                ref:'Product',
                 required:true
             },
             quantity: {

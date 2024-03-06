@@ -509,6 +509,7 @@ const loadCheckout = async (req, res) => {
   const couponData = await couponHelper.getAllCoupons();
 
   const productDetails = await cartHelper.cartProductOfferCheck(cartData);
+  console.log(productDetails)
 
   
   let totalandSubTotal = await cartHelper.totalSubtotal(userId, productDetails);
@@ -552,9 +553,13 @@ const postEditAddress = async (req, res) => {
 const proceedPayment = async (req, res) => {
   const userId = req.session.user._id;
   const body = req.body;
-  const cartItems = await cartModel.findOne({ user: userId });
+  const cartItems = await cartModel.findOne({ user: userId }).populate("products.productItemId");
+  console.log("hcszhbv kjzvn ")
+  
+  const cartData = await cartHelper.offerCheck(cartItems);
+  console.log("aaaa ")
 
-  const result = await orderHelper.placeOrder(userId, body, cartItems);
+  const result = await orderHelper.placeOrder(userId, body, cartData);
 
   if (result) {
     const allCartData = await cartHelper.getCart(userId);
@@ -636,16 +641,49 @@ const orderDetails = async (req, res) => {
 const cancelOrders = async (req, res) => {
   const orderId = req.params.orderId;
   const productId = req.params.productId;
+  const subTotal = req.params.subTotal;
+  const userId = req.session.user._id;
   orderHelper
-    .eachOrderCancellation(orderId, productId)
+    .eachOrderCancellation(orderId, productId,subTotal,userId)
     .then(async (response) => {
       const stockUpdation = await productHelper.stockIncreasion(
         orderId,
         productId
       );
+      
       res.json(response);
     });
 };
+
+const returnOrders = async (req, res) => {
+  const orderId = req.params.orderId;
+  const productId = req.params.productId;
+ 
+  orderHelper
+    .eachOrderReturn(orderId, productId)
+    .then( (response) => {
+      
+      res.json(response);
+    });
+};
+
+const loadWallet = async (req,res)=>{
+ 
+
+    const userId = req.session.user._id;
+    const walletData = await userHelper.getUserDetails(userId);
+
+    for (const amount of walletData.wallet.details) {
+      amount.formattedDate = moment(amount.date).format("MMM Do, YYYY");
+
+      
+    }
+
+    res.render("user/wallet-details", { walletData });
+
+
+  
+}
 
 const searchProduct = async (req, res) => {
   let payload = req.params.query.trim();
@@ -705,4 +743,6 @@ module.exports = {
   postEditAddress,
   loadAllProduct,
   searchProduct,
+  returnOrders,
+  loadWallet
 };

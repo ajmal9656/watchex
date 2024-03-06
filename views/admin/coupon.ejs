@@ -91,6 +91,10 @@
                         <input type="text" class="form-control" name="couponAmount" id="couponAmount">
                     </div>
                     <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Minimum Amount</label>
+                        <input type="text" class="form-control" name="minAmount" id="minAmount">
+                    </div>
+                    <div class="mb-3">
                         <label for="recipient-name" class="col-form-label">Expired On</label>
                         <input type="text" class="form-control" name="couponExpiry" id="couponExpiry" placeholder="DD/MM/YYYY">
                     </div>
@@ -175,7 +179,7 @@
                 console.log(res,'reeeeeeeeeeeeesssssssssssssssssss');
                 if (res) {
                     document.getElementById('couponNme').value = res.couponName;
-                    // document.getElementById('couponCode').value = res.code;
+                    document.getElementById('minAmount').value = res.minAmount;
                     document.getElementById('couponAmont').value = res.discount;
                     document.getElementById('couponExpiring').value = res.expiryDate;
                     document.getElementById('couponIdd').value = res._id;

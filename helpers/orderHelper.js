@@ -5,6 +5,8 @@ const productModel=require("../models/productModel");
 const { Promise } = require("mongoose");
 const ObjectId = require('mongoose').Types.ObjectId;
 const offerModel = require("../models/offerModel");
+const walletHelper = require("../helpers/walletHelper");
+const moment = require("moment")
 
 
 const placeOrder = async (userId, body, cartItems) => {
@@ -14,7 +16,8 @@ const placeOrder = async (userId, body, cartItems) => {
 
         let products = [];
         for (const product of cartItems.products) {
-            products.push({product: product.productItemId, quantity: product.quantity, size: product.size});
+            products.push({product: product.productItemId._id, quantity: product.quantity, size: product.size,productPrice:product.productItemId.offerPrice
+            });
         }
 
         if (address) {
@@ -145,17 +148,29 @@ const getAllOrders = async (req, res) => {
 
 // }
 
-const orderStatusChange=async(orderId,changeStatus)=>{
-    return new Promise(async(resolve,reject)=>{
+const orderStatusChange = async (orderId, changeStatus) => {
+    try {
         const result = await orderModel.findById(orderId);
-        result.status=changeStatus;
+        result.status = changeStatus;
         await result.save();
-        resolve(result);
+        return result;
+    } catch (error) {
+        throw error; // You might want to handle errors appropriately in your actual application
+    }
+};
+
+
+// const orderStatusChange=async(orderId,changeStatus)=>{
+//     return new Promise(async(resolve,reject)=>{
+//         const result = await orderModel.findById(orderId);
+//         result.status=changeStatus;
+//         await result.save();
+//         resolve(result);
 
 
 
-    })
-}
+//     })
+// }
 
 const getOrders = async (orderId) => {
     try {
@@ -171,6 +186,16 @@ const getOrders = async (orderId) => {
         throw error; // Re-throwing the error to be caught elsewhere if needed.
     }
 };
+
+const orderCancellation = async (orderId) => {
+    try {
+        const result = await orderModel.findOneAndUpdate({_id: orderId}, {$set: {status: "cancelled"}});
+        return result;
+    } catch (error) {
+        throw error; // You might want to handle errors appropriately in your actual application
+    }
+};
+
 
 // const getOrders=async(orderId)=>{
 //     return new Promise(async(resolve,reject)=>{
@@ -194,20 +219,20 @@ const getOrders = async (orderId) => {
 //     })
 // }
 
-const orderCancellation=async(orderId)=>{
-    return new Promise(async(resolve,reject)=>{
+// const orderCancellation=async(orderId)=>{
+//     return new Promise(async(resolve,reject)=>{
 
 
 
 
-        const result = await orderModel.findOneAndUpdate({_id:orderId},{$set:{status:"cancelled"}});
-        resolve(result);
+//         const result = await orderModel.findOneAndUpdate({_id:orderId},{$set:{status:"cancelled"}});
+//         resolve(result);
 
         
 
 
-    })  
-}
+//     })  
+// }
 
 const getSpecificOrder = async (orderId) => {
     try {
@@ -249,35 +274,93 @@ const getSpecificOrder = async (orderId) => {
     
 
 // }
-const eachOrderCancellation = async (orderId, productId) => {
+const eachOrderCancellation = async (orderId, productId,subTotal,userId) => {
     try {
+        
+
         const result = await orderModel.findOneAndUpdate(
             { _id: orderId, "products.product": productId }, // Find the order by its ID and ensure the products array contains the specified product ID
             { $set: { "products.$.orderStatus": "cancelled" } }, // Update the orderStatus of the matched product
             { new: true } // Return the updated document after the update operation
         );
+        console.log("result")
+        console.log(result)
+        if(result.paymentMethod==="Razorpay"){
+            const walletUpdation = await walletHelper.walletAmountAdding(userId,subTotal);
+
+        }
+        
+        
+        return result;
+    } catch (error) {
+        throw error;
+    }
+};
+const eachOrderReturn = async (orderId, productId) => {
+    try {
+        const result = await orderModel.findOneAndUpdate(
+            { _id: orderId, "products.product": productId }, // Find the order by its ID and ensure the products array contains the specified product ID
+            { $set: { "products.$.orderStatus": "return pending" } }, // Update the orderStatus of the matched product
+            { new: true } // Return the updated document after the update operation
+        );
+
+        
         return result;
     } catch (error) {
         throw error;
     }
 };
 
-const specificOrderStatusChange=async(orderId,productId,changeStatus)=>{
-    return new Promise(async(resolve,reject)=>{
+const specificOrderStatusChange = async (orderId, productId, changeStatus) => {
+    try {
         const result = await orderModel.findOneAndUpdate(
             { _id: orderId, "products.product": productId }, // Find the order by its ID and ensure the products array contains the specified product ID
             { $set: { "products.$.orderStatus": changeStatus } }, // Update the orderStatus of the matched product
             { new: true } // Return the updated document after the update operation
         );
-        console.log(result)
-        resolve(result);
+        console.log(result);
+        return result;
+    } catch (error) {
+        throw error; // You might want to handle errors appropriately in your actual application
+    }
+};
+
+const returnApproval = async (orderId, productId, changeStatus,subTotal,userId) => {
+    try {
+        const result = await orderModel.findOneAndUpdate(
+            { _id: orderId, "products.product": productId }, // Find the order by its ID and ensure the products array contains the specified product ID
+            { $set: { "products.$.orderStatus": changeStatus } }, // Update the orderStatus of the matched product
+            { new: true } // Return the updated document after the update operation
+        );
+        console.log(result);
+        
+            const walletUpdation = await walletHelper.walletAmountAdding(userId,subTotal);
+
+        
+        return result;
+    } catch (error) {
+        throw error; // You might want to handle errors appropriately in your actual application
+    }
+};
+
+
+// const specificOrderStatusChange=async(orderId,productId,changeStatus)=>{
+//     return new Promise(async(resolve,reject)=>{
+//         const result = await orderModel.findOneAndUpdate(
+//             { _id: orderId, "products.product": productId }, // Find the order by its ID and ensure the products array contains the specified product ID
+//             { $set: { "products.$.orderStatus": changeStatus } }, // Update the orderStatus of the matched product
+//             { new: true } // Return the updated document after the update operation
+//         );
+//         console.log(result)
+//         resolve(result);
 
 
 
-    })
-}
+//     })
+// }
 const orderProductOfferCheck = async (response) => {
     try {
+        
         const currentDate = Date.now();
         for (const order of response) {
             for (const products of order.orderedProduct) {
@@ -343,6 +426,78 @@ const orderProductOfferCheck = async (response) => {
         throw error;
     }
 };
+const orderedProductOfferCheck = async (response) => {
+    response.formattedDate = moment(response.orderedOn).format("MMM Do, YYYY");
+    console.log("asasasasasa")
+
+    
+    try {
+        
+        const currentDate = Date.now();
+        for (const order of response) {
+            for (const products of order.orderedProduct) {
+                const prodOffers = await offerModel.findOne({
+                    "productOffer.product": products._id,
+                    status: true,
+                    startingDate: { $lte: currentDate },
+                    endingDate: { $gte: currentDate },
+                });
+                const catOffers = await offerModel.findOne({
+                    "categoryOffer.category": products.product_category,
+                    status: true,
+                    startingDate: { $lte: currentDate },
+                    endingDate: { $gte: currentDate },
+                });
+
+                if (prodOffers && catOffers) {
+                    if (prodOffers.productOffer.discount >= catOffers.categoryOffer.discount) {
+                        let discount =
+                            parseInt(products.product_discount) +
+                            parseInt(prodOffers.productOffer.discount);
+
+                        products.offerPrice = Math.round(
+                            products.product_price - (products.product_price * discount) / 100
+                        );
+
+                    } else {
+                        let discount =
+                            parseInt(products.product_discount) +
+                            parseInt(catOffers.categoryOffer.discount);
+
+                        products.offerPrice = Math.round(
+                            products.product_price - (products.product_price * discount) / 100
+                        );
+
+                    }
+
+                } else if (prodOffers) {
+                    let discount =
+                        parseInt(products.product_discount) +
+                        parseInt(prodOffers.productOffer.discount);
+
+                    products.offerPrice = Math.round(
+                        products.product_price - (products.product_price * discount) / 100
+                    );
+                } else if (catOffers) {
+                    let discount =
+                        parseInt(products.product_discount) +
+                        parseInt(catOffers.categoryOffer.discount);
+
+                    products.offerPrice = Math.round(
+                        products.product_price - (products.product_price * discount) / 100
+                    );
+                } else {
+                    products.offerPrice = Math.round(
+                        products.product_price - (products.product_price * products.product_discount) / 100
+                    );
+                }
+            }
+        }
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
 
 
 // const orderProductOfferCheck=async(response)=>{
@@ -423,6 +578,45 @@ const orderProductOfferCheck = async (response) => {
 //     })
 // }
 
+const salesReport = async () => {
+    try {
+        const result = await orderModel.aggregate([
+            
+            { $unwind: "$products" },
+            { $match: {"products.orderStatus":"delivered"} },
+            { $lookup: { from: "products", localField: "products.product", foreignField: "_id", as: "productDetails" } }
+        ]);
+
+        return result;
+    } catch (error) {
+        console.log("Error:", error);
+        throw error; // Re-throwing the error to be caught elsewhere if needed.
+    }
+};
+const salesReportDateSort = async (startDate, endDate) => {
+    try {
+        // Convert date strings to JavaScript Date objects
+        const startDateObj = new Date(startDate);
+        const endDateObj = new Date(endDate);
+
+        const result = await orderModel.aggregate([
+            { $match: {
+                "orderedOn": { $gte: startDateObj, $lte: endDateObj }
+            }},
+            { $unwind: "$products" },
+            { $match: {"products.orderStatus":"delivered"} },
+            { $lookup: { from: "products", localField: "products.product", foreignField: "_id", as: "productDetails" } },
+            { $sort: { "orderedOn": 1 } } // 1 for ascending order, -1 for descending
+        ]);
+
+        return result;
+    } catch (error) {
+        console.log("Error:", error);
+        throw error; // Re-throwing the error to be caught elsewhere if needed.
+    }
+};
+
+
 
 
 module.exports={
@@ -430,10 +624,13 @@ module.exports={
     getOrderDetails,
     getAllOrders,
     orderStatusChange,
-    getOrders,
     orderCancellation,
     getSpecificOrder,
     eachOrderCancellation,
     specificOrderStatusChange,
-    orderProductOfferCheck
+    orderProductOfferCheck,
+    eachOrderReturn,
+    returnApproval,
+    orderedProductOfferCheck,
+    salesReport,salesReportDateSort
 }

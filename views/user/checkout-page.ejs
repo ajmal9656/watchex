@@ -807,8 +807,8 @@
                                                                     <%= cartItems[i].product.product_name %>
                                                                 </a></h5> <span class="product-qty">x <%= cartItems[i].quantity %></span>
                                                         </td>
-                                                        <td>
-                                                            $<%= cartItems[i].product.subTotal %>
+                                                        <td id="<%= cartItems[i].product._id %>">
+                                                            $<%= cartItems[i].product.offerPrice * cartItems[i].quantity %>
                                                         </td>
                                                     </tr>
                                                     <% } %>
@@ -824,7 +824,7 @@
                                                     </tr>
                                                     <tr>
                                                         <th>Total</th>
-                                                        <td colspan="2" class="product-subtotal font-xl text-dark fw-900" >$<span class="font-xl text-dark fw-900" id="totalAmount">
+                                                        <td colspan="2" class="product-subtotal font-xl text-dark fw-900" >$<span class="font-xl text-dark fw-900" id="totalAmountCart">
                                                                 <%=totalandSubTotal%>
                                                             </span></td>
                                                     </tr>
@@ -1224,7 +1224,7 @@
                     addressId: address,
                     paymentOption: payment,
                 };
-                const totalAmount = document.getElementById("totalAmount");
+                const totalAmount = document.getElementById("totalAmountCart");
         const totalPrice = convertRupeeToNumber(totalAmount.textContent);
         console.log(totalPrice)
 
@@ -1371,9 +1371,20 @@
     
                 
                 const data = $(this).serialize();
+                const totalAmount = document.getElementById("totalAmountCart");
+                console.log(totalAmount)
+        const totalPrice = convertRupeeToNumber(totalAmount.textContent);
+        console.log(totalPrice)
+        function convertRupeeToNumber(rupeeString) {
+          // Remove the rupee symbol (₹) and any commas from the string.
+          const numberString = rupeeString.replace(/₹|,/g, "");
+
+          // Parse the number string into a number and return it.
+          return parseInt(numberString);
+        }
     
                 $.ajax({
-                    url: "/applyCoupon",
+                    url: `/applyCoupon/${totalPrice}`,
                     method: "POST",
                     data: data,
                     success: (response) => {

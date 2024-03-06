@@ -8,6 +8,7 @@ const adminModel = require("../models/adminModel");
 const { response } = require("express");
 const orderHelper = require("../helpers/orderHelper");
 const couponHelper = require("../helpers/couponHelper");
+const productHelper = require("../helpers/productHelper");
 const offerHelper = require("../helpers/offerHelper");
 const moment = require("moment")
 
@@ -306,31 +307,23 @@ const loadOrderDetails = async(req,res)=>{
 
   const orderId = req.params.id;
 
-  orderHelper.getOrders(orderId).then((response)=>{
-    response.formattedDate = moment(response.orderedOn).format("MMM Do, YYYY");
+  orderHelper.getSpecificOrder(orderId).then(async(response)=>{
+    console.log(response)
+    console.log(response[0].orderedProduct)
+    
+
+    const productDetails = await orderHelper.orderedProductOfferCheck(response);
+
+    console.log(response)
+    console.log(response[0].orderedProduct)
     
 
 
-    for(const order of response){
-      
-
-
-
-      
-
-      for(const product of order.productDetails){
-        product.offerPrice=Math.round(product.product_price-(product.product_price*product.product_discount)/100);
-
-      }
-        
-      
-
-
-    }
+    
 
     
 
-    res.render("admin/order-details",{orderDetails:response})
+    res.render("admin/order-details",{orderDetails:productDetails})
 
 
   })
@@ -349,10 +342,83 @@ const changeSpecificOrderStatus = async (req,res)=>{
 
   await orderHelper.specificOrderStatusChange(orderId,productId,changeStatus).then((result)=>{
     
+    
     res.json({status:true})
 
   })
 }
+
+const acceptReturn = async (req,res)=>{
+  const orderId = req.body.orderId;
+  const productId = req.body.productId;
+  const subTotal = req.params.subTotal;
+  const userId = req.session.user._id;
+
+  const changeStatus = req.body.status;
+  console.log(orderId)
+  console.log(productId)
+  console.log(changeStatus)
+
+  await orderHelper.returnApproval(orderId,productId,changeStatus,subTotal,userId).then(async(result)=>{
+    const stockUpdation = await productHelper.stockIncreasion(
+      orderId,
+      productId
+    );
+
+    
+    res.json({status:true})
+
+  })
+}
+
+const loadSalesReport = async (req, res) => {
+  orderHelper
+    .salesReport()
+    .then((response) => {
+      console.log("sojiouajcn");
+      console.log(response)
+      response.forEach((order) => {
+        const orderDate = new Date(order.orderedOn)
+        const formattedDate = orderDate.toLocaleDateString('en-GB', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric'
+        })
+        order.orderedOn = formattedDate
+      })
+     
+      res.render("admin/sales-report", { sales: response });
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
+const loadSalesReportDateSort = async (req, res) => {
+
+const startDate = req.body.startDate;
+const endDate = req.body.endDate;
+  orderHelper
+    .salesReportDateSort(startDate,endDate)
+    .then((response) => {
+      console.log("sojiouajcn");
+      console.log(response)
+      response.forEach((order) => {
+        const orderDate = new Date(order.orderedOn)
+        const formattedDate = orderDate.toLocaleDateString('en-GB', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric'
+        })
+        order.orderedOn = formattedDate
+      })
+     
+      res.render("admin/sales-report", { sales: response });
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
 
 
 
@@ -380,6 +446,9 @@ module.exports = {
   changeOrderStatus,
   loadOrderDetails,
   changeSpecificOrderStatus,
+  acceptReturn,
+  loadSalesReport,
+  loadSalesReportDateSort
   
   
 };

@@ -21,6 +21,10 @@ const orderSchema = new mongoose.Schema({
         type: String,
         enum: ["pending","processing","confirmed","outForDelivery", "shipped", "delivered","return pending","returned","cancelled"],
         default: "pending",
+      },
+      productPrice: {
+        type: Number
+
       }
     },
   ],

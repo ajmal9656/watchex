@@ -30,6 +30,7 @@ const couponAdd=async(body)=>{
             couponName : body.couponName,
             code : voucherCode[0],
             discount : body.couponAmount,
+            minAmount:body.minAmount,
             expiryDate : body.couponExpiry
         })
 
@@ -68,6 +69,7 @@ const couponEdit=async(body)=>{
 
             result.couponName = body.couponName
             result.discount = body.couponAmount
+            result.minAmount = body.minAmount
             result.expiryDate = body.couponExpiry
             await result.save();
 
@@ -79,46 +81,53 @@ const couponEdit=async(body)=>{
     })
 }
 
-const applyCoupon=async(userId, couponCode)=>{
+const applyCoupon=async(userId, couponCode,totalAmount)=>{
     return new Promise(async (resolve, reject) => {
         const coupon = await couponModel.findOne({ code: couponCode })
         console.log(coupon)
         if(coupon){
-            if (coupon.isActive === "Active") {
-                if (!coupon.usedBy.includes(userId)) {
-                  const cart = await cartModel.findOne({ user: new ObjectId(userId)});
-                  
-      
-                  if(cart.coupon===null){ 
-                    console.log("sgsfg")
-                      const discount = coupon.discount;
+            if(coupon.minAmount<=totalAmount){
+                if (coupon.isActive === "Active") {
+                    if (!coupon.usedBy.includes(userId)) {
+                      const cart = await cartModel.findOne({ user: new ObjectId(userId)});
+                      
           
-                      cart.totalAmount = cart.totalAmount - discount;
-                      cart.coupon = couponCode;
+                      if(cart.coupon===null){ 
+                        console.log("sgsfg")
+                          const discount = coupon.discount;
               
-                      await cart.save();
-                      console.log(cart)
-              
-                      coupon.usedBy.push(userId);
-                      await coupon.save();
-              
-                      resolve({
-                        discount,
-                        cart,
-                        status: true,
-                        message: "Coupon applied successfully",
-                      });}
-                      else{
-                          resolve({ status: false, message: "Coupon limit Exceeded" });
-                      }
+                          cart.totalAmount = cart.totalAmount - discount;
+                          cart.coupon = couponCode;
                   
-                 
-                } else {
-                  resolve({ status: false, message: "This coupon is already used" });
-                }
-              } else {
-                resolve({ status: false, message: "Coupon Expired" });
-              }
+                          await cart.save();
+                          console.log(cart)
+                  
+                          coupon.usedBy.push(userId);
+                          await coupon.save();
+                  
+                          resolve({
+                            discount,
+                            cart,
+                            status: true,
+                            message: "Coupon applied successfully",
+                          });}
+                          else{
+                              resolve({ status: false, message: "Coupon limit Exceeded" });
+                          }
+                      
+                     
+                    } else {
+                      resolve({ status: false, message: "This coupon is already used" });
+                    }
+                  } else {
+                    resolve({ status: false, message: "Coupon Expired" });
+                  }
+
+            }else{
+                resolve({ status: false, message: "minimum amount needed" });
+
+            }
+            
 
         }else{
             resolve({ status: false, message: "Invalid Coupon Code" });

@@ -263,9 +263,9 @@
                                 </div>
                             </div>
                             <div class="header-action-icon-2">
-                                <a href="/wallet">
+                                <a href="shop-wishlist.html">
                                     <img class="svgInject" alt="Evara" src="/public/user/assets/imgs/theme/icons/icon-heart.svg">
-                                    <span class="pro-count blue"><%= userData.wallet.balance %></span>
+                                    <span class="pro-count blue"><%= walletData.wallet.balance %></span>
                                 </a>
                             </div>
                             <div class="header-action-icon d-block d-lg-none">
@@ -463,38 +463,10 @@
                                             <a class="nav-link active" id="dashboard-tab" data-bs-toggle="tab"
                                                 href="#dashboard" role="tab" aria-controls="dashboard"
                                                 aria-selected="false"><i
-                                                    class="fi-rs-settings-sliders mr-10"></i>Dashboard</a>
+                                                    class="fi-rs-settings-sliders mr-10"></i>Wallet</a>
                                         </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" id="orders-tab" data-bs-toggle="tab" href="#orders"
-                                                role="tab" aria-controls="orders" aria-selected="false"><i
-                                                    class="fi-rs-shopping-bag mr-10"></i>Orders</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" id="track-orders-tab" data-bs-toggle="tab"
-                                                href="#track-orders" role="tab" aria-controls="track-orders"
-                                                aria-selected="false"><i class="fi-rs-marker mr-10"></i>Add Address
-                                                </Address></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" id="address-tab" data-bs-toggle="tab" href="#address"
-                                                role="tab" aria-controls="address" aria-selected="true"><i
-                                                    class="fi-rs-marker mr-10"></i>My Address</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" id="account-detail-tab" data-bs-toggle="tab"
-                                                href="#account-detail" role="tab" aria-controls="account-detail"
-                                                aria-selected="true"><i class="fi-rs-user mr-10"></i>Account details</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" id="account-detail-tab" data-bs-toggle="tab"
-                                                href="#accountsecurity" role="tab" aria-controls="account-detail"
-                                                aria-selected="true"><i class="fi-rs-user mr-10"></i>Accout Security</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="/logout"><i
-                                                    class="fi-rs-sign-out mr-10"></i>Logout</a>
-                                        </li>
+                                        
+                                   
                                     </ul>
                                 </div>
                             </div>
@@ -504,44 +476,33 @@
                                         aria-labelledby="dashboard-tab">
                                         <div class="card">
                                             <div class="card-header">
-                                                <h5 class="mb-0">Hello <%= userData.name %> !! </h5>
-                                            </div>
-                                            <div class="card-body">
-                                                <p>From your account dashboard. you can easily check &amp; view your <a
-                                                        href="#">recent orders</a>, manage your <a href="#">shipping and
-                                                        billing addresses</a> and <a href="#">edit your password and
-                                                        account details.</a></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab">
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <h5 class="mb-0">Your Orders</h5>
+                                                <h5 class="mb-0">Your Wallet</h5>
                                             </div>
                                             <div class="card-body">
                                                 <div class="table-responsive">
                                                     <table class="table" id="orderTable">
                                                         <thead>
                                                             <tr>
-                                                                <th>Order</th>
+                                                                <th>Transaction Id</th>
                                                                 <th>Date</th>
                                                                 
-                                                                <th>Total</th>
+                                                                <th>Amount</th>
                                                                 
-                                                                <th> View Details </th>
+                                                                <th>Transaction Type</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <% for( let i = 0; i < orderData.length; i++ ) { %>
+                                                            <% for( let i = 0; i <walletData.wallet.details.length; i++ ) { %>
                                                                 <tr>
-                                                                    <td><%= orderData[i].orderId %></td>
-                                                                    <td><%= orderData[i].formattedDate %></td>
+                                                                    <td><%= walletData.wallet.details[i].transactionId %></td>
+                                                                    <td><%= walletData.wallet.details[i].formattedDate %></td>
                                                                     
-                                                                    <td>$<%= orderData[i].totalAmount %> for <%= orderData[i].quantity %> item</td>
+                                                                    <td>$<%= walletData.wallet.details[i].amount %></td>
                                                                     
                                                                                 <td width="10%">
-                                                                                    <a href="/orderDetails/<%= orderData[i]._id %>" class="btn btn-md rounded font-sm">Details</a>
+                                                                                    <%= walletData.wallet.details[i].type %>
+                                                                                    
+                                                                                    
                                                                                 </td>
 
                                                                 </tr>
@@ -555,248 +516,11 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="address-tab">
-                                        <div class="row">
-                                            <% for( let i = 0; i < userData.address.length; i++ ) { %>
-                                            
-                                                <% if (userData.address[i].addressType===0) { %>
-                                                 
-                                                
-                                                <div class="col-lg-6">
-                                                    <div class="card mb-3 mb-lg-0">
-                                                        <div class="card-header">
-                                                            <h5 class="mb-0">Billing Address</h5>
-                                                        </div>
-                                                        <div class="card-body">
-                                                            <address><%= userData.address[i].name %><br> <%= userData.address[i].house %>,<br> <%= userData.address[i].city %>
-                                                                <br><%= userData.address[i].state %> <br> <%= userData.address[i].pincode %> <br> <%= userData.address[i].country %>
-                                                            </address>
-                                                            <a href="/editAddress?addressId=<%= userData.address[i]._id %>" id="edit-address<%= userData.address[i]._id %>" class="btn btn-sm btn-dark rounded font-sm mt-15">Edit</a>
-                                                            
-                                                            <button id="delete-address<%= userData.address[i]._id %>" class="btn btn-sm btn-success rounded font-sm mt-15" onclick="deleteAddress('<%= userData.address[i]._id %>')">
-                                                                Delete
-                                                              </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <% } else { %>
-                                                 
-                                                <div class="col-lg-6">
-                                                    <div class="card">
-                                                        <div class="card-header">
-                                                            <h5 class="mb-0">Shipping Address</h5>
-                                                        </div>
-                                                        <div class="card-body">
-                                                            <address><%= userData.address[i].name %><br> <%= userData.address[i].house %>,<br> <%= userData.address[i].city %>
-                                                                <br><%= userData.address[i].state %> <br> <%= userData.address[i].pincode %> <br> <%= userData.address[i].country %>
-                                                            </address>
-
-                                                            <a href="/editAddress?addressId=<%= userData.address[i]._id %>" id="edit-address<%= userData.address[i]._id %>" class="btn btn-sm btn-dark rounded font-sm mt-15">Edit</a>
-                                                            
-                                                            <button id="delete-address<%= userData.address[i]._id %>" class="btn btn-sm btn-success rounded font-sm mt-15" onclick="deleteAddress('<%= userData.address[i]._id %>')">
-                                                                Delete
-                                                              </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <% } %>
-                                                <% } %>
-                                           
-                                        </div>
-                                    </div>
-                                    <div class="tab-pane fade" id="track-orders" role="tabpanel"
-                                        aria-labelledby="track-orders-tab">
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <h5>Add Address</h5>
-                                            </div>
-                                            <div class="card-body">
-
-                                                <form method="post" action="/addAddress" id="myForm" name="enq">
-                                                    <div class="row">
-                                                        <div class="form-group col-md-12">
-                                                            <label>Full Name <span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="name"
-                                                                type="text">
-                                                        </div>
-
-
-                                                        <div class="form-group col-md-12">
-                                                            <label>House<span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="house"
-                                                                type="text">
-                                                        </div>
-                                                        <div class="form-group col-md-6">
-                                                            <label>State<span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="state"
-                                                                type="text">
-                                                        </div>
-                                                        <div class="form-group col-md-6">
-                                                            <label>Country<span class="required">*</span></label>
-                                                            <input required="" class="form-control square"
-                                                                name="country" type="text">
-                                                        </div>
-                                                        <div class="form-group col-md-6">
-                                                            <label>City<span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="city"
-                                                                type="text">
-                                                        </div>
-                                                        <div class="form-group col-md-6">
-                                                            <label>Pin Code<span class="required">*</span></label>
-                                                            <input required="" class="form-control square"
-                                                                name="pincode" type="text">
-                                                        </div>
-                                                        <div class="form-group col-md-4">
-                                                            <label>Address Type<span class="required">*</span></label>
-                                                            <select name="addressType" id="address" class="form-select">
-                                                                <option value="0">
-                                                                    Billing Address
-                                                                </option>
-                                                                <option value="1">
-                                                                    Shipping Address
-                                                                </option>
-                                                            </select>
-                                                        </div>
-                                                        
-                                                        <div class="col-md-12 mt-2">
-                                                            <button type="submit" class="btn btn-fill-out submit"
-                                                                name="submit" value="Submit">Save</button>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="tab-pane fade" id="address" role="tabpanel"
-                                        aria-labelledby="address-tab">
-                                        <div class="row">
-                                            <% for( let i = 0; i < userData.address.length; i++ ) { %>
-                                            
-                                            <% if (userData.address[i].addressType===0) { %>
-                                             
-                                            
-                                            <div class="col-lg-6">
-                                                <div class="card mb-3 mb-lg-0">
-                                                    <div class="card-header">
-                                                        <h5 class="mb-0">Billing Address</h5>
-                                                    </div>
-                                                    <div class="card-body">
-                                                        <address><%= userData.address[i].name %><br> <%= userData.address[i].house %>,<br> <%= userData.address[i].city %>
-                                                            <br><%= userData.address[i].state %> <br> <%= userData.address[i].pincode %> <br> <%= userData.address[i].country %>
-                                                        </address>
-                                                        
-                                                        <a href="#" class="btn-small" onclick="deleteAddress('<%= userData.address[i]._id %>')">Edit</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <% } else { %>
-                                             
-                                            <div class="col-lg-6">
-                                                <div class="card">
-                                                    <div class="card-header">
-                                                        <h5 class="mb-0">Shipping Address</h5>
-                                                    </div>
-                                                    <div class="card-body">
-                                                        <address><%= userData.address[i].name %><br> <%= userData.address[i].house %>,<br> <%= userData.address[i].city %>
-                                                            <br><%= userData.address[i].state %> <br> <%= userData.address[i].pincode %> <br> <%= userData.address[i].country %>
-                                                        </address>
-                                                        
-                                                        <a href="#" class="btn-small" onclick="deleteAddress('<%= userData.address[i]._id %>')">Edit</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <% } %>
-                                            <% } %>
-                                        </div>
-                                    </div>
-                                    <div class="tab-pane fade" id="account-detail" role="tabpanel"
-                                        aria-labelledby="account-detail-tab">
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <h5>Account Details</h5>
-                                            </div>
-                                            <div class="card-body">
-
-                                                <form method="post" name="enq">
-                                                    <div class="row">
-                                                        <div class="form-group col-md-12">
-                                                            <label>Full Name <span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="name"
-                                                                type="text" value="<%= userData.name %>">
-                                                        </div>
-
-
-                                                        <div class="form-group col-md-12">
-                                                            <label>Email<span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="house"
-                                                                type="text" value="<%= userData.email %>">
-                                                        </div>
-                                                        <div class="form-group col-md-12">
-                                                            <label>Phone<span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="state"
-                                                                type="text" value="<%= userData.mobile %>">
-                                                        </div>
-                                                        
-                                                        
-                                                        
-                                                        <div class="form-group col-md-12">
-                                                            <label>Enter Password <span
-                                                                    class="required">*</span></label>
-                                                            <input required="" class="form-control square"
-                                                                name="password" type="password">
-                                                        </div>
-                                                        <div class="col-md-12">
-                                                            <button type="submit" class="btn btn-fill-out submit"
-                                                                name="submit" value="Submit">Save</button>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="tab-pane fade" id="accountsecurity" role="tabpanel" aria-labelledby="address-tab">
-                                       
-                                        <div class="row">
-                                           
-                                            <div class="col-lg-8">
-                                                <div class="card mt-2 mb-3 mb-lg-0 black-border">
-                                                    <div class="card-header" >
-                                                        <h5 >Edit Password</h5>
-                                                    </div>
-                                                    <div class="card-body" >
-                                                        <form class="" method="post" action="/changepassword" id="passform">
-                                                            <div class="row">
-                                                                <div class="form-group col-md-12">
-                                                                    <label>Current Password <span class="required">*</span></label>
-                                                                    <input required="" id="currPassword" class="form-control square black-border" name="currentpassword" type="password" placeholder="currentpassword">
-                                                                    <div id="error1"></div>
-                                                                </div>
-                                                                <div class="form-group col-md-12">
-                                                                    <label>New Password <span class="required">*</span></label>
-                                                                    <input required="" id="password1" class="form-control square black-border" name="password1" type="password" placeholder="newpassword">
-                                                                    <div id="error2"></div>
-                                                                </div>
-                                                                <div class="form-group col-md-12">
-                                                                    <label>Confirm Password <span class="required">*</span></label>
-                                                                    <input required="" id="password2" class="form-control square black-border" name="password2" type="password" placeholder="confirm password">
-                                                                    <div id="error3"></div>
-                                                                </div>
-                                                                <div class="col-md-12">
-                                                                    <button type="submit" class="btn btn-fill-out "  name="submit" value="Submit">change</button>
-                                                                </div>
-                                                            </div>
-                                                        </form>
-                                                        
-                                                       
-                                                        
-                                                        
-                                                    </div>
-                                            
-                                                </div>
-                                            </div>
-                                            
-                                        </div>
-                                    </div>
+                                    
+                                    
+                                    
+                                    
+                                   
                                 </div>
                             </div>
                         </div>

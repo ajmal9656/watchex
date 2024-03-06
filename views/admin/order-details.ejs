@@ -62,7 +62,7 @@
                         <div class="text">
                             <h6 class="mb-1">Order info</h6>
                             <p class="mb-1">
-                                Shipping: Fargo express <br> Pay method: <%= orderDetails[0].paymentMethod %> <br> Status: <%= orderDetails[0].status %>
+                                Shipping: Fargo express <br> Pay method: <%= orderDetails[0].paymentMethod %> 
                             </p>
                             
                         </div>
@@ -97,12 +97,13 @@
                         <table class="table">
                             <thead>
     <tr>
-        <th width="30%" style="font-weight: bold; text-align: center;">Product</th>
-        <th width="14%" style="font-weight: bold; text-align: center;">Unit Price</th>
-        <th width="14%" style="font-weight: bold; text-align: center;">Quantity</th>
-        <th width="14%" style="font-weight: bold; text-align: center;">Status</th>
-        <th width="14%" style="font-weight: bold; text-align: center;">Change Status</th>
-        <th width="14%" style="font-weight: bold; text-align: center;">Total</th>
+        <th width="28%" style="font-weight: bold; text-align: center;">Product</th>
+        <th width="12%" style="font-weight: bold; text-align: center;">Unit Price</th>
+        <th width="12%" style="font-weight: bold; text-align: center;">Quantity</th>
+        <th width="12%" style="font-weight: bold; text-align: center;">Sub Total</th>
+        <th width="12%" style="font-weight: bold; text-align: center;">Status</th>
+        <th width="12%" style="font-weight: bold; text-align: center;">Change Status</th>
+        <th width="12%" style="font-weight: bold; text-align: center;">Total</th>
     </tr>
 </thead>
 
@@ -113,13 +114,16 @@
             <td>
                 <a class="itemside" href="#">
                     <div class="left">
-                        <img src="/public/uploads/<%= orderDetails[i].productDetails[0].image[0] %>" style="width: 80px; height: 80px;" class="img-xs" alt="Item">
+                        <img src="/public/uploads/<%= orderDetails[i].orderedProduct[0].image[0] %>" style="width: 80px; height: 80px;" class="img-xs" alt="Item">
                     </div>
-                    <div class="info"><%= orderDetails[i].productDetails[0].product_name %></div>
+                    <div class="info"><%= orderDetails[i].orderedProduct[0].product_name %></div>
                 </a>
             </td>
-            <td>$<%= orderDetails[i].productDetails[0].offerPrice %></td>
+            <td>$<%= orderDetails[i].orderedProduct[0].offerPrice %></td>
             <td><%= orderDetails[i].products.quantity %> </td>
+            <td class="text-center" data-title="Stock" id="<%= orderDetails[i].orderedProduct[0]._id %>">
+                <%= orderDetails[i].products.quantity * orderDetails[i].orderedProduct[0].offerPrice %>
+            </td>
             <td >
                 <% if (orderDetails[i].products.orderStatus == 'pending') { %>
                     <span id="status<%= orderDetails[i]._id %>" class="badge rounded-pill alert-warning"><%= orderDetails[i].products.orderStatus %></span>
@@ -152,11 +156,11 @@
                 <% } else if (orderDetails[i].products.orderStatus == 'outForDelivery') {%>
                     <a id="changeStatus<%= orderDetails[i]._id %>" onclick="changeOrderStatus('<%= orderDetails[i]._id %>','<%= orderDetails[i].products.product %>','delivered')" class="btn btn-outline-primary rounded font-sm">delivered</a>
                 <% } else if (orderDetails[i].products.orderStatus == 'return pending') {%>
-                    <a id="changeStatus<%= orderDetails[i]._id %>" onclick="changeOrderStatus('<%= orderDetails[i]._id %>','<%= orderDetails[i].products.product %>','returned')" class="btn btn-outline-primary rounded font-sm">Approve Return</a>
+                    <a id="changeStatus<%= orderDetails[i]._id %>" onclick="approveReturn('<%= orderDetails[i]._id %>','<%= orderDetails[i].products.product %>','returned')" class="btn btn-outline-primary rounded font-sm">Approve Return</a>
                 <% } %>
             </td>
             <td>
-                <% var totalPrice = orderDetails[i].productDetails[0].offerPrice * orderDetails[i].products.quantity; %>
+                <% var totalPrice = orderDetails[i].orderedProduct[0].offerPrice * orderDetails[i].products.quantity; %>
                 $<%= totalPrice %>
             </td>
             
@@ -169,12 +173,7 @@
                         <dt>Grand total:</dt>
                         <dd><b class="h5">$<%= orderDetails[0].totalAmount %></b></dd>
                     </dl>
-                    <dl class="dlist">
-                        <dt class="text-muted">Status:</dt>
-                        <dd>
-                            <span class="badge rounded-pill alert-success text-success"><%= orderDetails[0].status %></span>
-                        </dd>
-                    </dl>
+                    
                 </article>
             </td>
         </tr>
@@ -216,6 +215,52 @@
             if(res){
                 $.ajax({
                     url:'/admin/orderStatusChange',
+                    type:'post',
+                    data:{
+                        orderId:orderId,
+                        productId:productId,
+
+                        status:status
+                    }
+                })
+                .done((res)=>{
+                    if(res.status){
+                        
+                        
+                            window.location.reload();
+                            // const a = document.getElementById("status"+orderId)
+                            // a.innerHTML=status
+                            // document.getElementById(buttonId).innerHtml=nextButtonValue
+
+                        
+                    }
+
+                })
+                .fail((err)=>{
+                    console.log(err);
+                })
+            }
+                    
+        })
+                   
+        
+    }
+</script>
+<script>
+    function approveReturn(orderId,productId,status){
+        console.log(orderId);
+        console.log(status);
+
+        // let buttonId='changeStatus'+orderId;
+        // let statusId='status'+orderId;
+        swal('Do you want to change the order Status',{
+                buttons:["No","Yes"]
+        })
+        .then((res)=>{
+            if(res){
+                const price = $(`#${productId}`).html();
+                $.ajax({
+                    url:`/admin/approveReturn/${price}`,
                     type:'post',
                     data:{
                         orderId:orderId,
