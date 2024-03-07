@@ -18,7 +18,8 @@ const offerHelper = require("../helpers/offerHelper");
 const offerModel = require("../models/offerModel");
 const { response } = require("express");
 const moment = require("moment");
-const Razorpay = require("razorpay")
+const Razorpay = require("razorpay");
+const { resolve } = require("node:path");
 var razorpay = new Razorpay({
   key_id: "rzp_test_3xAnxikxa5xZNZ",
   key_secret: "ok69vIQiyLSK9Y7aEzAL2Zax",
@@ -274,7 +275,39 @@ const loaduserhome = async (req, res) => {
 };
 
 const loadAllProduct = async (req, res) => {
-  const productData = await productHelper.getAllProducts();
+  if(req.query.searchInput){
+    let payload = req.query.searchInput.trim();
+  try {
+    let searchResult = await productModel
+      .find({ product_name: { $regex: new RegExp("^" + payload + ".*", "i") } }).populate("product_category")
+      .exec();
+    // searchResult = searchResult.slice(0, 5);
+    console.log(searchResult);
+    for (const product of searchResult) {
+       
+
+
+
+      product.offerPrice = Math.round(
+        product.product_price -
+          (product.product_price * product.product_discount) / 100
+      );
+    }
+    const categoryData = await categoryHelper.getAllCategory();
+    res.render("user/shop-product", {
+      message: "hello",
+      product: searchResult,
+      categories: categoryData,
+      sort:true
+      // cartcount:cartCount,
+      // wishlistcount:wishlistCount
+    });
+  } catch (error) {
+    res.status(500).render("error", { error, layout: false });
+  }
+  }
+  else{
+    const productData = await productHelper.getAllProducts();
 
   for (const product of productData) {
     product.offerPrice = Math.round(
@@ -283,13 +316,19 @@ const loadAllProduct = async (req, res) => {
     );
   }
   const categoryData = await categoryHelper.getAllCategory();
+  console.log("ncvjkcnjazncj");
+  console.log(productData)
   res.render("user/shop-product", {
     message: "hi",
     product: productData,
     categories: categoryData,
+    sort:false
     // cartcount:cartCount,
     // wishlistcount:wishlistCount
   });
+
+  }
+  
 };
 
 const viewProduct = async (req, res) => {
@@ -699,6 +738,46 @@ const searchProduct = async (req, res) => {
   }
 };
 
+const sortedProductsLoad = async (req, res) => {
+  try {
+    if (req.query.category) {
+      const products =JSON.parse(req.body.products);
+      const category = req.query.category;
+
+      console.log("products");
+      console.log(products);
+      console.log(category);
+
+      const checkingCategory = products.filter((item)=>{
+        if(item.product_category._id){
+          return item.product_category._id.toString()==category.toString()
+
+        }else{
+         return item.product_category.toString()==category.toString()
+
+        }
+          
+
+      })
+      console.log(checkingCategory)
+      res.json({product:checkingCategory})
+
+
+
+
+
+    } else if (req.query.price) {
+
+      
+    } else if (req.query.category && req.query.price) {
+
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
 module.exports = {
   loadlogin,
   loadregister,
@@ -744,5 +823,7 @@ module.exports = {
   loadAllProduct,
   searchProduct,
   returnOrders,
-  loadWallet
+  loadWallet,
+  sortedProductsLoad
+ 
 };

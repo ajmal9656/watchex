@@ -68,6 +68,8 @@ router.get('/wallet',userMiddleware.isCheck,userController.loadWallet);
 
 
 router.post('/searchProduct/:query',userController.searchProduct);
+router.post('/sortedProducts',userController.sortedProductsLoad);
+
 // router.get('/productDisplay/:id',userMiddleware.isCheck,userController.productDisplay);
 
 

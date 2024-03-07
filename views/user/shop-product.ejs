@@ -198,7 +198,7 @@
                     </div>
                     <div class="header-right">
                         <div class="search-style-2">
-                            <form action="#">
+                            <form action="/ShopProduct" method="GET">
                                 <select class="select-active">
                                     <option>All Categories</option>
                                     <option>Women's</option>
@@ -212,7 +212,9 @@
                                     <option>Shoes</option>
                                     <option>Mother & Kids</option>
                                 </select>
-                                <input type="text" placeholder="Search for items...">
+                                <input type="text" placeholder="Search for items..." name="searchInput">
+                                <button type="submit">search</button>
+                                
                             </form>
                         </div>
                         <div class="header-action-right">
@@ -872,6 +874,7 @@
                                 </div>
                             </div>
                         </div>
+                        <input type="hidden" value="<%=JSON.stringify(product)%>" id="sortedProducts">
                         <div class="row product-grid-3">
                             <% for( let i = 0; i < product.length; i++ ) { %>
                                 <div class="col-lg-4 col-md-4 col-12 col-sm-6">
@@ -919,9 +922,19 @@
                                         </div>
                                       </div>
                                       <div class="product-content-wrap">
-                                        <div class="product-category">
-                                          <a href="shop-grid-right.html"><%= product[i].category.name %></a>
-                                        </div>
+                                        <% if (sort) { %>
+                                            <div class="product-category">
+                                                <a href="shop-grid-right.html"><%= product[i].product_category.name %></a>
+                                              </div>
+                                              <% } else { %>
+                                                <div class="product-category">
+                                                    <a href="shop-grid-right.html"><%= product[i].category[0].name %></a>
+                                                  </div>
+
+                                               
+                                         
+                                        <% } %>
+                                        
                                         <h2>
                                           <a href="shop-product-right.html"
                                             ><%= product[i].product_name %></a
@@ -972,7 +985,7 @@
                             <ul class="categories">
                                 <% for( let i = 0; i < categories.length; i++ ) { %>
                                     <% if (categories[i].status) { %>
-                                      <li><a href="shop-grid-right.html"><%= categories[i].name %></a></li>
+                                      <li><a onclick="categorySort('<%= categories[i]._id%>')"  ><%= categories[i].name %></a></li>
                                     <% } %>
                                     
                                   <% } %>
@@ -1205,6 +1218,98 @@
         </div>
     </div>
     <!-- Vendor JS-->
+    <script>
+        function categorySort(categoryId) {
+
+           let products = document.getElementById("sortedProducts").value;
+           
+            
+        //   swal("Are you sure you want to delete this address", {
+        //     buttons: ["cancel", "ok"],
+        //   }).then((res) => {
+        //     if (res) {
+            console.log("okecvjkanc");
+            console.log(products)
+              $.ajax({
+                url:`/sortedProducts?category=${categoryId}`,
+                type: "post",
+                data: {products:products},
+                success : (response)=>{
+                    console.log(response);
+                    updateProductGrid(response.product)
+
+                    function updateProductGrid(product) {
+                        const productGrid = document.querySelector('.product-grid-3');
+                        productGrid.innerHTML = ''; // Clear the existing product grid
+
+                        product.forEach(product => {
+                            const productDiv = document.createElement('div');
+                            productDiv.classList.add('col-lg-4', 'col-md-4', 'col-sm-6');
+                            productDiv.innerHTML = `
+     
+      <div class="product-cart-wrap mb-30">
+                                        <div class="product-img-action-wrap">
+                                            <div class="product-img product-img-zoom">
+                                                <a href="/userHome/productView/${product._id}">
+                                                    <img class="default-img" src="/public/uploads/${product.image[0]}" alt="">
+                                                    <img class="hover-img" src="/${product.image[1]}" alt="">
+                                                </a>
+                                            </div>
+                                            <div class="product-action-1">
+                                                <a aria-label="Quick view" class="action-btn hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal"><i class="fi-rs-eye"></i></a>
+                                                <a aria-label="Add To Wishlist" class="action-btn hover-up" href="#"><i class="fi-rs-heart"></i></a>
+                                                <a aria-label="Compare" class="action-btn hover-up" href="#"><i class="fi-rs-shuffle"></i></a>
+                                            </div>
+                                            <div class="product-badges product-badges-position product-badges-mrg">
+                                                <span class="hot">Hot</span>
+                                            </div>
+                                        </div>
+                                        <div class="product-content-wrap">
+                                            
+                                                <div class="product-category">
+                                                    <a href="#">
+                                                        ${product.product_category.name}
+                                                    </a>
+                                                </div>
+                                                
+
+                                                        <h2>
+                                                            <a href="#">
+                                                                ${product.product_name}
+                                                            </a>
+                                                        </h2>
+                                                        <div class="rating-result" title="90%">
+                                                            <span>
+                                                                <span>
+                                                                    80%
+                                                                </span>
+                                                            </span>
+                                                        </div>
+                                                        <div class="product-price">
+                                                            <span class="text-dark">
+                                                                
+
+                                                            </span>
+                                                            <span class="old-price">
+                                                                ${product.product_price}
+                                                            </span>
+                                                        </div>
+                                                        <div class="product-action-1 show">
+                                                            <a aria-label="Add To Cart" class="action-btn hover-up" href="shop-cart.html"><i class="fi-rs-shopping-bag-add"></i></a>
+                                                        </div>
+                                        </div>
+                                    </div>`;
+                            productGrid.appendChild(productDiv); // Append the new product to the grid
+                        });
+                    }
+
+
+                
+                }
+              });
+            }
+        
+      </script>
     <script src="/public/user/assets/js/vendor/modernizr-3.6.0.min.js"></script>
     <script src="/public/user/assets/js/vendor/jquery-3.6.0.min.js"></script>
     <script src="/public/user/assets/js/vendor/jquery-migrate-3.3.0.min.js"></script>

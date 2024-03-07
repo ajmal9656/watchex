@@ -163,6 +163,8 @@ const getAllProducts = async ()=>{
     // });
 
     resolve(product);
+    console.log("oskjvklxvnxjkv");
+    console.log(product)
   })}catch(error){
     console.log(error);
   }
