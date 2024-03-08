@@ -5,11 +5,11 @@
             <h2 class="content-title card-title">Sales Report </h2>
         </div>
         <div>
-            <a id="xlsheet" onclick="ExportToExcel()" class="btn btn-light rounded font-md">Download XLSheet</a>
-            <a href="#" id="pdf" data-value="" class="btn btn-light rounded  font-md">Download PDF</a>
+            <a id="xlsheet"  class="btn btn-light rounded font-md">Download XLSheet</a>
+            <a href="#" id="pdf" data-value="" class="btn btn-light rounded  font-md" onclick="downloadPdf()">Download PDF</a>
         </div>
     </div>
-    <div class="card mb-4">
+    <div class="card mb-4" id="myTable">
         <header class="card-header">
             <form id="date-wise-report" method="post" action="/admin/salesReportDateSort">
                 <div class="row gx-3">
@@ -84,6 +84,37 @@
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+
+<script>
+    function downloadPdf() {
+        const element = document.getElementById('myTable')
+        console.log(element);
+        html2pdf().from(element).save();
+        
+    }
+    </script>
+<script>
+
+    document.getElementById('xlsheet').addEventListener('click', function() {
+      var table = document.getElementById('myTable');
+      var wb = XLSX.utils.table_to_book(table);
+      var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
+  
+      function s2ab(s) {
+        var buf = new ArrayBuffer(s.length);
+        var view = new Uint8Array(buf);
+        for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+        return buf;
+      }
+  
+      var blob = new Blob([s2ab(wbout)], { type: 'application/octet-stream' });
+      saveAs(blob, 'table.xlsx');
+    });
+
+      </script>
 
 
 <!-- <script>

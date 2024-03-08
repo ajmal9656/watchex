@@ -9,11 +9,13 @@ const productHelper = require("../helpers/productHelper");
 const productModel = require("../models/productModel");
 const cartHelper = require("../helpers/cartHelper");
 const cartModel = require("../models/cartModel");
+const categoryModel = require("../models/categoryModel");
 const whishlistHelper = require("../helpers/whishlistHelper");
 const categoryHelper = require("../helpers/cateroryHelper");
 const passHelper = require("../helpers/passwordHelper");
 const orderHelper = require("../helpers/orderHelper");
 const couponHelper = require("../helpers/couponHelper");
+const bannerHelper = require("../helpers/bannerHelper");
 const offerHelper = require("../helpers/offerHelper");
 const offerModel = require("../models/offerModel");
 const { response } = require("express");
@@ -28,6 +30,7 @@ var razorpay = new Razorpay({
 const loadhome = async (req, res) => {
   const productData = await productHelper.getAllProducts();
   const categoryData = await categoryHelper.getAllCategory();
+  const bannerData = await bannerHelper.getAllBanner();
 
   const productDetails = await productHelper.AllProductOfferCheck(productData);
 
@@ -45,6 +48,7 @@ const loadhome = async (req, res) => {
       categories: categoryData,
       cartcount: cartCount,
       wishlistcount: wishlistCount,
+      banners:bannerData
     });
   }
   // else if (req.session.admin) {
@@ -54,6 +58,7 @@ const loadhome = async (req, res) => {
     res.render("user/indexx", {
       product: productData,
       categories: categoryData,
+      banners:bannerData
     });
   }
 };
@@ -747,6 +752,7 @@ const sortedProductsLoad = async (req, res) => {
       console.log("products");
       console.log(products);
       console.log(category);
+      const categories = await categoryModel.find();
 
       const checkingCategory = products.filter((item)=>{
         if(item.product_category._id){
@@ -759,6 +765,21 @@ const sortedProductsLoad = async (req, res) => {
           
 
       })
+      for (const item of checkingCategory) {
+        if (typeof item.product_category === "string") {
+          const category = categories.find(
+            (element) => item.product_category == element._id
+          );
+          console.log(category);
+          item.product_category 
+          
+          = category;
+        } else {
+          continue;
+        }
+      }
+
+
       console.log(checkingCategory)
       res.json({product:checkingCategory})
 

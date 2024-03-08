@@ -1,0 +1,214 @@
+<%- include("../partials/admin/admin-header") %>
+        <section class="content-main">
+            <div class="row">
+                <div class="col-9">
+                    <div class="content-header">
+                        <h2 class="content-title">Edit Banner</h2>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card mb-4">
+                        <!-- <div class="card-header">
+                            <h4>Basic</h4>
+                        </div> -->
+                        <div class="card-body">
+                            <form action="/admin/edit-banner/<%= banner._id %>?_method=PUT" method="post" enctype="multipart/form-data" id="productForm">
+                                <div class="mb-4">
+                                    <label for="product_name" class="form-label">Title</label>
+                                    <input type="text" name="title" value="<%= banner.title %>"
+                                        placeholder="Type here" class="form-control" id="product_name">
+                                        <div id="error1" class="text-danger"></div>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label">Description</label>
+                                    <textarea placeholder="Type here" id="product_description" name="description"
+                                        class="form-control" rows="4"></textarea>
+                                </div>
+                                <%# <div class="mb-4">
+                                    <label for="product_name" class="form-label">Product Category</label>
+                                    <input type="text" name="product_category" value="" placeholder="Type here"
+                                        class="form-control" id="product_category">
+                        </div>
+                        %>
+        
+                        
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="mb-4">
+                                    <label for="product_quantity" class="form-label">Starting Date</label>
+                                    <input type="date" name="startDate" value="<%= banner.startingDate%>"
+                                        placeholder="nos" class="form-control" id="product_quantity">
+                                        <div id="error3" class="text-danger"></div>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="product_quantity" class="form-label">Ending Date</label>
+                                    <input type="date" name="endDate" value="<%= banner.endingDate%>"
+                                        placeholder="nos" class="form-control" id="product_quantity">
+                                        <div id="error3" class="text-danger"></div>
+                                </div>
+                                
+                            </div>
+                            
+        
+        
+                        </div>
+        
+                    </div>
+                </div> <!-- card end// -->
+            </div>
+            <div class="col-lg-3">
+                <div class="card mb-4">
+                    <!-- <div class="card-header">
+                            <h4>Media</h4>
+                        </div> -->
+                    <div class="card-body">
+                        <div class="input-upload">
+                            <label class="form-label">Image</label>
+                            <% if(typeof banner.image==='string' ) { %>
+                                <img src="/public/uploads/<%= banner.image %>" style="width: 100px; height: 72px;"
+                                    alt="">
+                                <% } else if(Array.isArray(banner.image) && banner.image.length> 0) { %>
+                                    <img src="/public/uploads/<%= banner.image[0] %>"
+                                        style="width: 100px; height: 72px;" alt="">
+                                    <% } %>
+                                        <input class="form-control" type="file" name="img" multiple>
+                                        <input type="hidden" value="<%= banner.image %> " name="old_image">
+                                        <% if(Array.isArray(banner.image)) { %>
+                                            <p>
+                                                <%= banner.image.length %> out of 4 images available
+                                            </p>
+                                            <% } %>
+                        </div>
+        
+                    </div>
+                    <div class="card mb-4">
+                        <!-- Add the following code to display the preview of all images within the image editing div -->
+                        <div class="card-body">
+                            <div class="row">
+                                <% if(Array.isArray(banner.image) && banner.image.length > 0) { %>
+                                    <% for(let i=0; i<banner.image.length; i++) { %>
+                                        <div class="col-6 mb-3">
+                                            <div class="image-container">
+                                                <img src="/public/uploads/<%= banner.image[i] %>"
+                                                    style="width: 100px; height: 72px;" alt="">
+                                                    <span class="delete-icon"
+                                                    onclick="deleteImage('<%= banner._id %>', '<%= banner.image[i] %>')">❌</span>
+                                            </div>
+                                        </div>
+                                    <% } %>
+                                <% } %>
+                            </div>
+                        </div>
+                        
+                    </div> <!-- card end// -->
+                </div> <!-- card end// -->
+        
+        
+        
+                
+                <div>
+                    <button type="submit" class="btn ms-auto d-block btn-md rounded font-sm hover-up">Edit
+                        Banner</button> <!-- ms-auto d-block to move button to right-->
+                </div>
+            </div>
+            </form>
+            </div>
+        </section> <!-- content-main end// -->
+        
+        
+        <script>
+            document.getElementById("product_description").value = "<%= banner.description|| '' %>";
+        </script>
+        <script>
+            const nameval=document.getElementById('product_name');
+            const priceval=document.getElementById('product_price');
+            const quantityval=document.getElementById('product_quantity');
+            const discountval=document.getElementById('product_discount');
+            const productForm=document.getElementById('productForm');
+            const error1=document.getElementById('error1');
+            const error2=document.getElementById('error2');
+            const error3=document.getElementById('error3');
+            const error4=document.getElementById('error4');
+        
+            function formvalidate(e){
+               const namevalue=nameval.value;
+               const pricevalue=priceval.value;
+                const quantityvalue=quantityval.value;
+               const discountvalue=discountval.value;
+        
+        
+        
+                    error1.innerHTML = "";
+                    error2.innerHTML = "";
+                    error3.innerHTML = "";
+                    error4.innerHTML = "";
+                    let isValid = true;
+        
+        
+                if (namevalue.trim() === "") {
+                    error1.style.display = "block";
+                    error1.innerHTML = "Product Name is required.";
+                    isValid = false;
+                    } else if (/^\d+$/.test(namevalue) || /^-\d+$/.test(namevalue)) {
+                        error1.innerHTML = "Product Name cannot contain numbers.";
+                        isValid = false;
+                    }
+        
+                    if (pricevalue.trim() === "") {
+                        error2.style.display = "block";
+                        error2.innerHTML = "Product Price is required.";
+                        isValid = false;
+                    }
+                    else if (isNaN(pricevalue) || parseFloat(pricevalue) <= 0) {
+                        error2.style.display = "block";
+                        error2.innerHTML = "Product Price must be a valid number greater than 0.";
+                        isValid = false;
+                    } 
+                    if (isNaN(quantityvalue) || parseInt(quantityvalue) < 0) {
+                        error3.style.display = "block";
+                        error3.innerHTML = "Product Quantity must be a valid non-negative integer.";
+                        isValid = false;
+                    } else if (quantityvalue.trim() === "") {
+                        error3.style.display = "block";
+                        error3.innerHTML = "Product Quantity is required.";
+                        isValid = false;
+                    }
+        
+                    if (discountvalue.trim() === "") {
+                        error4.style.display = "block";
+                        error4.innerHTML = "Discount is required.";
+                        isValid = false;
+                    }
+                    else if (isNaN(discountvalue) || parseFloat(discountvalue) < 0 || parseFloat(discountvalue) > 100) {
+                        error4.style.display = "block";
+                        error4.innerHTML = "Discount must be a valid percentage between 0 and 100.";
+                        isValid = false;
+                    }
+        
+                    
+        
+                    return isValid;
+        
+        
+        
+           
+        
+        
+        
+        
+            }
+           
+        
+          productForm.addEventListener("submit", (e) => {
+            const isValid = formvalidate(e);
+            if (!isValid) {
+              e.preventDefault();
+            }
+          });
+        
+        
+        </script>
+
+<%- include("../partials/admin/admin-footer") %>
+
+        

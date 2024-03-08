@@ -3,6 +3,7 @@ const router = express.Router();
 const adminController=require("../controllers/adminConroller");
 const offerController=require("../controllers/offerController");
 const couponController=require("../controllers/couponController");
+const bannerController=require("../controllers/bannerController");
 const adminMiddleware = require("../middleware/adminMiddleware");
 const multerMiddleware = require("../middleware/multer");
 
@@ -61,5 +62,13 @@ router.get("/deleteProductOffer/:id",adminMiddleware.isLogout,offerController.so
 
 router.get("/salesReport",adminMiddleware.isLogout,adminController.loadSalesReport);
 router.post("/salesReportDateSort",adminMiddleware.isLogout,adminController.loadSalesReportDateSort);
+
+
+router.get("/banners",adminMiddleware.isLogout,bannerController.loadBanners);
+router.get("/getAddBanner",adminMiddleware.isLogout,bannerController.loadAddBanner);
+router.post("/addBanner",multerMiddleware.productUpload,bannerController.addBanner);
+router.get("/edit-banner/:id",adminMiddleware.isLogout,bannerController.loadEditBanner);
+router.put("/edit-banner/:id",multerMiddleware.productUpload,bannerController.editBanner);
+router.get("/delete-banner/:id",adminMiddleware.isLogout,bannerController.softDeleteBanner);
 
 module.exports=router;
