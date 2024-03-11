@@ -48,7 +48,7 @@ const loadhome = async (req, res) => {
       categories: categoryData,
       cartcount: cartCount,
       wishlistcount: wishlistCount,
-      banners:bannerData
+      bannerData:bannerData
     });
   }
   // else if (req.session.admin) {
@@ -287,21 +287,15 @@ const loadAllProduct = async (req, res) => {
       .find({ product_name: { $regex: new RegExp("^" + payload + ".*", "i") } }).populate("product_category")
       .exec();
     // searchResult = searchResult.slice(0, 5);
+    console.log("searchResult");
     console.log(searchResult);
-    for (const product of searchResult) {
-       
-
-
-
-      product.offerPrice = Math.round(
-        product.product_price -
-          (product.product_price * product.product_discount) / 100
-      );
-    }
+    const productDetails = await productHelper.AllProductOfferCheck(searchResult);
+    console.log(productDetails);
+    
     const categoryData = await categoryHelper.getAllCategory();
     res.render("user/shop-product", {
       message: "hello",
-      product: searchResult,
+      product: productDetails,
       categories: categoryData,
       sort:true
       // cartcount:cartCount,
@@ -313,19 +307,16 @@ const loadAllProduct = async (req, res) => {
   }
   else{
     const productData = await productHelper.getAllProducts();
+    
+    const productDetails = await productHelper.AllProductOfferCheck(productData);
+    
 
-  for (const product of productData) {
-    product.offerPrice = Math.round(
-      product.product_price -
-        (product.product_price * product.product_discount) / 100
-    );
-  }
+  
   const categoryData = await categoryHelper.getAllCategory();
-  console.log("ncvjkcnjazncj");
-  console.log(productData)
+ 
   res.render("user/shop-product", {
     message: "hi",
-    product: productData,
+    product: productDetails,
     categories: categoryData,
     sort:false
     // cartcount:cartCount,
@@ -339,27 +330,31 @@ const loadAllProduct = async (req, res) => {
 const viewProduct = async (req, res) => {
   const id = req.params.id;
 
-  if (req.session.user) {
-    const userId = req.session.user._id;
-
-    const cartStatus = await cartHelper.checkCart(id, userId);
-    const wishListStatus = await whishlistHelper.checkWishlist(id, userId);
+  
+   
 
     userHelper.getProductDetails(id).then(async(response) => {
       const productDetails = await productHelper.productOfferCheck(response);
 
-      if (cartStatus) {
-        response.isCart = cartStatus;
+      if(req.session.user){
+        const userId = req.session.user._id;
+
+        const cartStatus = await cartHelper.checkCart(id, userId);
+        const wishListStatus = await whishlistHelper.checkWishlist(id, userId);
+        if (cartStatus) {
+          response.isCart = cartStatus;
+        }
+        if (wishListStatus) {
+          response.isWishlist = wishListStatus;
+        }
+
       }
-      if (wishListStatus) {
-        response.isWishlist = wishListStatus;
-      }
+
+     
 
       res.render("user/productView", { product: productDetails });
     });
-  } else {
-    res.redirect("/login");
-  }
+   
 
   // const products = await productModel.findById(id)
   // console.log(products);
@@ -391,7 +386,8 @@ const addToCart = async (req, res) => {
   const size = req.params.size;
   const userId = req.session.user._id;
 
-  const stockCheck = await productHelper.stockChecking(productId, size);
+  if(req.session.user){
+    const stockCheck = await productHelper.stockChecking(productId, size);
   if (!stockCheck.status) {
     res.json({ status: false });
   } else {
@@ -399,6 +395,12 @@ const addToCart = async (req, res) => {
       res.json({ status: true });
     });
   }
+
+  }else{
+    res.json({user:false});
+  }
+
+  
 };
 
 const updateQuantity = async (req, res) => {
@@ -440,7 +442,7 @@ const userWhishlist = async (req, res) => {
 
   whishlistHelper.getAllWhishlistItems(userId).then(async (response) => {
     const productDetails = await whishlistHelper.wishlistProductOfferCheck(userId,response);
-    console.log(productDetails)
+    
     
 
     res.render("user/wishlist-page", { products: productDetails });
@@ -451,9 +453,17 @@ const addToWishlist = async (req, res) => {
   const productId = req.params.id;
   const userId = req.session.user._id;
 
-  whishlistHelper.addProductToWishlist(productId, userId).then((response) => {
-    res.json({ status: true });
-  });
+  if(req.session.user){
+    whishlistHelper.addProductToWishlist(productId, userId).then((response) => {
+      res.json({ status: true });
+    });
+
+  }else{
+    res.json({user:false});
+
+  }
+
+  
 };
 
 const removeFromWishlist = async (req, res) => {
@@ -553,7 +563,7 @@ const loadCheckout = async (req, res) => {
   const couponData = await couponHelper.getAllCoupons();
 
   const productDetails = await cartHelper.cartProductOfferCheck(cartData);
-  console.log(productDetails)
+  
 
   
   let totalandSubTotal = await cartHelper.totalSubtotal(userId, productDetails);
@@ -586,7 +596,7 @@ const postEditAddress = async (req, res) => {
   userHelper
     .addressEdit(userId, body)
     .then((response) => {
-      console.log(response);
+      
       res.redirect("/checkout");
     })
     .catch((error) => {
@@ -598,10 +608,10 @@ const proceedPayment = async (req, res) => {
   const userId = req.session.user._id;
   const body = req.body;
   const cartItems = await cartModel.findOne({ user: userId }).populate("products.productItemId");
-  console.log("hcszhbv kjzvn ")
+  
   
   const cartData = await cartHelper.offerCheck(cartItems);
-  console.log("aaaa ")
+  
 
   const result = await orderHelper.placeOrder(userId, body, cartData);
 
@@ -621,14 +631,14 @@ const proceedPayment = async (req, res) => {
 const createOrder = async (req, res) => {
   try {
     const amount = parseInt(req.body.totalPrice);
-    console.log(amount);
+    
     const order = await razorpay.orders.create({
       amount: amount * 100,
       currency: "INR",
       receipt: req.session.user._id,
     });
 
-    console.log(order);
+    
 
     res.json({ orderId: order });
   } catch (error) {
@@ -675,6 +685,31 @@ const orderDetails = async (req, res) => {
   const orderId = req.params.id;
 
   orderHelper.getSpecificOrder(orderId).then(async(response) => {
+    console.log("response");
+    console.log(response);
+
+    let check = true;
+    let count = 0;
+
+    for(const order of response){
+      if(order.products.orderStatus=="delivered"){
+        check = true;
+        count++;
+        
+
+      }else if(order.products.orderStatus=="cancelled"){
+        check = true;
+
+      }else{
+        check = false;
+        break;
+      }
+    }
+    if(check==true&&count>=1){
+      response.deliveryStatus=true;
+    }
+
+    
     const productDetails = await orderHelper.orderProductOfferCheck(response);
     
 
@@ -749,9 +784,7 @@ const sortedProductsLoad = async (req, res) => {
       const products =JSON.parse(req.body.products);
       const category = req.query.category;
 
-      console.log("products");
-      console.log(products);
-      console.log(category);
+    
       const categories = await categoryModel.find();
 
       const checkingCategory = products.filter((item)=>{
@@ -770,7 +803,7 @@ const sortedProductsLoad = async (req, res) => {
           const category = categories.find(
             (element) => item.product_category == element._id
           );
-          console.log(category);
+         
           item.product_category 
           
           = category;
@@ -780,7 +813,7 @@ const sortedProductsLoad = async (req, res) => {
       }
 
 
-      console.log(checkingCategory)
+      
       res.json({product:checkingCategory})
 
 

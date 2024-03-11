@@ -524,6 +524,7 @@
                                                     <table class="table" id="orderTable">
                                                         <thead>
                                                             <tr>
+                                                                <th>OrderId</th>
                                                                 <th>Order</th>
                                                                 <th>Date</th>
                                                                 
@@ -536,6 +537,14 @@
                                                             <% for( let i = 0; i < orderData.length; i++ ) { %>
                                                                 <tr>
                                                                     <td><%= orderData[i].orderId %></td>
+                                                                    <% if (orderData[i].products.length>1) { %>
+                                                                        <td><img src="/public/uploads/<%= orderData[i].image %>" alt=""><a href="/orderDetails/<%= orderData[i]._id %>">+ more</a></td>
+                                                                        <% } else { %>
+                                                                            <td><img src="/public/uploads/<%= orderData[i].image %>" alt=""></td>
+                                                                         
+                                                                     
+                                                                    <% } %>
+                                                                    
                                                                     <td><%= orderData[i].formattedDate %></td>
                                                                     
                                                                     <td>$<%= orderData[i].totalAmount %> for <%= orderData[i].quantity %> item</td>

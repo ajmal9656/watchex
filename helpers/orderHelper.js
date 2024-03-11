@@ -104,11 +104,27 @@ const placeOrder = async (userId, body, cartItems) => {
 const getOrderDetails = async (userId) => {
     try {
         const result = await orderModel.find({ user: new ObjectId(userId) });
+
+        for (const item of result) {
+            for (const product of item.products) {
+                const prod = await productModel.findOne({ _id: product.product });
+                console.log("prod:", prod);
+
+                // Check if the product has an image
+                if (prod && prod.image && prod.image.length > 0) {
+                    item.image = prod.image[0]; // Assign the first image to the order
+                    break; // Once image is assigned, exit the loop
+                }
+            }
+        }
+
+        console.log("Order details:", result);
         return result;
     } catch (error) {
         throw error;
     }
 };
+
 
 const getAllOrders = async (req, res) => {
     try {

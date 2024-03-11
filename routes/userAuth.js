@@ -25,16 +25,16 @@ router.post('/resendOtpForgot',userController.resendOtpForgotPass);
 
 
 
-router.get('/productView/:id',userMiddleware.isCheck,userController.viewProduct);
-router.get('/shopProduct',userMiddleware.isCheck,userController.loadAllProduct);
+router.get('/productView/:id',userController.viewProduct);
+router.get('/shopProduct',userController.loadAllProduct);
 
 router.get('/cartView',userMiddleware.isCheck,userController.userCart);
-router.post('/addToCart/:id/:size',userController.addToCart);
+router.post('/addToCart/:id/:size',userMiddleware.isCheck,userController.addToCart);
 router.patch('/updateQuantity',userController.updateQuantity);
 router.delete('/removeProduct/:id',userController.removeFromCart);
 
 router.get('/whishlistView',userMiddleware.isCheck,userController.userWhishlist);
-router.post('/addToWishlist/:id',userController.addToWishlist);
+router.post('/addToWishlist/:id',userMiddleware.isCheck,userController.addToWishlist);
 router.delete('/removeFromWishlist/:id',userController.removeFromWishlist);
 
 router.get('/profileView',userMiddleware.isCheck,userController.loadUserProfile);

@@ -49,7 +49,7 @@
                                             <%= coupons[i].discount %>
                                         </td>
                                         <td width="15%">
-                                          <%= coupons[i].expiryDate %>
+                                          <%= coupons[i].formattedDate %>
                                         </td>
                                         <td width="10%"><a onclick="getCouponData('<%= coupons[i]._id %>')"
                                                 class="btn btn-sm btn-success rounded font-sm mt-15" type="button"  data-bs-toggle="modal" data-bs-target="#editCoupon"
@@ -81,22 +81,25 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="/admin/add-coupon" method="post">
+                <form action="/admin/add-coupon" method="post" id="couponForm">
                     <div class="mb-3">
                         <label for="recipient-name" class="col-form-label">Coupon Name</label>
                         <input type="text" class="form-control" name="couponName" id="couponName" >
+                        <div id="error1" class="text-danger"></div>
                     </div>
                     <div class="mb-3">
                         <label for="recipient-name" class="col-form-label">Discount Amount</label>
                         <input type="text" class="form-control" name="couponAmount" id="couponAmount">
+                        <div id="error2" class="text-danger"></div>
                     </div>
                     <div class="mb-3">
                         <label for="recipient-name" class="col-form-label">Minimum Amount</label>
                         <input type="text" class="form-control" name="minAmount" id="minAmount">
+                        <div id="error3" class="text-danger"></div>
                     </div>
                     <div class="mb-3">
                         <label for="recipient-name" class="col-form-label">Expired On</label>
-                        <input type="text" class="form-control" name="couponExpiry" id="couponExpiry" placeholder="DD/MM/YYYY">
+                        <input type="date" class="form-control" name="couponExpiry" id="couponExpiry" placeholder="DD/MM/YYYY">
                     </div>
 
                     <div class="modal-footer">
@@ -125,10 +128,11 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="/admin/edit-coupon" method="post">
+                <form action="/admin/edit-coupon" method="post" id="editCouponForm">
                     <div class="mb-3">
                         <label for="recipient-name" class="col-form-label">Coupon Name</label>
                         <input type="text" class="form-control" name="couponName" id="couponNme">
+                        <div id="error4" class="text-danger"></div>
                     </div>
                     <!-- <div class="mb-3">
                         <label for="recipient-name" class="col-form-label">Coupon Code</label>
@@ -137,10 +141,16 @@
                     <div class="mb-3">
                         <label for="recipient-name" class="col-form-label">Discount Amount</label>
                         <input type="text" class="form-control" name="couponAmount" id="couponAmont">
+                        <div id="error5" class="text-danger"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Minimum Amount</label>
+                        <input type="text" class="form-control" name="minAmount" id="minCouponAmont">
+                        <div id="error6" class="text-danger"></div>
                     </div>
                     <div class="mb-3">
                         <label for="recipient-name" class="col-form-label">Expired On (YYYY/MM/DD)</label>
-                        <input type="text" class="form-control" name="couponExpiry" id="couponExpiring">
+                        <input type="date" class="form-control" name="couponExpiry" id="couponExpiring">
                     </div>
                     <div class="mb-3">
                         <input type="hidden" class="form-control" id="couponIdd" name="couponId" />
@@ -178,10 +188,11 @@
             .done((res) => {
                 console.log(res,'reeeeeeeeeeeeesssssssssssssssssss');
                 if (res) {
+                    console.log(res.formattedDate)
                     document.getElementById('couponNme').value = res.couponName;
-                    document.getElementById('minAmount').value = res.minAmount;
+                    document.getElementById('minCouponAmont').value = res.minAmount;
                     document.getElementById('couponAmont').value = res.discount;
-                    document.getElementById('couponExpiring').value = res.expiryDate;
+                    document.getElementById('couponExpiring').value = res.formattedDate;
                     document.getElementById('couponIdd').value = res._id;
 
                     $("#editCoupon").modal("show");
@@ -225,6 +236,167 @@
 
 
     }
+</script>
+<script>
+    const nameval=document.getElementById('couponName');
+    
+    const minAmountval=document.getElementById('minAmount');
+    const discountval=document.getElementById('couponAmount');
+    const couponForm=document.getElementById('couponForm');
+    const error1=document.getElementById('error1');
+    const error2=document.getElementById('error2');
+    const error3=document.getElementById('error3');
+    
+
+    function formvalidate(e){
+       const namevalue=nameval.value;
+      
+        const minAmountvalue=minAmountval.value;
+       const discountvalue=discountval.value;
+
+
+
+            error1.innerHTML = "";
+            error2.innerHTML = "";
+            error3.innerHTML = "";
+            
+            let isValid = true;
+
+
+        if (namevalue.trim() === "") {
+            error1.style.display = "block";
+            error1.innerHTML = "Coupon Name is required.";
+            isValid = false;
+            } else if (/^\d+$/.test(namevalue) || /^-\d+$/.test(namevalue)) {
+                error1.innerHTML = "Coupon Name cannot contain numbers.";
+                isValid = false;
+            }
+
+             
+            if (isNaN(discountvalue) || parseInt(discountvalue) < 0) {
+                error2.style.display = "block";
+                error2.innerHTML = "Discount  must be a valid non-negative integer.";
+                isValid = false;
+            } else if (discountvalue.trim() === "") {
+                error2.style.display = "block";
+                error2.innerHTML = "Discount amount is required.";
+                isValid = false;
+            }
+            if (isNaN(minAmountvalue) || parseInt(minAmountvalue) < 0) {
+                error3.style.display = "block";
+                error3.innerHTML = "Minimum amount must be a valid non-negative integer.";
+                isValid = false;
+            } else if (minAmountvalue.trim() === "") {
+                error3.style.display = "block";
+                error3.innerHTML = "Minimum amount is required.";
+                isValid = false;
+            }
+
+           
+
+            
+
+            return isValid;
+
+
+
+   
+
+
+
+
+    }
+   
+
+  couponForm.addEventListener("submit", (e) => {
+    const isValid = formvalidate(e);
+    if (!isValid) {
+      e.preventDefault();
+    }
+  });
+
+
+</script>
+<script>
+    const editnameval=document.getElementById('couponNme');
+    
+    const editminAmountval=document.getElementById('minCouponAmont');
+    const editdiscountval=document.getElementById('couponAmont');
+    const editForm=document.getElementById('editCouponForm');
+    const error4=document.getElementById('error4');
+    const error5=document.getElementById('error5');
+    const error6=document.getElementById('error6');
+    
+
+    function formvalidation(e){
+        
+       const editnamevalue=editnameval.value;
+      
+        const editminAmountvalue=editminAmountval.value;
+       const editdiscountvalue=editdiscountval.value;
+
+
+
+            error4.innerHTML = "";
+            error5.innerHTML = "";
+            error6.innerHTML = "";
+            
+            let isValid = true;
+
+
+        if (editnamevalue.trim() === "") {
+            error4.style.display = "block";
+            error4.innerHTML = "Coupon Name is required.";
+            isValid = false;
+            } else if (/^\d+$/.test(editnamevalue) || /^-\d+$/.test(editnamevalue)) {
+                error4.innerHTML = "Coupon Name cannot contain numbers.";
+                isValid = false;
+            }
+
+             
+            if (isNaN(editdiscountvalue) || parseInt(editdiscountvalue) < 0) {
+                error5.style.display = "block";
+                error5.innerHTML = "Discount  must be a valid non-negative integer.";
+                isValid = false;
+            } else if (editdiscountvalue.trim() === "") {
+                error5.style.display = "block";
+                error5.innerHTML = "Discount amount is required.";
+                isValid = false;
+            }
+            if (isNaN(editminAmountvalue) || parseInt(editminAmountvalue) < 0) {
+                error6.style.display = "block";
+                error6.innerHTML = "Minimum amount must be a valid non-negative integer.";
+                isValid = false;
+            } else if (editminAmountvalue.trim() === "") {
+                error6.style.display = "block";
+                error6.innerHTML = "Minimum amount is required.";
+                isValid = false;
+            }
+
+           
+
+            
+
+            return isValid;
+
+
+
+   
+
+
+
+
+    }
+   
+
+  editForm.addEventListener("submit", (e) => {
+    const isValid = formvalidation(e);
+    if (!isValid) {
+      e.preventDefault();
+    }
+  });
+
+
 </script>
 
 

@@ -1652,15 +1652,20 @@
     </div>
     <main class="main">
       <section class="home-slider position-relative">
+        
         <div class="hero-slider-1 style-2 dot-style-1 dot-style-1-position-1">
+          <% for( let i = 0; i < bannerData.length; i++ ) { %>
+          
+          
           <div class="single-hero-slider single-animation-wrap">
             <div class="container">
               <div class="slider-1-height-2 slider-animated-1">
                 <div class="hero-slider-content-2">
-                  <h5 class="animated">Trade-In Offer</h5>
+                  <h5 class="animated"><%= bannerData[i].title %></h5>
                   <h3 class="animated fw-900">Supper Value Deals</h3>
-                  <h3 class="animated fw-900 text-brand">On All Products</h3>
-                  <p class="animated">Save more with coupons & up to 70% off</p>
+                <h3 class="animated fw-900 text-brand">On All Products</h3>
+                  
+                  <p class="animated"><%= bannerData[i].description %></p>
                   <a
                     class="animated btn btn-brush btn-brush-3"
                     href="shop-product-right.html"
@@ -1668,68 +1673,19 @@
                     Shop Now
                   </a>
                 </div>
-                <div class="single-slider-img single-slider-img-1">
+                <div class="single-slider-img single-slider-img-1" >
                   <img
                     class="animated"
-                    src="/public/user/assets/imgs/slider/slider-3.png"
+                    src="/public/uploads/<%= bannerData[i].image[0] %>"
                     alt=""
                   />
                 </div>
               </div>
             </div>
           </div>
-          <div class="single-hero-slider single-animation-wrap">
-            <div class="container">
-              <div class="slider-1-height-2 slider-animated-1">
-                <div class="hero-slider-content-2">
-                  <h5 class="animated">Tech Promotions</h5>
-                  <h3 class="animated fw-900">Tech Trending</h3>
-                  <h3 class="animated fw-900 text-brand">Great Collection</h3>
-                  <p class="animated">Save more with coupons & up to 20% off</p>
-                  <a
-                    class="animated btn btn-brush btn-brush-1"
-                    href="shop-product-right.html"
-                  >
-                    Shop Now
-                  </a>
-                </div>
-                <div class="single-slider-img single-slider-img-1">
-                  <img
-                    class="animated"
-                    src="/public/user/assets/imgs/slider/slider-1.png"
-                    alt=""
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="single-hero-slider single-animation-wrap">
-            <div class="container">
-              <div class="slider-1-height-2 slider-animated-1">
-                <div class="hero-slider-content-2">
-                  <h5 class="animated">Upcoming Offer</h5>
-                  <h3 class="animated fw-900">Big Deals From</h3>
-                  <h2 class="animated fw-900 text-brand">Manufacturer</h2>
-                  <p class="animated">
-                    Headphone, Gaming Laptop, PC and more...
-                  </p>
-                  <a
-                    class="animated btn btn-brush btn-brush-3"
-                    href="shop-product-right.html"
-                  >
-                    Shop Now
-                  </a>
-                </div>
-                <div class="single-slider-img single-slider-img-1">
-                  <img
-                    class="animated"
-                    src="/public/user/assets/imgs/slider/slider-2.png"
-                    alt=""
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
+
+          <% } %>
+          
         </div>
         <div class="slider-arrow hero-slider-1-arrow"></div>
       </section>

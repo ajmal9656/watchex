@@ -54,7 +54,9 @@ const couponDeletion=async(couponId)=>{
 
 const couponDetails=async(couponId)=>{
     return new Promise(async(resolve,reject)=>{
-        const result = await couponModel.findOne({_id:couponId});
+        const result = await couponModel.findOne({_id:couponId}).lean();
+        result.formattedDate = formatDate(result.expiryDate.toString())
+        console.log(result.formattedDate)
 
         if(result){
             resolve(result);
@@ -137,6 +139,20 @@ const applyCoupon=async(userId, couponCode,totalAmount)=>{
       });
     
 }
+
+function formatDate(dateString) {
+    // Create a Date object from the string
+    const date = new Date(dateString);
+  
+    // Get the year, month, and day components
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Add leading zero if needed
+    const day = String(date.getDate()).padStart(2, "0"); // Add leading zero if needed
+  
+    // Format the date in YYYY/MM/DD format
+    return `${year}-${month}-${day}`;
+  }
+
  
 
 module.exports = {

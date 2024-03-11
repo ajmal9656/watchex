@@ -3015,6 +3015,10 @@
               setTimeout(() => {
                 location.reload();
               }, 600);
+            }
+            else if(!response.user){
+
+              window.location.href = "/login"
             } else {
               Toastify({
                 text: "No stock available",
@@ -3055,7 +3059,11 @@
               setTimeout(() => {
                 location.reload();
               }, 600);
-            } else {
+            }
+            else if(!response.user){
+
+window.location.href = "/login"
+} else {
               Toastify({
                 text: "Something went wrong, Please try again later",
                 duration: 3000,

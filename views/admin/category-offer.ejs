@@ -96,10 +96,11 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="/admin/add-offer" method="post">
+                <form action="/admin/add-offer" method="post" id="catOffer">
                     <div class="mb-3">
                         <label for="recipient-name" class="col-form-label">Offer Name</label>
                         <input type="text" class="form-control" name="offerName" id="couponName" >
+                        <div id="error1" class="text-danger"></div>
                     </div>
                     <div class="mb-3">
                         <label for="recipient-name" class="col-form-label">Category</label>
@@ -114,6 +115,7 @@
                     <div class="mb-3">
                         <label for="recipient-name" class="col-form-label">Discount Amount</label>
                         <input type="text" class="form-control" name="offerAmount" id="couponAmount">
+                        <div id="error2" class="text-danger"></div>
                     </div>
                     <div class="mb-3">
                         <label for="recipient-name" class="col-form-label">Starting date</label>
@@ -150,17 +152,15 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="/admin/edit-offer" method="post">
+                <form action="/admin/edit-offer" method="post" id="editCatOffer">
                     <div class="mb-3">
                         <label for="recipient-name" class="col-form-label">Offer Name</label>
                         <input type="text" class="form-control" name="offerName" id="offerNme">
+                        <div id="error3" class="text-danger"></div>
                     </div>
+                    
                     <div class="mb-3">
-                        <label for="recipient-name" class="col-form-label">Category</label>
-                        <input type="text" class="form-control" name="category" id="category">
-                    </div>
-                    <div class="mb-3">
-                      <label for="recipient-name" class="col-form-label">Product</label>
+                      <label for="recipient-name" class="col-form-label">Category</label>
                       <select name="category" id="category" class="form-select">
                         <% for( let i = 0; i < category.length; i++ ) { %>
                           <option class="form-option" value="<%= category[i]._id %>"><%= category[i].name %></option>
@@ -175,6 +175,7 @@
                     <div class="mb-3">
                         <label for="recipient-name" class="col-form-label">Discount Amount</label>
                         <input type="text" class="form-control" name="offerAmount" id="offerAmont">
+                        <div id="error4" class="text-danger"></div>
                     </div>
                     <div class="mb-3">
                         <label for="recipient-name" class="col-form-label">Starting Date (YYYY/MM/DD)</label>
@@ -305,6 +306,160 @@
     }
 
   </script>
+  <script>
+    const nameval=document.getElementById('couponName');
+    
+    
+    const discountval=document.getElementById('couponAmount');
+    const catOffer=document.getElementById('catOffer');
+    const error1=document.getElementById('error1');
+    const error2=document.getElementById('error2');
+    
+    
+
+    function formvalidate(e){
+       const namevalue=nameval.value;
+      
+        
+       const discountvalue=discountval.value;
+
+
+
+            error1.innerHTML = "";
+            error2.innerHTML = "";
+            
+            
+            let isValid = true;
+
+
+        if (namevalue.trim() === "") {
+            error1.style.display = "block";
+            error1.innerHTML = "Coupon Name is required.";
+            isValid = false;
+            } else if (/^\d+$/.test(namevalue) || /^-\d+$/.test(namevalue)) {
+                error1.innerHTML = "Coupon Name cannot contain numbers.";
+                isValid = false;
+            }
+
+             
+            if (discountvalue.trim() === "") {
+                        error2.style.display = "block";
+                        error2.innerHTML = "Discount is required.";
+                        isValid = false;
+                    }
+                    else if (isNaN(discountvalue) || parseFloat(discountvalue) < 0 || parseFloat(discountvalue) > 100) {
+                        error2.style.display = "block";
+                        error2.innerHTML = "Discount must be a valid percentage between 0 and 100.";
+                        isValid = false;
+                    }
+            
+
+           
+
+            
+
+            return isValid;
+
+
+
+   
+
+
+
+
+    }
+   
+
+  catOffer.addEventListener("submit", (e) => {
+    const isValid = formvalidate(e);
+    if (!isValid) {
+      e.preventDefault();
+    }
+  });
+
+
+</script>
+<script>
+  const editnameval=document.getElementById('offerNme');
+  
+  
+  const editdiscountval=document.getElementById('offerAmont');
+  const editCatOffer=document.getElementById('editCatOffer');
+  const error3=document.getElementById('error3');
+  const error4=document.getElementById('error4');
+  
+  
+
+  function formvalidation(e){
+     const editnamevalue=editnameval.value;
+    
+      
+     const editdiscountvalue=editdiscountval.value;
+
+
+
+          error3.innerHTML = "";
+          error4.innerHTML = "";
+          
+          
+          let isValid = true;
+
+
+      if (editnamevalue.trim() === "") {
+          error3.style.display = "block";
+          error3.innerHTML = "Coupon Name is required.";
+          isValid = false;
+          }if (editnamevalue.trim() === "") {
+    error3.style.display = "block";
+    error3.innerHTML = "Coupon Name is required.";
+    isValid = false;
+} else if (/^\d+$/.test(editnamevalue)) {
+    error3.innerHTML = "Coupon Name cannot contain only numbers.";
+    isValid = false;
+} else if (/^-\d+$/.test(editnamevalue)) {
+    error3.innerHTML = "Coupon Name cannot be a negative number.";
+    isValid = false;
+}
+
+
+           
+          if (editdiscountvalue.trim() === "") {
+                      error4.style.display = "block";
+                      error4.innerHTML = "Discount is required.";
+                      isValid = false;
+                  }
+                  else if (isNaN(editdiscountvalue) || parseFloat(editdiscountvalue) < 0 || parseFloat(editdiscountvalue) > 100) {
+                      error4.style.display = "block";
+                      error4.innerHTML = "Discount must be a valid percentage between 0 and 100.";
+                      isValid = false;
+                  }
+          
+
+         
+
+          
+
+          return isValid;
+
+
+
+ 
+
+
+
+
+  }
+ 
+
+editCatOffer.addEventListener("submit", (e) => {
+  const isValid = formvalidation(e);
+  if (!isValid) {
+    e.preventDefault();
+  }
+ });
+
+
+</script>
 
 
 <%- include("../partials/admin/admin-footer") %>

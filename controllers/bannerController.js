@@ -42,7 +42,9 @@ const loadBanners = async(req,res)=>{
 
   const loadEditBanner = async (req, res) => {
     const id = req.params.id;
-    const bannerData = await bannerModel.findById(id);
+    const bannerData = await bannerModel.findById(id).lean();
+    bannerData.formattedStartingDate = formatDate(bannerData.startingDate.toString())
+    bannerData.formattedEndingDate = formatDate(bannerData.endingDate.toString())
     
     res.render("admin/editBanner", {
       banner: bannerData,

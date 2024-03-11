@@ -36,13 +36,13 @@
                             <div class="col-lg-6">
                                 <div class="mb-4">
                                     <label for="product_quantity" class="form-label">Starting Date</label>
-                                    <input type="date" name="startDate" value="<%= banner.startingDate%>"
+                                    <input type="date" name="startDate" value="<%= banner.formattedStartingDate%>"
                                         placeholder="nos" class="form-control" id="product_quantity">
                                         <div id="error3" class="text-danger"></div>
                                 </div>
                                 <div class="mb-4">
                                     <label for="product_quantity" class="form-label">Ending Date</label>
-                                    <input type="date" name="endDate" value="<%= banner.endingDate%>"
+                                    <input type="date" name="endDate" value="<%= banner.formattedEndingDate%>"
                                         placeholder="nos" class="form-control" id="product_quantity">
                                         <div id="error3" class="text-danger"></div>
                                 </div>
@@ -119,71 +119,47 @@
         <script>
             document.getElementById("product_description").value = "<%= banner.description|| '' %>";
         </script>
+        
         <script>
             const nameval=document.getElementById('product_name');
-            const priceval=document.getElementById('product_price');
-            const quantityval=document.getElementById('product_quantity');
-            const discountval=document.getElementById('product_discount');
-            const productForm=document.getElementById('productForm');
+            
+            
+            
+            const banner=document.getElementById('productForm');
             const error1=document.getElementById('error1');
-            const error2=document.getElementById('error2');
-            const error3=document.getElementById('error3');
-            const error4=document.getElementById('error4');
+            
+            
+            
         
             function formvalidate(e){
                const namevalue=nameval.value;
-               const pricevalue=priceval.value;
-                const quantityvalue=quantityval.value;
-               const discountvalue=discountval.value;
+              
+                
+               
         
         
         
                     error1.innerHTML = "";
-                    error2.innerHTML = "";
-                    error3.innerHTML = "";
-                    error4.innerHTML = "";
+                    
+                    
+                    
                     let isValid = true;
         
         
                 if (namevalue.trim() === "") {
                     error1.style.display = "block";
-                    error1.innerHTML = "Product Name is required.";
+                    error1.innerHTML = "Coupon Name is required.";
                     isValid = false;
                     } else if (/^\d+$/.test(namevalue) || /^-\d+$/.test(namevalue)) {
-                        error1.innerHTML = "Product Name cannot contain numbers.";
+                        error1.innerHTML = "Coupon Name cannot contain numbers.";
                         isValid = false;
                     }
         
-                    if (pricevalue.trim() === "") {
-                        error2.style.display = "block";
-                        error2.innerHTML = "Product Price is required.";
-                        isValid = false;
-                    }
-                    else if (isNaN(pricevalue) || parseFloat(pricevalue) <= 0) {
-                        error2.style.display = "block";
-                        error2.innerHTML = "Product Price must be a valid number greater than 0.";
-                        isValid = false;
-                    } 
-                    if (isNaN(quantityvalue) || parseInt(quantityvalue) < 0) {
-                        error3.style.display = "block";
-                        error3.innerHTML = "Product Quantity must be a valid non-negative integer.";
-                        isValid = false;
-                    } else if (quantityvalue.trim() === "") {
-                        error3.style.display = "block";
-                        error3.innerHTML = "Product Quantity is required.";
-                        isValid = false;
-                    }
+                     
+                    
+                    
         
-                    if (discountvalue.trim() === "") {
-                        error4.style.display = "block";
-                        error4.innerHTML = "Discount is required.";
-                        isValid = false;
-                    }
-                    else if (isNaN(discountvalue) || parseFloat(discountvalue) < 0 || parseFloat(discountvalue) > 100) {
-                        error4.style.display = "block";
-                        error4.innerHTML = "Discount must be a valid percentage between 0 and 100.";
-                        isValid = false;
-                    }
+                   
         
                     
         
@@ -199,7 +175,7 @@
             }
            
         
-          productForm.addEventListener("submit", (e) => {
+          banner.addEventListener("submit", (e) => {
             const isValid = formvalidate(e);
             if (!isValid) {
               e.preventDefault();

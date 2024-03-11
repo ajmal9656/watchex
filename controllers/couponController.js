@@ -5,6 +5,11 @@ const moment = require("moment")
 const loadCoupons = async(req,res)=>{
     try{
       const coupons = await couponHelper.getAllCoupons();
+      console.log(coupons)
+      for(const coupon of coupons){
+        coupon.formattedDate = formatDate(coupon.expiryDate.toString())
+        
+      }
   
       res.render("admin/coupon",{coupons})
   
@@ -56,6 +61,8 @@ const loadCoupons = async(req,res)=>{
   
     couponHelper.couponDetails(couponId).then((response)=>{
       console.log(response)
+      
+      
       res.json(response)
     }).catch((error)=>{
       console.log(error)
@@ -92,7 +99,18 @@ const loadCoupons = async(req,res)=>{
       console.log(error);
     }
   };
-
+  function formatDate(dateString) {
+    // Create a Date object from the string
+    const date = new Date(dateString);
+  
+    // Get the year, month, and day components
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Add leading zero if needed
+    const day = String(date.getDate()).padStart(2, "0"); // Add leading zero if needed
+  
+    // Format the date in YYYY/MM/DD format
+    return `${year}-${month}-${day}`;
+  }
   module.exports={
     loadCoupons,
   addCoupon,
