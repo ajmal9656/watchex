@@ -1470,10 +1470,11 @@
             <div class="row">
     
               <div class="col-12">
+                <input type="hidden" value="<%=JSON.stringify(productDetails)%>" id="prodData">
                 <div  class=""  >
                   <h4 class="mb-4 align-items-left">Order ID: #<%=productDetails[0].orderId %></h4>
                   <% if (productDetails.deliveryStatus) { %>
-                    <a class="btn" onclick="downloadPdf()" ><i
+                    <a class="btn" id="invoice"  ><i
                       class="fi-rs-shopping-bag mr-10"></i>Download Invoice</a>
                    
                   <% } %>
@@ -1884,19 +1885,13 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/easyinvoice/dist/easyinvoice.min.js"></script>
     <script>
       $(document).ready(() => {
         $("#myTable").DataTable();
       });
     </script>
-    <script>
-      function downloadPdf() {
-          const element = document.getElementById('mytable')
-          console.log(element);
-          html2pdf().from(element).save();
-          
-      }
-      </script>
+    
     <script>
       const cancelOrder = (orderId,productId) => {
         
@@ -1959,6 +1954,87 @@
       })
   }
     </script>
+<script>
+  $(document).ready(function () {
+      $('#invoice').click((e) => {
+
+        let productDetails = JSON.parse(document.getElementById('prodData').value);
+
+
+        console.log(productDetails);
+
+        e.preventDefault();
+
+        Swal.fire({
+          title: 'Do you want to download Invoice?',
+          showCancelButton: true,
+          confirmButtonText: 'OK',
+          cancelButtonText: 'Cancel'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            let filteredProducts = productDetails.filter((product) => {
+              return product.products.OrderStatus !== "cancelled";
+            });
+            let products = filteredProducts.map((product) => ({
+              quantity: product.products.quantity,
+              description: product.orderedProduct[0].product_name,
+              tax: 0,
+              price: product.orderedProduct[0].offerPrice
+            }));
+            console.log(products)
+
+            if (filteredProducts[0].couponAmount > 0) {
+              products.push({
+                quantity: 1,
+                description: "Coupon Deduction",
+                tax: 0,
+                price: -productDetails[0].couponAmount,
+              })
+            }
+
+
+
+            const data = {
+              "apiKey": "free",
+              "mode": "development",
+              "documentTitle": "INVOICE Watchex",
+              "currency": "INR",
+              "taxNotation": "GST",
+              "marginTop": 25,
+              "marginRight": 25,
+              "marginLeft": 25,
+              "marginBottom": 25,
+              "logo": "https://public.easyinvoice.cloud/img/logo_en_original.png",
+              "sender": {
+                "company": "Watchex",
+                "address": "Maradu,Kochi",
+                "zip": "1234 AB",
+                "city": "Kochi",
+                "country": "India"
+              },
+              "client": {
+                "company": productDetails[0].address.name,
+                "address": productDetails[0].address.house,
+                "zip": "5678 CD",
+                "city": productDetails[0].address.city,
+                "country": productDetails[0].address.country
+              },
+              "invoiceNumber": "2021.0001",
+              "invoiceDate": "12-03-2024",
+              "products": products,
+              "bottomNotice": "Thank you for your business."
+            };
+            console.log(data)
+
+            easyinvoice.createInvoice(data, function (result) {
+              easyinvoice.download('Watchex-invoice.pdf', result.pdf);
+              console.log("success")
+            });
+          }
+        });
+      });
+    });
+</script>
     <!-- <script>
         // Get references to the necessary elements
     const quantityVal = document.querySelector(".qty-val");

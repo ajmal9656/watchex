@@ -700,43 +700,78 @@
         <section class="mt-50 mb-50">
             <div class="container">
                 <div class="row">
+                    <!-- Button to trigger the modal -->
                     <div class="col-lg-6 mb-sm-15">
-                      <div class="toggle_info">
-                        <span><i class="fi-rs-user mr-10"></i><span class="text-muted">Avialable Coupons</span> <a
-                            href="#loginform" data-bs-toggle="collapse" class="collapsed" aria-expanded="false">See
-                            More</a></span>
-                      </div>
-                      <div class="panel-collapse collapse login_form" id="loginform">
-                        <div class="panel-body">
-                          <% for( let i=0; i < coupons.length; i++ ) { %>
-                            <p>
-                              <%=coupons[i].couponName%>: <%= coupons[i].code %>
-                            </p><br>
-                            <% } %>
-          
+                        <div class="toggle_info">
+                            <span><i class="fi-rs-user mr-10"></i><span class="text-muted">Available Coupons</span> <a href="#couponModal" data-bs-toggle="modal">See More</a></span>
                         </div>
-                      </div>
                     </div>
-                    <div class="col-lg-6">
-                      <div class="toggle_info">
-                        <span><i class="fi-rs-label mr-10"></i><span class="text-muted">Have a coupon?</span> <a href="#coupon"
-                            data-bs-toggle="collapse" class="collapsed" aria-expanded="false">Click here to enter your
-                            code</a></span>
-                      </div>
-                      <div class="panel-collapse collapse coupon_form " id="coupon">
-                        <div class="panel-body">
-                          <p class="mb-30 font-sm">If you have a coupon code, please apply it below.</p>
-                          <form action="/applyCoupon" method="post" id="couponForm">
-                            <div class="form-group">
-                              <input type="text" placeholder="Enter Coupon Code..." name="couponCode">
-                            </div>
-                            <div class="form-group">
-                              <button class="btn  btn-md" name="login" style="background-color: black;" type="submit">Apply Coupon</button>
-                            </div>
-                          </form>
-                        </div>
-                      </div>
+<!-- Modal -->
+<div class="modal fade" id="couponModal" tabindex="-1" aria-labelledby="couponModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="couponModalLabel">Available Coupons</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Coupon Name</th>
+                            <th scope="col">Coupon Code</th>
+                            <th scope="col">Minimum Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for(let i=0; i<coupons.length; i++) { %>
+                            <tr>
+                                <td><%= coupons[i].couponName %></td>
+                                <td><%= coupons[i].code %></td>
+                                <td>$<%= coupons[i].minAmount %></td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+                  <!-- Button to trigger the modal -->
+<div class="col-lg-6">
+    <div class="toggle_info">
+        <span><i class="fi-rs-label mr-10"></i><span class="text-muted">Have a coupon?</span> <a href="#couponsModal" data-bs-toggle="modal">Click here to enter your code</a></span>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="couponsModal" tabindex="-1" aria-labelledby="couponModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="couponModalLabel">Enter Coupon Code</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-30 font-sm">If you have a coupon code, please apply it below.</p>
+                <form action="/applyCoupon" method="post" id="couponForm">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Enter Coupon Code..." name="couponCode">
                     </div>
+                    <div class="form-group text-center">
+                        <button class="btn btn-md" name="login" style="background-color: rgb(66, 195, 145);" type="submit">Apply Coupon</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
                   </div>
                 <div class="row">
                     <div class="col-12">
@@ -1176,6 +1211,11 @@
 
 
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script>
+        function showCoupons() {
+          $('#couponModal').modal('show');
+        }
+    </script>
     <script>
         $(document).ready(function(){
             $('#formId').submit(function(event){

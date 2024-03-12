@@ -62,7 +62,7 @@ router.get('/orderDetails/:id',userMiddleware.isCheck,userController.orderDetail
 router.patch('/cancelOrders/:orderId/:productId/:subTotal',userController.cancelOrders);
 router.patch('/returnOrders/:orderId/:productId',userController.returnOrders);
 
-router.get('/wallet',userMiddleware.isCheck,userController.loadWallet);
+
 
 
 

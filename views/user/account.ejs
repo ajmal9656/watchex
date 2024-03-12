@@ -262,12 +262,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="header-action-icon-2">
-                                <a href="/wallet">
-                                    <img class="svgInject" alt="Evara" src="/public/user/assets/imgs/theme/icons/icon-heart.svg">
-                                    <span class="pro-count blue"><%= userData.wallet.balance %></span>
-                                </a>
-                            </div>
+                            
                             <div class="header-action-icon d-block d-lg-none">
                                 <div class="burger-icon">
                                     <span class="burger-icon-top"></span>
@@ -490,6 +485,11 @@
                                             <a class="nav-link" id="account-detail-tab" data-bs-toggle="tab"
                                                 href="#accountsecurity" role="tab" aria-controls="account-detail"
                                                 aria-selected="true"><i class="fi-rs-user mr-10"></i>Accout Security</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="account-detail-tab" data-bs-toggle="tab"
+                                                href="#userwallet" role="tab" aria-controls="account-detail"
+                                                aria-selected="true"><i class="fi-rs-user mr-10"></i>Wallet</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" href="/logout"><i
@@ -804,6 +804,50 @@
                                                 </div>
                                             </div>
                                             
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade  show " id="userwallet" role="wallettabpanel"
+                                        aria-labelledby="dashboar">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h5 class="mb-0">Your Wallet <br>(Balance: <span class="text-primary">$<%= walletData.wallet.balance %></span>)</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="table-responsive">
+                                                    <table class="table" id="orderTable">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Transaction Id</th>
+                                                                <th>Date</th>
+                                                                
+                                                                <th>Amount</th>
+                                                                
+                                                                <th>Transaction Type</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <% for( let i = 0; i <walletData.wallet.details.length; i++ ) { %>
+                                                                <tr>
+                                                                    <td><%= walletData.wallet.details[i].transactionId %></td>
+                                                                    <td><%= walletData.wallet.details[i].formattedDate %></td>
+                                                                    
+                                                                    <td>$<%= walletData.wallet.details[i].amount %></td>
+                                                                    
+                                                                                <td width="10%">
+                                                                                    <%= walletData.wallet.details[i].type %>
+                                                                                    
+                                                                                    
+                                                                                </td>
+
+                                                                </tr>
+                                                            <% } %>
+                                                            
+                                                            
+                                                            
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

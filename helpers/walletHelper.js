@@ -1,6 +1,7 @@
 const userModel=require("../models/userModel");
 
-const walletAmountAdding = async (userId, subTotal) => {
+const 
+walletAmountAdding = async (userId, subTotal) => {
     try {
         // Fetching current user
         const user = await userModel.findById(userId);

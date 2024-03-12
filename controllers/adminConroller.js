@@ -352,14 +352,14 @@ const acceptReturn = async (req,res)=>{
   const orderId = req.body.orderId;
   const productId = req.body.productId;
   const subTotal = req.params.subTotal;
-  const userId = req.session.user._id;
+  
 
   const changeStatus = req.body.status;
   console.log(orderId)
   console.log(productId)
   console.log(changeStatus)
 
-  await orderHelper.returnApproval(orderId,productId,changeStatus,subTotal,userId).then(async(result)=>{
+  await orderHelper.returnApproval(orderId,productId,changeStatus,subTotal).then(async(result)=>{
     const stockUpdation = await productHelper.stockIncreasion(
       orderId,
       productId

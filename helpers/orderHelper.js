@@ -341,7 +341,7 @@ const specificOrderStatusChange = async (orderId, productId, changeStatus) => {
     }
 };
 
-const returnApproval = async (orderId, productId, changeStatus,subTotal,userId) => {
+const returnApproval = async (orderId, productId, changeStatus,subTotal) => {
     try {
         const result = await orderModel.findOneAndUpdate(
             { _id: orderId, "products.product": productId }, // Find the order by its ID and ensure the products array contains the specified product ID
@@ -350,7 +350,7 @@ const returnApproval = async (orderId, productId, changeStatus,subTotal,userId) 
         );
         console.log(result);
         
-            const walletUpdation = await walletHelper.walletAmountAdding(userId,subTotal);
+            const walletUpdation = await walletHelper.walletAmountAdding(result.user,subTotal);
 
         
         return result;

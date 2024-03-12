@@ -509,8 +509,15 @@ const loadUserProfile = async (req, res) => {
       }
       order.quantity = quantity;
     }
+    const walletData = await userHelper.getUserDetails(userId);
 
-    res.render("user/account", { userData: response, orderData });
+    for (const amount of walletData.wallet.details) {
+      amount.formattedDate = moment(amount.date).format("MMM Do, YYYY");
+
+      
+    }
+
+    res.render("user/account", { userData: response, orderData ,walletData});
   });
 };
 
@@ -702,7 +709,7 @@ const orderDetails = async (req, res) => {
 
   orderHelper.getSpecificOrder(orderId).then(async(response) => {
     console.log("response");
-    console.log(response);
+    console.log(response[0].orderedProduct);
 
     let check = true;
     let count = 0;
@@ -762,23 +769,8 @@ const returnOrders = async (req, res) => {
     });
 };
 
-const loadWallet = async (req,res)=>{
- 
-
-    const userId = req.session.user._id;
-    const walletData = await userHelper.getUserDetails(userId);
-
-    for (const amount of walletData.wallet.details) {
-      amount.formattedDate = moment(amount.date).format("MMM Do, YYYY");
-
-      
-    }
-
-    res.render("user/wallet-details", { walletData });
 
 
-  
-}
 
 const searchProduct = async (req, res) => {
   let payload = req.params.query.trim();
@@ -893,7 +885,7 @@ module.exports = {
   loadAllProduct,
   searchProduct,
   returnOrders,
-  loadWallet,
+
   sortedProductsLoad
  
 };
