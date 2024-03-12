@@ -4,6 +4,7 @@ const fs = require('fs');
 const { resolve } = require("path");
 const productModel = require("../models/productModel");
 const orderModel = require("../models/orderModel");
+const cartModel = require("../models/cartModel");
 const offerModel = require("../models/offerModel");
 const { Console } = require("console");
 const objectId = require('mongoose').Types.ObjectId;
@@ -228,6 +229,33 @@ const stockIncreasion=async(orderId,productId)=>{
   })
 }
 
+const cartChecking=async(productId,size,userId)=>{
+  return new Promise(async(resolve,reject)=>{
+     
+     const cart =await cartModel.findOne({user:userId});
+     if(cart){
+      const check = cart.products.find((item)=>{
+        return item.productItemId.toString() == productId.toString()&&item.size.toString()==size.toString();
+
+  
+       })
+       if(check){
+        resolve({status:false})
+
+       }else{
+        resolve({status:true})
+       }
+       
+
+     }
+
+     
+     
+    
+    
+  })
+}
+
 const stockChecking=async(productId,size)=>{
   return new Promise(async(resolve,reject)=>{
      const product =await productModel.findById(productId);
@@ -236,6 +264,10 @@ const stockChecking=async(productId,size)=>{
       console.log(product.product_quantity[size].quantity);
       resolve({status:false})
 
+
+     }else if(product.product_quantity[size].quantity>0){
+
+      
 
      }
     
@@ -411,7 +443,7 @@ module.exports={
     getAllProducts,stockUpdation,
     stockIncreasion,
     getAllProduct,productOfferCheck,
-    AllProductOfferCheck
+    AllProductOfferCheck,cartChecking
     
 
 }

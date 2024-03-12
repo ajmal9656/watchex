@@ -413,7 +413,7 @@ const endDate = req.body.endDate;
         order.orderedOn = formattedDate
       })
      
-      res.render("admin/sales-report", { sales: response });
+      res.json({ sales: response });
     })
     .catch((error) => {
       console.log(error);

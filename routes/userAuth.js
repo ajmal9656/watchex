@@ -31,7 +31,7 @@ router.get('/shopProduct',userController.loadAllProduct);
 router.get('/cartView',userMiddleware.isCheck,userController.userCart);
 router.post('/addToCart/:id/:size',userMiddleware.isCheck,userController.addToCart);
 router.patch('/updateQuantity',userController.updateQuantity);
-router.delete('/removeProduct/:id',userController.removeFromCart);
+router.delete('/removeProduct/:id/:size',userController.removeFromCart);
 
 router.get('/whishlistView',userMiddleware.isCheck,userController.userWhishlist);
 router.post('/addToWishlist/:id',userMiddleware.isCheck,userController.addToWishlist);

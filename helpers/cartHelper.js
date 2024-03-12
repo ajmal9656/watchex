@@ -140,11 +140,13 @@ const quantityUpdation = async (productId, userId, quantity,size) => {
   });
 };
 
-const removeItem = async (userId, productId) => {
+const removeItem = async (userId, productId,size) => {
   return new Promise(async (resolve, reject) => {
+    console.log(size);
+    console.log(typeof size)
     const removeItem = await cartModel.updateOne(
       { user: userId },
-      { $pull: { products: { productItemId: productId } } }
+      { $pull: { products: { productItemId: new ObjectId(productId),size:size } } }
     );
 
     resolve(removeItem);

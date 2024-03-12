@@ -58,7 +58,7 @@ const loadhome = async (req, res) => {
     res.render("user/indexx", {
       product: productData,
       categories: categoryData,
-      banners:bannerData
+      bannerData:bannerData
     });
   }
 };
@@ -387,14 +387,26 @@ const addToCart = async (req, res) => {
   const userId = req.session.user._id;
 
   if(req.session.user){
-    const stockCheck = await productHelper.stockChecking(productId, size);
-  if (!stockCheck.status) {
-    res.json({ status: false });
-  } else {
-    cartHelper.addProductToCart(productId, userId, size).then((response) => {
-      res.json({ status: true });
-    });
-  }
+    productHelper.cartChecking(productId,size,userId).then(async(response)=>{
+      if(response.status){
+        const stockCheck = await productHelper.stockChecking(productId, size);
+        if (!stockCheck.status) {
+          res.json({ status: false,message:"No stock available" });
+        } else {
+          cartHelper.addProductToCart(productId, userId, size).then((response) => {
+            res.json({ status: true });
+          });
+        }
+
+      }else{
+        res.json({ status: false,message: "Product is already in cart"});
+
+      }
+
+    })
+    
+
+  
 
   }else{
     res.json({user:false});
@@ -427,8 +439,12 @@ const updateQuantity = async (req, res) => {
 
 const removeFromCart = async (req, res) => {
   const productId = req.params.id;
+  const size = req.params.size;
+  console.log(size)
+
+  
   const userId = req.session.user._id;
-  const result = await cartHelper.removeItem(userId, productId);
+  const result = await cartHelper.removeItem(userId, productId,size);
 
   if (result) {
     res.json({ status: true });

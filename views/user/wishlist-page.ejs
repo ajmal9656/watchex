@@ -15,6 +15,11 @@
     <link rel="shortcut icon" type="image/x-icon" href="/public/user/assets/imgs/theme/favicon.svg">
     <!-- Template CSS -->
     <link rel="stylesheet" href="/public/user/assets/css/main.css?v=3.4">
+    <link
+    rel="stylesheet"
+    type="text/css"
+    href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+  />
 </head>
 
 <body>
@@ -716,8 +721,7 @@
                                         <td class="image product-thumbnail"><img src="/public/uploads/<%= products[i].product.image[0] %>" alt="#"></td>
                                         <td class="product-des product-name">
                                             <h5 class="product-name"><a href="shop-product-right.html"><%= products[i].product.product_name %></a></h5>
-                                            <p class="font-xs"><%= products[i].product.product_description %>
-                                            </p>
+                                            
                                         </td>
                                         <td class="price" data-title="Price"><span>$<%= products[i].product.offerPrice %></span></td>
                                         <td class="text-center" data-title="Stock">
@@ -731,12 +735,15 @@
                                         <td class="text-right" data-title="Cart">
                                             <% if (products[i].isCart) { %>
                                                 
-                                                <a href="#" class="btn btn-sm">
+                                                <!-- <a href="#" class="btn btn-sm">
                                                     <i class="fi-rs-shopping-bag mr-5"></i>Contact Us
+                                                </a> -->
+                                                <a  onclick="cartAdd('<%= products[i].product._id %>')" class="btn btn-sm">
+                                                    <i class="fi-rs-shopping-bag mr-5"></i>Add to cart
                                                 </a>
                                                 
                                             <% } else { %>
-                                                <a href="/productView/<%= products[i].product._id %>" class="btn btn-sm">
+                                                <a  onclick="cartAdd('<%= products[i].product._id %>')" class="btn btn-sm">
                                                     <i class="fi-rs-shopping-bag mr-5"></i>Add to cart
                                                 </a>
                                                 
@@ -745,11 +752,38 @@
                                             
                                         </td>
                                         <td>
-                                        <a onclick="removeFromWishlist('<%= products[i].product._id %>')" class="text-muted"
+                                        <a onclick="removeFromWishlist('<%= products[i].product._id %>,')" class="text-muted"
                                             ><i class="fi-rs-trash"></i
                                           ></a>
                                         </td>
                                     </tr>
+                                    <div class="modal fade" id="sizeModal<%= products[i].product._id %>" tabindex="-1" role="dialog" aria-labelledby="sizeModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="sizeModalLabel">Select Size</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body text-center">
+                                                    <div class="attr-detail attr-size btn-group d-flex justify-content-center"> <!-- Added d-flex and justify-content-center -->
+                                                        
+                                                        <ul class="list-filter size-filter font-small">
+                                                            <li><a href="#" id="smallQuantit">S</a></li>
+                                                            <li class="active"><a href="#" id="mediumQuantit">M</a></li>
+                                                            <li><a href="#" id="largeQuantit">L</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <span class="text-center" id="displayMessage<%= products[i].product._id %>"></span>
+                                                <div class="text-center mt-3">
+                                                    <div class="d-inline-block">
+                                                        <button class="btn btn-sm btn-primary" id="addButton<%= products[i].product._id %>" style="width: 200px; margin-bottom: 30px; background-color: rgb(85, 172, 143); color: white;" onclick="addToCart('<%= products[i].product._id %>')">Add</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
                                     <% } %>
                                     
                                 </tbody>
@@ -758,6 +792,7 @@
                     </div>
                 </div>
             </div>
+            
         </section>
     </main>
     <footer class="main">
@@ -910,6 +945,10 @@
     <script src="./public/user/assets/js/shop.js?v=3.4"></script>
 
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script
+    type="text/javascript"
+    src="https://cdn.jsdelivr.net/npm/toastify-js"
+  ></script>
     <script>
         const removeFromWishlist = (productId)=>{
 
@@ -936,6 +975,252 @@
           
         }
       </script>
+      
+      <script>
+        function openSizeModal(productId) {
+          $('#sizeModal'+productId).modal('show');
+        }
+        
+        function closeSizeModal(productId) {
+          $('#sizeModal' + productId).modal('hide');
+        }
+        
+        
+        function cartAdd(productId){
+            console.log("productid",productId)
+            console.log("clicked add to cart")
+            openSizeModal(productId)
+         
+         
+        
+        
+        }
+    //     let selected=undefined
+    //     function selectSize(size,productId){
+    //         $.ajax({
+    //             url:`/quantity?id=${productId}&size=${size}`,
+    //             type:"POST",
+    //             success:function(response){
+    //                 const message=parseInt(response.message)
+    //                 const displayMessage=document.getElementById("displayMessage"+productId)
+    //                 const addButton=document.getElementById("addButton"+productId)
+                    
+    //                 console.log("message",message)
+    //                 if(message==0){
+    //                      Toastify({
+    //                             text: `Item is out of stock`,
+    //                             backgroundColor: "red",
+    //                             duration: 3000,
+    //                             position: "center" 
+    //                         }).showToast();
+    //                         displayMessage.innerText="item is out of Stock"
+    //                          displayMessage.style.color="red"
+    //                          addButton.disabled=true
+    //                           setTimeout(()=>{
+    //                             displayMessage.innerText=""
+        
+    //                          },3000)
+        
+    //                 }else{
+    //                     Toastify({
+    //                             text: `size selected`,
+    //                             backgroundColor: "red",
+    //                             duration: 3000,
+    //                             position: "center" 
+    //                         }).showToast();
+    //                         displayMessage.innerText="item is available"
+    //                         displayMessage.style.color="green"
+    //                         selected=size
+    //                          addButton.disabled=false
+    //                          setTimeout(()=>{
+    //                             displayMessage.innerText=""
+        
+    //                          },3000)
+        
+        
+    //                 }
+        
+    //             },
+    //             error:function(error){
+    //                 console.log(error)
+    //             }
+    //         })
+    //     }
+    //     function addToCart(productId){
+    //         let size="";
+    // if(document.getElementById('smallQuantity').classList.contains('active')){
+    //     size="S";
+    // }
+    // else if(document.getElementById('mediumQuantity').classList.contains('active')){
+    //     size="M";
+    // }
+    // else if(document.getElementById('largeQuantity').classList.contains('active')){
+    //     size="L";
+    // }else{
+    //     size="M";
+    // }
+    // console.log(size)
+    //         if(selected==undefined){
+    //              Toastify({
+    //                             text: ` Please Select a size`,
+    //                             backgroundColor: "red",
+    //                             duration: 3000,
+    //                             position: "center" 
+    //                         }).showToast();
+    //                         return
+        
+    //         }
+    //         $.ajax({
+    //              url:`/addcart?id=${productId}&size=${selected}`,
+    //              type:"POST",
+    //              success:function(response){
+    //                 if(response.success){
+    //                     console.log("inside if")
+    //                     closeSizeModal(productId)
+    //                       Toastify({
+    //                             text: `Product added to cart`,
+    //                             backgroundColor: "green",
+    //                             duration: 3000,
+    //                             position: "center" 
+    //                         }).showToast();
+    //                     const product=document.getElementById("product"+productId)
+    //                     product.remove()
+        
+        
+        
+    //                 }
+    //                 else{
+    //                     console.log("inside else")
+    //                     closeSizeModal(productId)
+    //                       Toastify({
+    //                             text: `Product already in cart`,
+    //                             backgroundColor: "red",
+    //                             duration: 3000,
+    //                             position: "center" 
+    //                         }).showToast();
+        
+    //                 }
+        
+    //              },
+    //              error:function(error){
+    //                 console.log(error)
+    //              }
+        
+    //         })
+    //     }
+    //     function removeWishList(productId){
+    //           swal({
+    //             title: "Are you sure?",
+    //             text: "Remove product from wishlist ?",
+    //             icon: "warning",
+    //             buttons: ["Cancel", "Yes, remove product"],
+    //             dangerMode: true,
+    //         }).then((confirmed) => {
+    //             if (confirmed) {
+    //               $.ajax({
+    //             url:`/removeWishlist?id=${productId}`,
+    //             type:"DELETE",
+    //             success:function(response){
+    //                 if(response.success){
+    //                     const product=document.getElementById("product"+productId)
+    //                     product.remove()
+        
+    //                 }
+        
+    //             },
+    //             error:function(error){
+    //                 console.log(error)
+    //             }
+    //         })
+    //             } else {
+    //                 swal("Cancelled", "Remove action cancelled", "info");
+    //             }
+    //         });
+           
+    //     }
+        </script>
+        <script>
+           
+            document.getElementById("smallQuantit").addEventListener("click", () => {
+             
+              document.getElementById("smallQuantit").classList.add("active");
+              document.getElementById("mediumQuantit").classList.remove("active");
+              document.getElementById("largeQuantit").classList.remove("active");
+            });
+            document
+              .getElementById("mediumQuantit")
+              .addEventListener("click", () => {
+                
+                document.getElementById("mediumQuantit").classList.add("active");
+                document.getElementById("largeQuantit").classList.remove("active");
+                document.getElementById("smallQuantit").classList.remove("active");
+              });
+            document.getElementById("largeQuantit").addEventListener("click", () => {
+                console.log("l");
+              
+              document.getElementById("largeQuantit").classList.add("active");
+              document.getElementById("mediumQuantit").classList.remove("active");
+              document.getElementById("smallQuantit").classList.remove("active");
+            });
+          </script>
+        <script>
+            
+      const addToCart = (productId) => {
+
+    let size="";
+    if(document.getElementById('smallQuantit').classList.contains('active')){
+        size="S";
+    }
+    else if(document.getElementById('mediumQuantit').classList.contains('active')){
+        size="M";
+    }
+    else if(document.getElementById('largeQuantit').classList.contains('active')){
+        size="L";
+    }else{
+        size="M";
+    }
+        console.log(productId);
+        console.log(size);
+        $.ajax({
+          url:`/addToCart/${productId}/${size}`,
+          method: "POST",
+          success: function (response) {
+            if (response.status) {
+              Toastify({
+                text: "Added to Cart",
+                duration: 3000,
+                gravity: "top", // top or bottom
+                position: "center", // left, center or right
+                stopOnFocus: true, // Prevents dismissing of toast on hover
+                style: {
+                  background: "green",
+                },
+              }).showToast();
+              setTimeout(() => {
+                location.reload();
+              }, 600);
+            }
+            else {
+              Toastify({
+                text: `${response.message}`,
+                duration: 3000,
+                gravity: "top", // top or bottom
+                position: "center", // left, center or right
+                stopOnFocus: true, // Prevents dismissing of toast on hover
+                style: {
+                  background: "red",
+                },
+              }).showToast();
+            }
+          },
+          error: function (XHR, textStatus, errorThrown) {
+            console.log(errorThrown);
+          },
+        });
+      };
+    </script>
+        
+        
 </body>
 
 </html>
