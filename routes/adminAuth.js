@@ -31,6 +31,7 @@ router.post("/addProduct",multerMiddleware.productUpload,adminController.addProd
 router.get("/delete-product/:id",adminMiddleware.isLogout,adminController.softDeleteProduct);
 router.get("/edit-product/:id",adminMiddleware.isLogout,adminController.loadEditProduct);
 router.put("/edit-product/:id",multerMiddleware.productUpload,adminController.editProduct);
+router.patch("/deleteImage/:id/:image",adminMiddleware.isLogout,adminController.deleteImage);
 
 
 router.get("/allOrders",adminMiddleware.isLogout,adminController.loadOrders);

@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css" />
 
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 
 <body>
@@ -813,42 +814,42 @@
                                                 <h5 class="mb-0">Your Wallet <br>(Balance: <span class="text-primary">$<%= walletData.wallet.balance %></span>)</h5>
                                             </div>
                                             <div class="card-body">
-                                                <div class="table-responsive">
-                                                    <table class="table" id="orderTable">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Transaction Id</th>
-                                                                <th>Date</th>
-                                                                
-                                                                <th>Amount</th>
-                                                                
-                                                                <th>Transaction Type</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <% for( let i = 0; i <walletData.wallet.details.length; i++ ) { %>
-                                                                <tr>
-                                                                    <td><%= walletData.wallet.details[i].transactionId %></td>
-                                                                    <td><%= walletData.wallet.details[i].formattedDate %></td>
-                                                                    
-                                                                    <td>$<%= walletData.wallet.details[i].amount %></td>
-                                                                    
-                                                                                <td width="10%">
-                                                                                    <%= walletData.wallet.details[i].type %>
-                                                                                    
-                                                                                    
-                                                                                </td>
-
-                                                                </tr>
-                                                            <% } %>
-                                                            
-                                                            
-                                                            
-                                                        </tbody>
-                                                    </table>
+                                                <div class="row">
+                                                    <div class="col-9">
+                                                        <!-- Your table content goes here -->
+                                                        <div class="table-responsive">
+                                                            <table class="table" id="orderTable">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Transaction Id</th>
+                                                                        <th>Date</th>
+                                                                        <th>Amount</th>
+                                                                        <th>Transaction Type</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <% for( let i = 0; i <walletData.wallet.details.length; i++ ) { %>
+                                                                        <tr>
+                                                                            <td><%= walletData.wallet.details[i].transactionId %></td>
+                                                                            <td><%= walletData.wallet.details[i].formattedDate %></td>
+                                                                            <td>$<%= walletData.wallet.details[i].amount %></td>
+                                                                            <td width="10%"><%= walletData.wallet.details[i].type %></td>
+                                                                        </tr>
+                                                                    <% } %>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-3">
+                                                        <!-- Add Money button -->
+                                                        <div class="text-end">
+                                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addMoney" data-bs-whatever="@getbootstrap">Add Money +</button>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -856,7 +857,33 @@
                     </div>
                 </div>
             </div>
+            <div class="modal fade" id="addMoney" tabindex="-1" aria-labelledby="couponModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="couponModalLabel">Enter Amount</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p class="mb-30 font-sm">please enter the amount you want to add to your wallet</p>
+                            <form action="/addMoney" method="post" id="walletForm">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="Enter Amount..." name="couponCode" id="amountWallet">
+                                </div>
+                                <div class="form-group text-center">
+                                    <button class="btn btn-md" name="login" style="background-color: rgb(48, 129, 98);" type="submit"><Address>
+
+
+
+                                    </Address>Add Money</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
+        
     </main>
     <footer class="main">
         <section class="newsletter p-30 text-white wow fadeIn animated">
@@ -1216,6 +1243,117 @@ myForm.addEventListener('submit',function(e){
             })
         }
     </script>
+<script>
+    $(document).ready(function () {
+        $("#walletForm").submit(function (e) {
+            e.preventDefault(); // Prevent default form submission
+
+            
+           
+            
+
+   
+      console.log("razorpay selected");
+      const totalPrice = document.getElementById("amountWallet").value;
+
+      fetch('/createorder', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ totalPrice })
+      }).then(response => response.json())
+        .then(data => {
+          const parseAmount = parseInt(totalPrice)
+          console.log(data);
+          var options = {
+            "key": "rzp_test_3xAnxikxa5xZNZ",
+            "amount": 100000,
+            "currency": "INR",
+            "name": "Watchex",
+            "description": "Test Transaction",
+            "image": "https://example.com/your_logo",
+            "order_id": data.orderId.id,
+            "handler": function (response) {
+              console.log(response);
+              console.log("Hello")
+
+              verify(response, data.orderId.id)
+              console.log("hey")
+            },
+            "prefill": {
+              "name": "Gaurav Kumar",
+              "email": "gaurav.kumar@example.com",
+              "contact": "9000090000"
+            },
+            "notes": {
+              "address": "Razorpay Corporate Office"
+            },
+            "theme": {
+              "color": "#3399cc"
+            }
+          };
+          var rzp = new Razorpay(options)
+          rzp.open();
+
+          function verify(response, orderId) {
+            console.log(response, orderId);
+            fetch('/paymentSuccess', {
+              method: 'post',
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                paymentid: response.razorpay_payment_id,
+                razorpayorderid: response.razorpay_order_id,
+                signature: response.razorpay_signature,
+                orderId
+              })
+            })
+              .then(response => response.json())
+              .then((data) => {
+                if (data.success) {
+
+                  fetch('/addMoneyToWallet', {
+                    method: 'PATCH',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(
+                      {totalPrice}
+                    ),
+
+                  })
+
+                    .then(response => response.json())
+                    .then(data => {
+                      console.log(data);
+                      window.location.href = '/profileView'
+                    })
+                    .catch((error) => {
+                      console.error('Error:', error);
+                    })
+                } else {
+
+                  console.error('Payment failed:', data.error);
+
+                  alert('Payment failed. Please try again later.');
+                }
+              })
+              .catch(error => {
+                // Handle any errors that occur during the fetch operation
+                console.error('Error:', error);
+              });
+          }
+        })
+
+
+    
+
+           
+        });
+    });
+</script>
 </body>
 
 </html>

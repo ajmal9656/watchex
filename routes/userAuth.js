@@ -43,6 +43,7 @@ router.get('/deleteAddress/:id',userMiddleware.isCheck,userController.deleteAddr
 router.get('/editAddress',userMiddleware.isCheck,userController.loadEditAddress);
 router.post('/editAddress',userController.editAddress);
 router.post('/addressPost',userController.addAddressPost);
+router.patch('/addMoneyToWallet',userMiddleware.isCheck,userController.addMoneyToWallet);
 
 router.post('/changepassword',userMiddleware.isCheck,userController.changePassword);
 
@@ -69,6 +70,8 @@ router.patch('/returnOrders/:orderId/:productId',userController.returnOrders);
 
 router.post('/searchProduct/:query',userController.searchProduct);
 router.post('/sortedProducts',userController.sortedProductsLoad);
+
+
 
 // router.get('/productDisplay/:id',userMiddleware.isCheck,userController.productDisplay);
 

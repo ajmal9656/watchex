@@ -13,6 +13,7 @@ const categoryModel = require("../models/categoryModel");
 const whishlistHelper = require("../helpers/whishlistHelper");
 const categoryHelper = require("../helpers/cateroryHelper");
 const passHelper = require("../helpers/passwordHelper");
+const walletHelper = require("../helpers/walletHelper");
 const orderHelper = require("../helpers/orderHelper");
 const couponHelper = require("../helpers/couponHelper");
 const bannerHelper = require("../helpers/bannerHelper");
@@ -839,6 +840,24 @@ const sortedProductsLoad = async (req, res) => {
   }
 };
 
+const addMoneyToWallet = async(req,res)=>{
+  try{
+    const userId = req.session.user._id;
+    const amount = parseInt(req.body.totalPrice);
+    console.log(amount);
+
+    const walletAdding = await walletHelper.walletMoneyAdding(userId,amount);
+
+    res.json({ url: "/orderSuccess" });
+    
+
+
+
+  }catch(error){
+console.log(error)
+  }
+}
+
 
 module.exports = {
   loadlogin,
@@ -886,6 +905,7 @@ module.exports = {
   searchProduct,
   returnOrders,
 
-  sortedProductsLoad
+  sortedProductsLoad,
+  addMoneyToWallet
  
 };

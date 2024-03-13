@@ -169,6 +169,7 @@
             </form>
             </div>
         </section> <!-- content-main end// -->
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
         
         
         <script>
@@ -262,6 +263,31 @@
           });
         
         
+        </script>
+        <script>
+           
+            function deleteImage(productId,image){
+                console.log("clicked",productId);
+                swal("Are you sure you want to do this?",{
+                    buttons:["NO","YES"]
+                }).then((res) =>{
+                    if(res){
+                        $.ajax({
+                            url:`/admin/deleteImage/${productId}/${image}`,
+                            type:'patch'
+                        }).done((res)=>{
+                            swal("successful",`${res.message}`,"success").then(() =>{
+                                location.reload();
+                            })
+                        })
+                        .fail((res) =>{
+                            swal("successful",`${res.message}`,"success").then(() =>{
+                                location.reload();
+                            })
+                        })
+                    }
+                })
+            }
         </script>
 
 <%- include("../partials/admin/admin-footer") %>

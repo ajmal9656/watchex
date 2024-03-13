@@ -11,6 +11,7 @@ const couponHelper = require("../helpers/couponHelper");
 const productHelper = require("../helpers/productHelper");
 const offerHelper = require("../helpers/offerHelper");
 const moment = require("moment")
+const fs = require('fs');
 
 const loadAdmin = function (req, res) {
   if (req.session.admin) {
@@ -276,6 +277,44 @@ const editProduct = async (req, res) => {
     console.log(err);
   }
 };
+const deleteImage = async (req,res)=>{
+  try{
+    
+    const productId = req.params.id;
+    const image = req.params.image;
+
+    console.log(image)
+
+    const updatedProduct = await productModel.findByIdAndUpdate(
+      {_id:productId},
+      { $pull: { image: image } }, // Use $pull to remove the specified image from the images array
+      { new: true } // Set { new: true } to return the updated document after the update operation
+  );
+  console.log(updatedProduct)
+  fs.unlink("public/uploads/" + image, (err) => {
+    if (err) {
+      reject(err);
+    }
+  });
+
+  if(updatedProduct){
+    res.json({message : "image deleted"});
+
+  }else{
+    res.json({message : "something went wrong"});
+
+  }
+  
+
+
+
+
+
+  }catch(error){
+    console.log(error)
+
+  }
+}
 
 const loadOrders = async(req,res)=>{
 
@@ -448,7 +487,8 @@ module.exports = {
   changeSpecificOrderStatus,
   acceptReturn,
   loadSalesReport,
-  loadSalesReportDateSort
+  loadSalesReportDateSort,
+  deleteImage
   
   
 };
