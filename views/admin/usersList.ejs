@@ -120,7 +120,7 @@
             if (response) {
                 $.ajax({
                     url: '/admin/block-unblock-user/' + userId,
-                    type: 'get'
+                    type: 'patch'
                 }).done(response => {
                     swal("Successfull", `${response.message}`, "success").then(() => {
                         location.reload();

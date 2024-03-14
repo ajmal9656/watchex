@@ -2,7 +2,7 @@ const bannerHelper = require("../helpers/bannerHelper");
 const bannerModel = require("../models/bannerModel");
 
 
-const loadBanners = async(req,res)=>{
+const loadBanners = async(req,res,next)=>{
     try{
       const banners = await bannerHelper.getAllBanners();
 
@@ -14,7 +14,7 @@ const loadBanners = async(req,res)=>{
       res.render("admin/banner-page",{banners})
   
     }catch(error){
-      console.log(error);
+      next(error);
   
     }
   
@@ -22,9 +22,15 @@ const loadBanners = async(req,res)=>{
     
   }
 
-  const loadAddBanner = async (req, res) => {
-    
+  const loadAddBanner = async (req, res,next) => {
+    try{
       res.render("admin/addBanner");
+
+    }catch(error){
+      next(error)
+    }
+    
+      
     
   };
   const addBanner = async (req, res) => {
@@ -40,8 +46,9 @@ const loadBanners = async(req,res)=>{
       });
   };
 
-  const loadEditBanner = async (req, res) => {
-    const id = req.params.id;
+  const loadEditBanner = async (req, res,next) => {
+    try{
+      const id = req.params.id;
     const bannerData = await bannerModel.findById(id).lean();
     bannerData.formattedStartingDate = formatDate(bannerData.startingDate.toString())
     bannerData.formattedEndingDate = formatDate(bannerData.endingDate.toString())
@@ -50,6 +57,11 @@ const loadBanners = async(req,res)=>{
       banner: bannerData,
       
     });
+
+    }catch(error){
+      next(error)
+    }
+    
   };
 
   const editBanner = async (req, res) => {

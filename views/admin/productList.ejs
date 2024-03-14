@@ -135,7 +135,7 @@
                     if(res){
                         $.ajax({
                             url:"/admin/delete-product/"+productId,
-                            type:'get'
+                            type:'patch'
                         }).done((res)=>{
                             swal("successful",`${res.message}`,"success").then(() =>{
                                 location.reload();

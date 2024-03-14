@@ -1099,7 +1099,7 @@
     //     if (res) {
           $.ajax({
             url: "/deleteAddress/" + addressId,
-            type: "get",
+            type: "patch",
           }).done((res) => {
             if (res) {
               if (res.status) {  //to show green button and green toast message

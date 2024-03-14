@@ -4,7 +4,7 @@ const productHelper = require("../helpers/productHelper");
 const moment = require("moment")
 const offerModel = require("../models/offerModel");
 
-const loadCategoryOffers = async(req,res)=>{
+const loadCategoryOffers = async(req,res,next)=>{
     try{
       const offers = await offerHelper.getAllCatOffers();
       const category = await categoryHelper.getAllCategory();
@@ -18,14 +18,14 @@ const loadCategoryOffers = async(req,res)=>{
       res.render("admin/category-offer",{offers,category})
   
     }catch(error){
-      console.log(error);
+      next(error);
   
     }
   
   
     
   }
-  const loadProductOffers = async(req,res)=>{
+  const loadProductOffers = async(req,res,next)=>{
     try{
       const offers = await offerHelper.getAllProdOffers();
       const product = await productHelper.getAllProduct();
@@ -40,7 +40,7 @@ const loadCategoryOffers = async(req,res)=>{
       res.render("admin/product-offer",{offers,product})
   
     }catch(error){
-      console.log(error);
+      next(error);
   
     }
   
@@ -72,8 +72,9 @@ const loadCategoryOffers = async(req,res)=>{
     
   }
 
-  const getEditOffer = async(req,res)=>{
-    const offerId= req.params.id;
+  const getEditOffer = async(req,res,next)=>{
+    try{
+      const offerId= req.params.id;
   
     offerHelper.offerDetails(offerId).then((response)=>{
       
@@ -85,6 +86,11 @@ const loadCategoryOffers = async(req,res)=>{
     }).catch((error)=>{
       console.log(error)
     })
+
+    }catch(error){
+      next(error)
+    }
+    
   
   }
 

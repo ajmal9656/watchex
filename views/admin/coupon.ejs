@@ -216,7 +216,7 @@
             if (res) {
                 $.ajax({
                     url: "/admin/deleteCoupon/" + couponId,
-                    type: 'get',
+                    type: 'patch',
                 })
                     .done((res) => {
                         if (res) {

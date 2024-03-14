@@ -2,7 +2,7 @@ const couponHelper = require("../helpers/couponHelper");
 
 const moment = require("moment")
 
-const loadCoupons = async(req,res)=>{
+const loadCoupons = async(req,res,next)=>{
     try{
       const coupons = await couponHelper.getAllCoupons();
       console.log(coupons)
@@ -14,7 +14,7 @@ const loadCoupons = async(req,res)=>{
       res.render("admin/coupon",{coupons})
   
     }catch(error){
-      console.log(error);
+      next(error);
   
     }
   
@@ -56,8 +56,9 @@ const loadCoupons = async(req,res)=>{
     })
   }
   
-  const getEditCoupon = async(req,res)=>{
-    const couponId= req.params.id;
+  const getEditCoupon = async(req,res,next)=>{
+    try{
+      const couponId= req.params.id;
   
     couponHelper.couponDetails(couponId).then((response)=>{
       console.log(response)
@@ -67,6 +68,11 @@ const loadCoupons = async(req,res)=>{
     }).catch((error)=>{
       console.log(error)
     })
+
+    }catch(error){
+      next(error)
+    }
+    
   
   }
   

@@ -28,7 +28,7 @@ var razorpay = new Razorpay({
   key_secret: "ok69vIQiyLSK9Y7aEzAL2Zax",
 });
 
-const loadhome = async (req, res) => {
+const loadhome = async (req, res,next) => {try{
   const productData = await productHelper.getAllProducts();
   const categoryData = await categoryHelper.getAllCategory();
   const bannerData = await bannerHelper.getAllBanner();
@@ -61,10 +61,14 @@ const loadhome = async (req, res) => {
       categories: categoryData,
       bannerData:bannerData
     });
+  }}catch(error){
+    next(error);
   }
+  
 };
 
-const loadlogin = function (req, res) {
+const loadlogin = function (req, res,next) {
+  try{
   if (req.session.user) {
     res.redirect("/");
   }
@@ -75,14 +79,23 @@ const loadlogin = function (req, res) {
     const message = req.flash("message");
     res.render("user/login-page", { message: message });
   }
+}
+catch(error){
+  next(error)
+}};
+
+const loadregister = function (req, res,next) {
+  try{
+    const message = req.flash("message");
+    res.render("user/login-register", { message: message });
+
+  }catch(error){
+    next(error)
+  }
+ 
 };
 
-const loadregister = function (req, res) {
-  const message = req.flash("message");
-  res.render("user/login-register", { message: message });
-};
-
-const userlogout = function (req, res) {
+const userlogout = function (req, res,next) {
   try {
     if (req.session.user) {
       req.session.destroy((error) => {
@@ -96,7 +109,7 @@ const userlogout = function (req, res) {
       res.redirect("/login");
     }
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
@@ -140,8 +153,9 @@ const insertUser = async (req, res) => {
   //   res.send(error.message);
   // }
 };
-const generateOtp = async (req, res) => {
-  const email = req.session.userdata.email;
+const generateOtp = async (req, res,next) => {
+  try{
+    const email = req.session.userdata.email;
 
   otpHelper.otpGeneration(email).then((response) => {
     req.session.otp = response.otp;
@@ -149,6 +163,11 @@ const generateOtp = async (req, res) => {
 
     res.render("user/otp-verification");
   });
+
+  }catch(error){
+    next(error)
+  }
+  
 };
 
 const verifyOtp = async (req, res) => {
@@ -180,9 +199,15 @@ const resendOtp = async (req, res) => {
   });
 };
 
-const loadForgotPass = async (req, res) => {
-  const message = req.flash("message");
+const loadForgotPass = async (req, res,next) => {
+  try{
+    const message = req.flash("message");
   res.render("user/forgot-pass", { message: message });
+
+  }catch(error){
+    next(error)
+  }
+  
 };
 
 const forgotPassword = async (req, res) => {
@@ -201,8 +226,9 @@ const forgotPassword = async (req, res) => {
   }
 };
 
-const sendOtp = async (req, res) => {
-  const email = req.session.email;
+const sendOtp = async (req, res,next) => {
+  try{
+    const email = req.session.email;
 
   otpHelper.otpGeneration(email).then((response) => {
     req.session.otp = response.otp;
@@ -210,6 +236,11 @@ const sendOtp = async (req, res) => {
 
     res.render("user/otp-page");
   });
+
+  }catch(error){
+    next(error)
+  }
+  
 };
 const resendOtpForgotPass = async (req, res) => {
   const email = req.session.email;
@@ -280,56 +311,64 @@ const loaduserhome = async (req, res) => {
   // }
 };
 
-const loadAllProduct = async (req, res) => {
-  if(req.query.searchInput){
-    let payload = req.query.searchInput.trim();
-  try {
-    let searchResult = await productModel
-      .find({ product_name: { $regex: new RegExp("^" + payload + ".*", "i") } }).populate("product_category")
-      .exec();
-    // searchResult = searchResult.slice(0, 5);
-    console.log("searchResult");
-    console.log(searchResult);
-    const productDetails = await productHelper.AllProductOfferCheck(searchResult);
-    console.log(productDetails);
+const loadAllProduct = async (req, res,next) => {
+  try{
+    if(req.query.searchInput){
+      let payload = req.query.searchInput.trim();
+    try {
+      let searchResult = await productModel
+        .find({ product_name: { $regex: new RegExp("^" + payload + ".*", "i") } }).populate("product_category")
+        .exec();
+      // searchResult = searchResult.slice(0, 5);
+      console.log("searchResult");
+      console.log(searchResult);
+      const productDetails = await productHelper.AllProductOfferCheck(searchResult);
+      console.log(productDetails);
+      
+      const categoryData = await categoryHelper.getAllCategory();
+      res.render("user/shop-product", {
+        message: "hello",
+        product: productDetails,
+        categories: categoryData,
+        sort:true
+        // cartcount:cartCount,
+        // wishlistcount:wishlistCount
+      });
+    } catch (error) {
+      res.status(500).render("error", { error, layout: false });
+    }
+    }
+    else{
+      const productData = await productHelper.getAllProducts();
+      
+      const productDetails = await productHelper.AllProductOfferCheck(productData);
+      
+  
     
     const categoryData = await categoryHelper.getAllCategory();
+   
     res.render("user/shop-product", {
-      message: "hello",
+      message: "hi",
       product: productDetails,
       categories: categoryData,
-      sort:true
+      sort:false
       // cartcount:cartCount,
       // wishlistcount:wishlistCount
     });
-  } catch (error) {
-    res.status(500).render("error", { error, layout: false });
-  }
-  }
-  else{
-    const productData = await productHelper.getAllProducts();
-    
-    const productDetails = await productHelper.AllProductOfferCheck(productData);
-    
-
   
-  const categoryData = await categoryHelper.getAllCategory();
- 
-  res.render("user/shop-product", {
-    message: "hi",
-    product: productDetails,
-    categories: categoryData,
-    sort:false
-    // cartcount:cartCount,
-    // wishlistcount:wishlistCount
-  });
+    }
+
+  }catch(error){
+    next(error)
 
   }
+  
   
 };
 
-const viewProduct = async (req, res) => {
-  const id = req.params.id;
+const viewProduct = async (req, res,next) => {
+  try{
+    const id = req.params.id;
 
   
    
@@ -360,26 +399,38 @@ const viewProduct = async (req, res) => {
   // const products = await productModel.findById(id)
   // console.log(products);
   // res.render("user/productView",{product:products});
+
+  }catch(error){
+    next(error)
+  }
+  
 };
 
-const userCart = async (req, res) => {
-  const user = req.session.user._id;
-  cartHelper.getAllCartItems(user).then(async (response) => {
-
-    const productDetails = await cartHelper.cartProductOfferCheck(response);
-    
-    
-
-
-    const removeCouponFromCart = await cartHelper.removeCoupon(user);
-
-    let totalandSubTotal = await cartHelper.totalSubtotal(user, productDetails);
-
-    res.render("user/cart-page", {
-      products: productDetails,
-      totalAmount: totalandSubTotal,
+const userCart = async (req, res,next) => {
+  try{
+    const user = req.session.user._id;
+    cartHelper.getAllCartItems(user).then(async (response) => {
+  
+      const productDetails = await cartHelper.cartProductOfferCheck(response);
+      
+      
+  
+  
+      const removeCouponFromCart = await cartHelper.removeCoupon(user);
+  
+      let totalandSubTotal = await cartHelper.totalSubtotal(user, productDetails);
+  
+      res.render("user/cart-page", {
+        products: productDetails,
+        totalAmount: totalandSubTotal,
+      });
     });
-  });
+    
+  }
+  catch(error){
+    next(error)
+  }
+ 
 };
 
 const addToCart = async (req, res) => {
@@ -454,16 +505,22 @@ const removeFromCart = async (req, res) => {
   }
 };
 
-const userWhishlist = async (req, res) => {
-  const userId = req.session.user._id;
+const userWhishlist = async (req, res,next) => {
+  try{
+    const userId = req.session.user._id;
 
-  whishlistHelper.getAllWhishlistItems(userId).then(async (response) => {
-    const productDetails = await whishlistHelper.wishlistProductOfferCheck(userId,response);
-    
-    
+    whishlistHelper.getAllWhishlistItems(userId).then(async (response) => {
+      const productDetails = await whishlistHelper.wishlistProductOfferCheck(userId,response);
+      
+      
+  
+      res.render("user/wishlist-page", { products: productDetails });
+    });
 
-    res.render("user/wishlist-page", { products: productDetails });
-  });
+  }catch(error){
+    next(error)
+  }
+ 
 };
 
 const addToWishlist = async (req, res) => {
@@ -495,8 +552,9 @@ const removeFromWishlist = async (req, res) => {
   }
 };
 
-const loadUserProfile = async (req, res) => {
-  const userId = req.session.user._id;
+const loadUserProfile = async (req, res,next) => {
+  try{
+    const userId = req.session.user._id;
 
   userHelper.getUserDetails(userId).then(async (response) => {
     const orderData = await orderHelper.getOrderDetails(userId);
@@ -520,6 +578,11 @@ const loadUserProfile = async (req, res) => {
 
     res.render("user/account", { userData: response, orderData ,walletData});
   });
+
+  }catch(error){
+    next(error)
+  }
+  
 };
 
 const addAddress = async (req, res) => {
@@ -553,12 +616,18 @@ const deleteAddress = async (req, res) => {
   });
 };
 
-const loadEditAddress = async (req, res) => {
-  const addressId = req.query.addressId;
+const loadEditAddress = async (req, res,next) => {
+  try{
+    const addressId = req.query.addressId;
   const userId = req.session.user._id;
   userHelper.editAddress(userId, addressId).then((response) => {
     res.render("user/edit-address", { userData: response });
   });
+
+  }catch(error){
+    next(error)
+  }
+  
 };
 
 const editAddress = async (req, res) => {
@@ -579,39 +648,51 @@ const changePassword = async (req, res) => {
   });
 };
 
-const loadCheckout = async (req, res) => {
-  const userId = req.session.user._id;
+const loadCheckout = async (req, res,next) => {
+  try{
+    const userId = req.session.user._id;
 
-  const userData = await userHelper.getAllAddress(userId);
-  const cartData = await cartHelper.getAllCartItems(userId);
-  const couponData = await couponHelper.getAllCoupons();
-
-  const productDetails = await cartHelper.cartProductOfferCheck(cartData);
+    const userData = await userHelper.getAllAddress(userId);
+    const cartData = await cartHelper.getAllCartItems(userId);
+    const couponData = await couponHelper.getAllCoupons();
   
-
+    const productDetails = await cartHelper.cartProductOfferCheck(cartData);
+    
   
-  let totalandSubTotal = await cartHelper.totalSubtotal(userId, productDetails);
+    
+    let totalandSubTotal = await cartHelper.totalSubtotal(userId, productDetails);
+  
+    res.render("user/checkout-page", {
+      userData,
+      cartItems: productDetails,
+      totalandSubTotal,
+      coupons: couponData,
+    });
 
-  res.render("user/checkout-page", {
-    userData,
-    cartItems: productDetails,
-    totalandSubTotal,
-    coupons: couponData,
-  });
+  }catch(error){
+    next(error)
+  }
+ 
 };
 
-const getEditAddress = async (req, res) => {
-  const addressId = req.params.id;
-  const userId = req.session.user._id;
+const getEditAddress = async (req, res,next) => {
+  try{
+    const addressId = req.params.id;
+    const userId = req.session.user._id;
+  
+    userHelper
+      .addressDetails(addressId, userId)
+      .then((response) => {
+        res.json(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
 
-  userHelper
-    .addressDetails(addressId, userId)
-    .then((response) => {
-      res.json(response);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+  }catch(error){
+    next(error)
+  }
+ 
 };
 const postEditAddress = async (req, res) => {
   const body = req.body;
@@ -694,8 +775,14 @@ const paymentSuccess = (req, res) => {
   }
 };
 
-const orderSuccess = (req, res) => {
-  res.render("user/orderSuccess");
+const orderSuccess = (req, res,next) => {
+  try{
+    res.render("user/orderSuccess");
+
+  }catch(error){
+    next(error)
+  }
+  
 };
 
 const cancelOrder = async (req, res) => {
@@ -705,40 +792,46 @@ const cancelOrder = async (req, res) => {
   });
 };
 
-const orderDetails = async (req, res) => {
-  const orderId = req.params.id;
+const orderDetails = async (req, res,next) => {
+  try{
+    const orderId = req.params.id;
 
-  orderHelper.getSpecificOrder(orderId).then(async(response) => {
-    console.log("response");
-    console.log(response[0].orderedProduct);
-
-    let check = true;
-    let count = 0;
-
-    for(const order of response){
-      if(order.products.orderStatus=="delivered"){
-        check = true;
-        count++;
-        
-
-      }else if(order.products.orderStatus=="cancelled"){
-        check = true;
-
-      }else{
-        check = false;
-        break;
+    orderHelper.getSpecificOrder(orderId).then(async(response) => {
+      console.log("response");
+      console.log(response[0].orderedProduct);
+  
+      let check = true;
+      let count = 0;
+  
+      for(const order of response){
+        if(order.products.orderStatus=="delivered"){
+          check = true;
+          count++;
+          
+  
+        }else if(order.products.orderStatus=="cancelled"){
+          check = true;
+  
+        }else{
+          check = false;
+          break;
+        }
       }
-    }
-    if(check==true&&count>=1){
-      response.deliveryStatus=true;
-    }
+      if(check==true&&count>=1){
+        response.deliveryStatus=true;
+      }
+  
+      
+      const productDetails = await orderHelper.orderProductOfferCheck(response);
+      
+  
+      res.render("user/each-orders", { productDetails: response });
+    });
 
-    
-    const productDetails = await orderHelper.orderProductOfferCheck(response);
-    
+  }catch(error){
+    next(error)
+  }
 
-    res.render("user/each-orders", { productDetails: response });
-  });
 };
 
 const cancelOrders = async (req, res) => {

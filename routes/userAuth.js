@@ -39,7 +39,7 @@ router.delete('/removeFromWishlist/:id',userController.removeFromWishlist);
 
 router.get('/profileView',userMiddleware.isCheck,userController.loadUserProfile);
 router.put('/addAddress',userController.addAddress);
-router.get('/deleteAddress/:id',userMiddleware.isCheck,userController.deleteAddress);
+router.patch('/deleteAddress/:id',userMiddleware.isCheck,userController.deleteAddress);
 router.get('/editAddress',userMiddleware.isCheck,userController.loadEditAddress);
 router.post('/editAddress',userController.editAddress);
 router.post('/addressPost',userController.addAddressPost);

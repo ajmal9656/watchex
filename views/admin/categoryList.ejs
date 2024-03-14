@@ -95,7 +95,7 @@
       if (res) {
         $.ajax({
           url: "/admin/deleteCategory/" + categoryId,
-          type: "get",
+          type: "patch",
         }).done((res) => {
           if (res) {
             if (res.listed) {  //to show green button and green toast message

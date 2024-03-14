@@ -258,7 +258,7 @@
         if (response.isConfirmed) {
           $.ajax({
             url: "/admin/deleteCategoryOffer/" + offerId,
-            type: "get",
+            type: "patch",
           }).done((res) => {
             if (res) {
               if (res.listed) {  //to show green button and green toast message

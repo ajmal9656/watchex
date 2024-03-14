@@ -130,7 +130,7 @@
                     if(res){
                         $.ajax({
                             url:"/admin/delete-banner/"+bannerId,
-                            type:'get'
+                            type:'patch'
                         }).done((res)=>{
                             swal("successful",`${res.message}`,"success").then(() =>{
                                 location.reload();

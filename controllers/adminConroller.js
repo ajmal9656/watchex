@@ -13,13 +13,20 @@ const offerHelper = require("../helpers/offerHelper");
 const moment = require("moment")
 const fs = require('fs');
 
-const loadAdmin = function (req, res) {
-  if (req.session.admin) {
-    res.render("admin/index");
-  } else {
-    const message = req.flash("message");
-    res.render("admin/login-page", { message: message });
+const loadAdmin = function (req, res,next) {
+  try{
+    
+    if (req.session.admin) {
+      res.render("admin/index");
+    } else {
+      const message = req.flash("message");
+      res.render("admin/login-page", { message: message });
+    }
+
+  }catch(error){
+    next(error)
   }
+  
 };
 const loadAdminHome = async (req, res) => {
   const admin = req.body;
@@ -39,7 +46,7 @@ const loadAdminHome = async (req, res) => {
     });
 };
 
-const logoutAdmin = async (req, res) => {
+const logoutAdmin = async (req, res,next) => {
   try {
     if (req.session.admin) {
       req.session.destroy((error) => {
@@ -53,12 +60,13 @@ const logoutAdmin = async (req, res) => {
       res.redirect("/admin");
     }
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
-const userList = async (req, res) => {
-  userlistHelper
+const userList = async (req, res,next) => {
+  try{
+    userlistHelper
     .getList()
     .then((response) => {
       res.render("admin/usersList", { users: response });
@@ -66,6 +74,11 @@ const userList = async (req, res) => {
     .catch((error) => {
       console.log(error);
     });
+
+  }catch(error){
+    next(error)
+  }
+ 
 };
 
 const blockOrUnblockUser = async (req, res) => {
@@ -96,10 +109,16 @@ const blockOrUnblockUser = async (req, res) => {
     });
 };
 
-const loadCategory = async (req, res) => {
-  categoryHelper.categoryList().then((category) => {
-    res.render("admin/categoryList", { categories: category });
-  });
+const loadCategory = async (req, res,next) => {
+  try{
+    categoryHelper.categoryList().then((category) => {
+      res.render("admin/categoryList", { categories: category });
+    });
+
+  }catch(error){
+    next(error)
+  }
+  
 };
 
 const createCategory = async (req, res) => {
@@ -125,11 +144,17 @@ const softDeleteCategory = async (req, res) => {
   });
 };
 
-const loadEditcategory = async (req, res) => {
-  const id = req.query.catId;
+const loadEditcategory = async (req, res,next) => {
+  try{
+    const id = req.query.catId;
   const catData = await categoryModel.findOne({ _id: id });
   
   res.render("admin/editCategory", { category: catData });
+
+  }catch(error){
+    next(error)
+  }
+  
 };
 
 const editCategory = async (req, res) => {
@@ -155,8 +180,9 @@ const editCategory = async (req, res) => {
     res.send("already exist");
   }
 };
-const LoadProduct = async (req, res) => {
-  productListHelper
+const LoadProduct = async (req, res,next) => {
+  try{
+    productListHelper
     .productList()
     .then((response) => {
       res.render("admin/productList", { products: response });
@@ -164,12 +190,23 @@ const LoadProduct = async (req, res) => {
     .catch((error) => {
       console.log(error);
     });
+
+  }catch(error){
+    next(error)
+  }
+  
 };
 
-const loadAddProduct = async (req, res) => {
-  productListHelper.getAddProduct().then((response) => {
-    res.render("admin/addProduct", { category: response });
-  });
+const loadAddProduct = async (req, res,next) => {
+  try{
+    productListHelper.getAddProduct().then((response) => {
+      res.render("admin/addProduct", { category: response });
+    });
+
+  }catch(error){
+    next(error)
+  }
+  
 };
 
 const addProduct = async (req, res) => {
@@ -202,14 +239,20 @@ const softDeleteProduct = (req, res) => {
     });
 };
 
-const loadEditProduct = async (req, res) => {
-  const id = req.params.id;
+const loadEditProduct = async (req, res,next) => {
+  try{
+    const id = req.params.id;
   const productData = await productModel.findById(id);
   const catData = await categoryHelper.getAllCategory();
   res.render("admin/editProduct", {
     product: productData,
     categories: catData,
   });
+
+  }catch(error){
+    next(error)
+  }
+  
 };
 
 const editProduct = async (req, res) => {
@@ -316,9 +359,9 @@ const deleteImage = async (req,res)=>{
   }
 }
 
-const loadOrders = async(req,res)=>{
-
-  const allOrders = await orderHelper.getAllOrders();
+const loadOrders = async(req,res,next)=>{
+  try{
+    const allOrders = await orderHelper.getAllOrders();
 
   for(const order of allOrders){
     order.formattedDate = moment(order.orderedOn).format("MMM Do, YYYY");
@@ -326,6 +369,12 @@ const loadOrders = async(req,res)=>{
   
 
   res.render("admin/orders",{allOrders});
+
+  }catch(error){
+    next(error)
+  }
+
+  
 
 
 
@@ -342,30 +391,36 @@ const changeOrderStatus = async (req,res)=>{
   })
 }
 
-const loadOrderDetails = async(req,res)=>{
+const loadOrderDetails = async(req,res,next)=>{
+  try{
+    const orderId = req.params.id;
 
-  const orderId = req.params.id;
+    orderHelper.getSpecificOrder(orderId).then(async(response)=>{
+      console.log(response)
+      console.log(response[0].orderedProduct)
+      
+  
+      const productDetails = await orderHelper.orderedProductOfferCheck(response);
+  
+      console.log(response)
+      console.log(response[0].orderedProduct)
+      
+  
+  
+      
+  
+      
+  
+      res.render("admin/order-details",{orderDetails:productDetails})
+  
+  
+    })
 
-  orderHelper.getSpecificOrder(orderId).then(async(response)=>{
-    console.log(response)
-    console.log(response[0].orderedProduct)
-    
+  }catch(error){
+    next(error)
+  }
 
-    const productDetails = await orderHelper.orderedProductOfferCheck(response);
-
-    console.log(response)
-    console.log(response[0].orderedProduct)
-    
-
-
-    
-
-    
-
-    res.render("admin/order-details",{orderDetails:productDetails})
-
-
-  })
+ 
 
 
 
@@ -410,8 +465,9 @@ const acceptReturn = async (req,res)=>{
   })
 }
 
-const loadSalesReport = async (req, res) => {
-  orderHelper
+const loadSalesReport = async (req, res,next) => {
+  try{
+    orderHelper
     .salesReport()
     .then((response) => {
       console.log("sojiouajcn");
@@ -431,6 +487,11 @@ const loadSalesReport = async (req, res) => {
     .catch((error) => {
       console.log(error);
     });
+
+  }catch(error){
+    next(error)
+  }
+  
 };
 
 const loadSalesReportDateSort = async (req, res) => {
