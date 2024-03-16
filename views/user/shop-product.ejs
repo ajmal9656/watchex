@@ -865,8 +865,8 @@
                                     <div class="sort-by-dropdown">
                                         <ul>
                                             <li><a class="active" href="#">Featured</a></li>
-                                            <li><a href="#">Price: Low to High</a></li>
-                                            <li><a href="#">Price: High to Low</a></li>
+                                            <li><a onclick="priceSort('L')">Price: Low to High</a></li>
+                                            <li><a onclick="priceSort('H')">Price: High to Low</a></li>
                                             <li><a href="#">Release Date</a></li>
                                             <li><a href="#">Avg. Rating</a></li>
                                         </ul>
@@ -1236,11 +1236,75 @@
                     console.log(response);
                     updateProductGrid(response.product)
 
-                    function updateProductGrid(product) {
+
+
+
+                
+                }
+              });
+            }
+        
+      </script>
+      <script>
+        function priceSort(sort){
+            
+
+            if(!document.getElementById("Sorted")){
+                let prods = document.getElementById("sortedProducts").value;
+                console.log(prods)
+                
+
+                $.ajax({
+                url:`/priceSortProducts?sort=${sort}`,
+                type: "post",
+                data: {products:prods},
+                success : (response)=>{
+                    console.log(response);
+                    updateProductGrid(response.product)
+
+               
+                    
+
+
+                
+                }
+              });
+
+            }else{
+                const prod = document.getElementById("Sorted").value;
+            
+            console.log("prod")
+                $.ajax({
+                url:`/priceSortProducts?sort=${sort}`,
+                type: "post",
+                data: {products:prod},
+                success : (response)=>{
+                    console.log(response);
+                    updateProductGrid(response.product)
+
+               
+                    
+
+
+                
+                }
+              });
+
+            }
+
+            
+            console.log("prod");
+            console.log(prod);
+            
+
+        }
+      </script>
+      <script>
+                            function updateProductGrid(product) {
                         const productGrid = document.querySelector('.product-grid-3');
                         productGrid.innerHTML = ''; // Clear the existing product grid
 
-                        product.forEach(product => {
+                        product.forEach(produc => {
                             const productDiv = document.createElement('div');
                             productDiv.classList.add('col-lg-4', 'col-md-4', 'col-sm-6');
                             productDiv.innerHTML = `
@@ -1248,9 +1312,9 @@
       <div class="product-cart-wrap mb-30">
                                         <div class="product-img-action-wrap">
                                             <div class="product-img product-img-zoom">
-                                                <a href="/productView/${product._id}">
-                                                    <img class="default-img" src="/public/uploads/${product.image[0]}" alt="">
-                                                    <img class="hover-img" src="/${product.image[1]}" alt="">
+                                                <a href="/productView/${produc._id}">
+                                                    <img class="default-img" src="/public/uploads/${produc.image[0]}" alt="">
+                                                    <img class="hover-img" src="/${produc.image[1]}" alt="">
                                                 </a>
                                             </div>
                                             <div class="product-action-1">
@@ -1266,14 +1330,14 @@
                                             
                                                 <div class="product-category">
                                                     <a href="#">
-                                                        ${product.product_category.name}
+                                                        ${produc.product_category.name}
                                                     </a>
                                                 </div>
                                                 
 
                                                         <h2>
                                                             <a href="#">
-                                                                ${product.product_name}
+                                                                ${produc.product_name}
                                                             </a>
                                                         </h2>
                                                         <div class="rating-result" title="90%">
@@ -1284,29 +1348,26 @@
                                                             </span>
                                                         </div>
                                                         <div class="product-price">
-                                                            <span class="text-dark">
-                                                                
+                                                           $ <span class="text-dark">
+                                                                ${produc.offerPrice}
 
                                                             </span>
                                                             <span class="old-price">
-                                                                ${product.product_price}
+                                                                ${produc.product_price}
                                                             </span>
                                                         </div>
                                                         <div class="product-action-1 show">
                                                             <a aria-label="Add To Cart" class="action-btn hover-up" href="shop-cart.html"><i class="fi-rs-shopping-bag-add"></i></a>
                                                         </div>
                                         </div>
-                                    </div>`;
+                                    </div>
+                                    <input type="text" id="Sorted" hidden>`;
+                                    
                             productGrid.appendChild(productDiv); // Append the new product to the grid
                         });
+                        const sortedProduct = document.getElementById("Sorted").value = JSON.stringify(product);
+                        
                     }
-
-
-                
-                }
-              });
-            }
-        
       </script>
     <script src="/public/user/assets/js/vendor/modernizr-3.6.0.min.js"></script>
     <script src="/public/user/assets/js/vendor/jquery-3.6.0.min.js"></script>

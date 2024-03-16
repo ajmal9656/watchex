@@ -70,6 +70,7 @@ router.patch('/returnOrders/:orderId/:productId',userController.returnOrders);
 
 router.post('/searchProduct/:query',userController.searchProduct);
 router.post('/sortedProducts',userController.sortedProductsLoad);
+router.post('/priceSortProducts',userController.priceSortedProductsLoad);
 
 
 

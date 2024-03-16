@@ -913,10 +913,63 @@ const sortedProductsLoad = async (req, res) => {
           continue;
         }
       }
+console.log(changePassword)
+console.log("changePassword")
 
 
       
       res.json({product:checkingCategory})
+
+
+
+
+
+    } else if (req.query.price) {
+
+      
+    } else if (req.query.category && req.query.price) {
+
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+const priceSortedProductsLoad = async (req, res) => {
+  try {
+    if (req.query.sort) {
+      const products =JSON.parse(req.body.products);
+      const sort = req.query.sort;
+      
+
+      if(sort.toString()==="L"){
+
+       const sortedProd = products.sort((a,b)=>{
+          return a.offerPrice - b.offerPrice
+        })
+        console.log(sort)
+        console.log(sortedProd)
+
+        res.json({product:sortedProd})
+        
+      }else{
+        const sortedProd =  products.sort((a,b)=>{
+          return b.offerPrice - a.offerPrice
+        })
+        console.log(sort)
+        console.log(sortedProd)
+        res.json({product:sortedProd})
+
+      }
+      
+
+    
+      
+
+      
+
+
+      
+      
 
 
 
@@ -999,6 +1052,7 @@ module.exports = {
   returnOrders,
 
   sortedProductsLoad,
-  addMoneyToWallet
+  addMoneyToWallet,
+  priceSortedProductsLoad
  
 };
