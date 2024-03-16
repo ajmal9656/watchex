@@ -417,8 +417,9 @@ const userCart = async (req, res,next) => {
   
   
       const removeCouponFromCart = await cartHelper.removeCoupon(user);
-  
       let totalandSubTotal = await cartHelper.totalSubtotal(user, productDetails);
+  
+      
   
       res.render("user/cart-page", {
         products: productDetails,
@@ -467,21 +468,35 @@ const addToCart = async (req, res) => {
   
 };
 
+
 const updateQuantity = async (req, res) => {
   const productId = req.query.productId;
   const size = req.query.size;
+  const price = parseInt(req.body.price);
   const quantity = parseInt(req.query.quantity);
   const userId = req.session.user._id;
+  console.log("entered")
+  console.log(price)
 
   cartHelper
-    .quantityUpdation(productId, userId, quantity, size)
-    .then((response) => {
+    .quantityUpdation(productId, userId, quantity, size,price)
+    .then(async(response) => {
+      
+      const cartData = await cartHelper.getAllCartItems(userId)
+  
+      const productDetails = await cartHelper.cartProductOfferCheck(cartData);
+      
+      
+      let totalandSubTotal = await cartHelper.totalSubtotal(userId, productDetails);
+     
+      
       if (response.sizeExceed) {
-        res.json({ sizeExceed: true });
+        
+        res.json({ sizeExceed: true,totalSubAmount:response.totalSubAmount ,productQuantity:response.product.quantity,total:totalandSubTotal});
       } else if (response.sizeLimit) {
-        res.json({ sizeLimit: true });
+        res.json({ sizeLimit: true ,totalSubAmount:response.totalSubAmount,productQuantity:response.product.quantity,total:totalandSubTotal});
       } else {
-        res.json({ status: true });
+        res.json({ status: true ,totalSubAmount:response.totalSubAmount,productQuantity:response.productQuantity,total:totalandSubTotal});
       }
     })
     .catch((error) => {
@@ -490,6 +505,7 @@ const updateQuantity = async (req, res) => {
 };
 
 const removeFromCart = async (req, res) => {
+  console.log("ent")
   const productId = req.params.id;
   const size = req.params.size;
   console.log(size)

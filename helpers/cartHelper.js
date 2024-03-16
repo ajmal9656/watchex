@@ -2,6 +2,7 @@ const cartModel = require("../models/cartModel");
 const couponModel = require("../models/couponModel");
 const productModel = require("../models/productModel");
 const offerModel = require("../models/offerModel");
+
 const ObjectId = require("mongoose").Types.ObjectId;
 
 const getAllCartItems = async (userId) => {
@@ -80,13 +81,14 @@ const checkCart = async (productId, userId) => {
   });
 };
 
-const quantityUpdation = async (productId, userId, quantity,size) => {
+const quantityUpdation = async (productId, userId, quantity,size,price) => {
   return new Promise(async (resolve, reject) => {
     const cart = await cartModel.findOne({ user: userId });
 
     const product = cart.products.find((item) => {
       return item.productItemId.toString() == productId;
     });
+   
 
     const productSizeCount = await productModel.aggregate([{$match:{_id:new ObjectId(productId)}},{
       $project:{item:"$product_quantity"}
@@ -101,6 +103,7 @@ const quantityUpdation = async (productId, userId, quantity,size) => {
         return null; // Size not found
       }
     }
+   
     const sizeCount = findValueForSize(productSizeCount, size);
 
     
@@ -108,35 +111,74 @@ const quantityUpdation = async (productId, userId, quantity,size) => {
 
 
     let newQuantity = product.quantity + parseInt(quantity);
+    if(newQuantity<=0){
+      newQuantity=1;
+
+    }
+    if(newQuantity>sizeCount){
+      newQuantity = sizeCount;
+
+    }
 
     // if (newQuantity < 1) {
     //   newQuantity = 1;
     // }
     
     product.quantity = newQuantity;
+    
+    
+  
+      
+  
+      
+    
+    
     await cart.save();
+    product.productQuantity = product.quantity;
+    
+    
+
+    
+    
 
     let sizes={};
 
     if(product.quantity===1){
+      let totals = parseInt(product.quantity) * parseInt(price)
+      
+      
       sizes.sizeLimit=true;
-      sizes.cart=cart;
+      sizes.product=product;
+      
+      sizes.totalSubAmount = totals;
       resolve(sizes);
 
     }
+    
 
-  if(product.quantity==sizeCount){
-  
+  if(product.quantity>=sizeCount){
+    
+   
+    
+  let total = parseInt(product.quantity) * parseInt(price)
       
       sizes.sizeExceed=true;
-      sizes.cart=cart;
+      sizes.product=product;
+      
+      sizes.totalSubAmount = total
+      
       resolve(sizes);
 
 
     }
+    
+    
+    product.totalSubAmount = parseInt(product.quantity) * parseInt(price)
+    
 
     
-    resolve(cart);
+    resolve(product);
+    
   });
 };
 
@@ -153,6 +195,42 @@ const removeItem = async (userId, productId,size) => {
   });
 };
 const totalSubtotal = async (userId, cartItems) => {
+  return new Promise(async (resolve, reject) => {
+    let cart = await cartModel.findOne({ user: userId });
+    let total = 0;
+    if (cart) {
+      if(cart.coupon===null){
+        if (cartItems.length) {
+          for (let i = 0; i < cartItems.length; i++) {
+            total =
+              total +
+              parseInt(cartItems[i].quantity) *parseInt(cartItems[i].product.offerPrice);
+                // Math.round(
+                //   cartItems[i].product.product_price -
+                //     (cartItems[i].product.product_price *
+                //       cartItems[i].product.product_discount) /
+                //       100
+                // );
+          }
+        }
+        cart.totalAmount = total;
+        
+        await cart.save();
+  
+        resolve(total);
+
+      }else{
+        total = cart.totalAmount;
+        resolve(total);
+      }
+      
+     
+    } else {
+      resolve(total);
+    }
+  });
+};
+const total = async (userId, cartItems) => {
   return new Promise(async (resolve, reject) => {
     let cart = await cartModel.findOne({ user: userId });
     let total = 0;

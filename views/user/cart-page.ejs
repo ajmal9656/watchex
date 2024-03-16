@@ -22,6 +22,11 @@
       rel="stylesheet"
       href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css"
     />
+    <link
+    rel="stylesheet"
+    type="text/css"
+    href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+  />
   </head>
 
   <body>
@@ -1496,31 +1501,31 @@
                               
                             </td>
                             <td class="price" data-title="Price">
-                              <span>$<%= products[i].product.offerPrice %></span>
+                              $<span id="price<%= products[i].product._id %>"><%= products[i].product.offerPrice %></span>
                             </td>
                             <td class="price" data-title="Price">
                               <span><%= products[i].size %></span>
                             </td>
                             <td class="text-center" data-title="Stock">
                               <div class="detail-qty border radius m-auto">
-                                <% if (!products[i].product.sizelimit) { %>
-                                <a href="#" class="qty-down" id="quantityDec" onclick="incOrDecquantity('<%= products[i].product._id %>','-1','<%= products[i].size %>')"
-                                  ><i class="fi-rs-angle-small-down"></i
+                                
+                                <a href="#" class="qty-down" id="quantityDec<%= products[i].product._id %><%= products[i].size %>" onclick="incOrDecQuantity('<%= products[i].product._id %>','-1','<%= products[i].size %>')"
+                                  ><i class="fi-rs-angle-small-down" id="quantityDecs<%= products[i].product._id %><%= products[i].size %>"></i
                                 ></a>
-                                <% } %>
-                                <span class="qty-val"><%= products[i].quantity %></span>
-                                <% if (!products[i].product.sizeexceed) { %>
-                                  <a href="#" class="qty-up" id="quantityInc" onclick="incOrDecquantity('<%= products[i].product._id %>','1','<%= products[i].size %>')">
-                                      <i class="fi-rs-angle-small-up"></i>
+                               
+                                <span class="qty-val" id="quantity<%= products[i].product._id %><%= products[i].size %>"><%= products[i].quantity %></span>
+                                
+                                  <a href="#" class="qty-up" id="quantityInc<%= products[i].product._id %><%= products[i].size %>" onclick="incOrDecQuantity('<%= products[i].product._id %>','1','<%= products[i].size %>')">
+                                      <i class="fi-rs-angle-small-up" id="quantityIncs<%= products[i].product._id %><%= products[i].size %>"></i>
                                   </a>
-                              <% } %>
+                              
                               
                                 
                               </div>
                             </td>
-                            <td class="text-right" data-title="Cart">
+                            <td class="text-right" data-title="Cart" id="totalSubAmount<%= products[i].product._id %><%= products[i].size %>">
                                 
-                                    <span>$<%= products[i].quantity*products[i].product.offerPrice %></span>
+                              $<span><%= products[i].quantity*products[i].product.offerPrice %></span>
                               
                             </td>
                             <td class="action" data-title="Remove">
@@ -1564,8 +1569,8 @@
                             <tr>
                               <td class="cart_total_label">Cart Subtotal</td>
                               <td class="cart_total_amount">
-                                <span class="font-lg fw-900 text-brand"
-                                  >$<%= totalAmount %></span
+                                $<span class="font-lg fw-900 text-brand"
+                                   id="cartTotal"><%= totalAmount %></span
                                 >
                               </td>
                             </tr>
@@ -1579,8 +1584,8 @@
                               <td class="cart_total_label">Total</td>
                               <td class="cart_total_amount">
                                 <strong
-                                  ><span class="font-xl fw-900 text-brand"
-                                    >$<%= totalAmount %></span
+                                  >$<span class="font-xl fw-900 text-brand"
+                                  id="cartTotals"><%= totalAmount %></span
                                   ></strong
                                 >
                               </td>
@@ -1819,12 +1824,117 @@
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script
+    type="text/javascript"
+    src="https://cdn.jsdelivr.net/npm/toastify-js"
+  ></script>
     <script>
       $(document).ready(() => {
         $("#myTable").DataTable();
       });
     </script>
     <script>
+      const incOrDecQuantity = (productId, quantity,size) => {
+        let OfferPrice=$("#price"+productId).html();
+        let quant=$("#quantity"+productId+size).html();
+        console.log(OfferPrice)
+        console.log(quant)
+        $.ajax({
+          url: `/updateQuantity?productId=${productId}&quantity=${quantity}&size=${size}`,
+          method: "PATCH",
+          data:{
+            price:OfferPrice
+          },
+          success: (response) => {
+            console.log(response)
+            if (response.status) {
+              Toastify({
+                text: `Quantity Updated`,
+                duration: 3000,
+                gravity: "top",
+                position: "center",
+                stopOnFocus: true,
+                style: {
+                  background: "green",
+                },
+              }).showToast();
+              console.log(response.totalSubAmount)
+              document.getElementById("totalSubAmount"+productId+size).innerHTML ="$"+response.totalSubAmount;
+              document.getElementById("cartTotal").innerHTML = response.total
+              document.getElementById("cartTotals").innerHTML = response.total
+              document.getElementById("quantity"+productId+size).innerHTML =response.productQuantity
+              document.getElementById('quantityInc'+productId+size).style.display = "block";
+              document.getElementById('quantityIncs'+productId+size).style.display = "block";
+              document.getElementById('quantityDec'+productId+size).style.display = "block";
+              document.getElementById('quantityDecs'+productId+size).style.display = "block";
+              
+              
+              // document.getElementById("totalAmountFinal").innerHTML = "₹" + response.totalAmount
+             
+                
+                
+                // $("#quantity" + productId).html(response.cartDetails[0].products.quantity) 
+                // $("#individualTotal" + productId).html( response.cartDetails[0].products.totalPrice) 
+                // $("#upButton"+productId).show()
+            
+  
+                
+            }else if(response.sizeExceed){
+              console.log("sjhvjsncvjosjnjno")
+              Toastify({
+                text: `Stock Limit Exceeded`,
+                duration: 3000,
+                gravity: "top",
+                position: "center",
+                stopOnFocus: true,
+                style: {
+                  background: "red",
+                },
+              }).showToast();
+              document.getElementById("totalSubAmount"+productId+size).innerHTML ="$"+response.totalSubAmount
+              document.getElementById("quantity"+productId+size).innerHTML =response.productQuantity
+              document.getElementById("cartTotal").innerHTML = response.total
+              document.getElementById("cartTotals").innerHTML = response.total
+              
+              document.getElementById('quantityInc'+productId+size).style.display = "none";
+              document.getElementById('quantityIncs'+productId+size).style.display = "none";
+            }
+              else if(response.sizeLimit){
+                
+          
+              document.getElementById("totalSubAmount"+productId+size).innerHTML ="$"+response.totalSubAmount
+              document.getElementById("quantity"+productId+size).innerHTML =response.productQuantity
+              document.getElementById("cartTotal").innerHTML = response.total
+              document.getElementById("cartTotals").innerHTML = response.total
+                
+              document.getElementById('quantityDec'+productId+size).style.display = "none";
+              document.getElementById('quantityDecs'+productId+size).style.display = "none";
+
+
+              }
+             else {
+              Toastify({
+                text: `Stock Limit Exceeded`,
+                duration: 3000,
+                gravity: "top",
+                position: "center",
+                stopOnFocus: true,
+                style: {
+                  background: "red",
+                },
+              }).showToast();
+            
+              
+              $("#quantity" + productId).html(Quantity) 
+              $("#upButton"+productId).hide()
+            }
+  
+          }
+        })
+      }
+  
+    </script>
+    <!-- <script>
       const incOrDecquantity = (productId,quantity,size)=>{
         $.ajax({
           url:`/updateQuantity?productId=${productId}&quantity=${quantity}&size=${size}`,
@@ -1852,7 +1962,7 @@
           }
         })
       }
-    </script>
+    </script> -->
     <script>
       const removeFromCart = (productId,size)=>{
         console.log(productId)
