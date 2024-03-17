@@ -10,8 +10,14 @@ const loadCoupons = async(req,res,next)=>{
         coupon.formattedDate = formatDate(coupon.expiryDate.toString())
         
       }
+      let itemsPerPage = 2
+      let currentPage = parseInt(req.query.page) || 1
+      let startIndex = (currentPage-1)* itemsPerPage
+      let endIndex = startIndex +itemsPerPage
+      let totalPages = Math.ceil(coupons.length/itemsPerPage)
+      const couponsAll = coupons.slice(startIndex,endIndex)
   
-      res.render("admin/coupon",{coupons})
+      res.render("admin/coupon",{coupons:couponsAll,totalPages,currentPage})
   
     }catch(error){
       next(error);

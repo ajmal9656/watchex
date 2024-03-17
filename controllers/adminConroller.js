@@ -69,7 +69,13 @@ const userList = async (req, res,next) => {
     userlistHelper
     .getList()
     .then((response) => {
-      res.render("admin/usersList", { users: response });
+      let itemsPerPage = 2
+      let currentPage = parseInt(req.query.page) || 1
+      let startIndex = (currentPage-1)* itemsPerPage
+      let endIndex = startIndex +itemsPerPage
+      let totalPages = Math.ceil(response.length/itemsPerPage)
+      const currentusers = response.slice(startIndex,endIndex)
+      res.render("admin/usersList", { users: currentusers,currentPage,totalPages });
     })
     .catch((error) => {
       console.log(error);
@@ -112,7 +118,15 @@ const blockOrUnblockUser = async (req, res) => {
 const loadCategory = async (req, res,next) => {
   try{
     categoryHelper.categoryList().then((category) => {
-      res.render("admin/categoryList", { categories: category });
+      let itemsPerPage = 2
+      let currentPage = parseInt(req.query.page) || 1
+      let startIndex = (currentPage-1)* itemsPerPage
+      let endIndex = startIndex +itemsPerPage
+      let totalPages = Math.ceil(category.length/itemsPerPage)
+      const currentProduct = category.slice(startIndex,endIndex)
+
+      
+      res.render("admin/categoryList", { categories: currentProduct,currentPage,totalPages });
     });
 
   }catch(error){
@@ -185,7 +199,14 @@ const LoadProduct = async (req, res,next) => {
     productListHelper
     .productList()
     .then((response) => {
-      res.render("admin/productList", { products: response });
+      let itemsPerPage = 2
+        let currentPage = parseInt(req.query.page) || 1
+        let startIndex = (currentPage-1)* itemsPerPage
+        let endIndex = startIndex +itemsPerPage
+        let totalPages = Math.ceil(response.length/itemsPerPage)
+        const currentProduct = response.slice(startIndex,endIndex)
+      
+      res.render("admin/productList", { products: currentProduct,currentPage,totalPages });
     })
     .catch((error) => {
       console.log(error);
@@ -244,6 +265,7 @@ const loadEditProduct = async (req, res,next) => {
     const id = req.params.id;
   const productData = await productModel.findById(id);
   const catData = await categoryHelper.getAllCategory();
+  console.log(productData)
   res.render("admin/editProduct", {
     product: productData,
     categories: catData,
@@ -366,9 +388,14 @@ const loadOrders = async(req,res,next)=>{
   for(const order of allOrders){
     order.formattedDate = moment(order.orderedOn).format("MMM Do, YYYY");
   }
-  
+  let itemsPerPage = 2
+      let currentPage = parseInt(req.query.page) || 1
+      let startIndex = (currentPage-1)* itemsPerPage
+      let endIndex = startIndex +itemsPerPage
+      let totalPages = Math.ceil(allOrders.length/itemsPerPage)
+      const orders = allOrders.slice(startIndex,endIndex)
 
-  res.render("admin/orders",{allOrders});
+  res.render("admin/orders",{allOrders:orders,currentPage,totalPages});
 
   }catch(error){
     next(error)
@@ -481,6 +508,7 @@ const loadSalesReport = async (req, res,next) => {
         })
         order.orderedOn = formattedDate
       })
+      
      
       res.render("admin/sales-report", { sales: response });
     })

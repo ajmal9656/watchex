@@ -71,6 +71,25 @@
                 <% } %>
               </tbody>
             </table>
+            <% if (totalPages){ %>
+              <nav aria-label="Page navigation example" >
+                  <ul class="pagination justify-content-center">
+                  <% if (currentPage > 1) { %>
+                    <li class="page-item ">
+                      <a class="page-link" href="/admin/category?page=<%=currentPage-1%>" >Previous</a>
+                    </li>
+                    <% } %>
+                   
+                    <li class="page-item"><a class="btn btn-sm active" ><%=currentPage%></a></li>
+                  
+                    <% if (currentPage < totalPages) { %>
+                    <li class="page-item">
+                      <a class="page-link" href="/admin/category?page=<%=currentPage+1%>">Next</a>
+                    </li>
+                    <% } %>
+                  </ul>
+                </nav>
+                <% } %>
           </div>
         </div> <!-- .col// -->
       </div> <!-- .row // -->

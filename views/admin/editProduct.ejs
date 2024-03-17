@@ -41,19 +41,19 @@
                             <div class="col-lg-6">
                                 <div class="mb-4">
                                     <label for="product_quantity" class="form-label">Small Quantity</label>
-                                    <input type="text" name="smallQuantity" value="<%= product.product_quantity.S%>"
+                                    <input type="text" name="smallQuantity" value="<%= product.product_quantity.S.quantity%>"
                                         placeholder="nos" class="form-control" id="product_quantity">
                                         <div id="error3" class="text-danger"></div>
                                 </div>
                                 <div class="mb-4">
                                     <label for="product_quantity" class="form-label">Medium Quantity</label>
-                                    <input type="text" name="mediumQuantity" value="<%= product.product_quantity%>"
+                                    <input type="text" name="mediumQuantity" value="<%= product.product_quantity.M.quantity%>"
                                         placeholder="nos" class="form-control" id="product_quantity">
                                         <div id="error3" class="text-danger"></div>
                                 </div>
                                 <div class="mb-4">
                                     <label for="product_quantity" class="form-label">Large Quantity</label>
-                                    <input type="text" name="largeQuantity" value="<%= product.product_quantity%>"
+                                    <input type="text" name="largeQuantity" value="<%= product.product_quantity.L.quantity%>"
                                         placeholder="nos" class="form-control" id="product_quantity">
                                         <div id="error3" class="text-danger"></div>
                                 </div>

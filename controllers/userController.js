@@ -900,6 +900,8 @@ const sortedProductsLoad = async (req, res) => {
   try {
     if (req.query.category) {
       const products =JSON.parse(req.body.products);
+      console.log("prod")
+      console.log(products)
       const category = req.query.category;
 
     
@@ -929,12 +931,13 @@ const sortedProductsLoad = async (req, res) => {
           continue;
         }
       }
-console.log(changePassword)
-console.log("changePassword")
+const productDetails = await productHelper.AllProductOfferCheck(checkingCategory);
 
+console.log("checkingCategory")
+console.log(checkingCategory)
 
       
-      res.json({product:checkingCategory})
+      res.json({product:productDetails})
 
 
 
@@ -953,8 +956,10 @@ console.log("changePassword")
 const priceSortedProductsLoad = async (req, res) => {
   try {
     if (req.query.sort) {
-      const products =JSON.parse(req.body.products);
+      const product =JSON.parse(req.body.products);
+
       const sort = req.query.sort;
+      const products = await productHelper.AllProductOfferCheck(product);
       
 
       if(sort.toString()==="L"){
