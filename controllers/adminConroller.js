@@ -508,9 +508,15 @@ const loadSalesReport = async (req, res,next) => {
         })
         order.orderedOn = formattedDate
       })
+      let itemsPerPage = 2
+      let currentPage = parseInt(req.query.page) || 1
+      let startIndex = (currentPage-1)* itemsPerPage
+      let endIndex = startIndex +itemsPerPage
+      let totalPages = Math.ceil(response.length/itemsPerPage)
+      const responseAll = response.slice(startIndex,endIndex)
       
      
-      res.render("admin/sales-report", { sales: response });
+      res.render("admin/sales-report", { sales: responseAll,currentPage,totalPages });
     })
     .catch((error) => {
       console.log(error);
@@ -540,8 +546,14 @@ const endDate = req.body.endDate;
         })
         order.orderedOn = formattedDate
       })
+      let itemsPerPage = 2
+      let currentPage = parseInt(req.query.page) || 1
+      let startIndex = (currentPage-1)* itemsPerPage
+      let endIndex = startIndex +itemsPerPage
+      let totalPages = Math.ceil(response.length/itemsPerPage)
+      const responseAll = response.slice(startIndex,endIndex)
      
-      res.json({ sales: response });
+      res.json({ sales: responseAll,currentPage,totalPages });
     })
     .catch((error) => {
       console.log(error);

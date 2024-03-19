@@ -13,9 +13,15 @@ const loadCategoryOffers = async(req,res,next)=>{
         offer.formattedStartDate = formatDate(offer.startingDate.toString())
         offer.formattedEndDate = formatDate(offer.endingDate.toString())
       }
+      let itemsPerPage = 2
+      let currentPage = parseInt(req.query.page) || 1
+      let startIndex = (currentPage-1)* itemsPerPage
+      let endIndex = startIndex +itemsPerPage
+      let totalPages = Math.ceil(offers.length/itemsPerPage)
+      const offersAll = offers.slice(startIndex,endIndex)
 
   
-      res.render("admin/category-offer",{offers,category})
+      res.render("admin/category-offer",{offers:offersAll,category,totalPages,currentPage})
   
     }catch(error){
       next(error);
@@ -35,9 +41,15 @@ const loadCategoryOffers = async(req,res,next)=>{
         offer.formattedEndDate = formatDate(offer.endingDate.toString())
       }
 
-      console.log(product)
+      
+      let itemsPerPage = 2
+      let currentPage = parseInt(req.query.page) || 1
+      let startIndex = (currentPage-1)* itemsPerPage
+      let endIndex = startIndex +itemsPerPage
+      let totalPages = Math.ceil(offers.length/itemsPerPage)
+      const offersAll = offers.slice(startIndex,endIndex)
   
-      res.render("admin/product-offer",{offers,product})
+      res.render("admin/product-offer",{offers:offersAll,product,currentPage,totalPages})
   
     }catch(error){
       next(error);

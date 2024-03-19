@@ -438,9 +438,12 @@ const addToCart = async (req, res) => {
   const productId = req.params.id;
   const size = req.params.size;
   const userId = req.session.user._id;
+ 
 
   if(req.session.user){
+    
     productHelper.cartChecking(productId,size,userId).then(async(response)=>{
+      console.log("sokgvskj")
       if(response.status){
         const stockCheck = await productHelper.stockChecking(productId, size);
         if (!stockCheck.status) {
@@ -726,17 +729,25 @@ const postEditAddress = async (req, res) => {
 };
 
 const proceedPayment = async (req, res) => {
+  
   const userId = req.session.user._id;
   const body = req.body;
   const cartItems = await cartModel.findOne({ user: userId }).populate("products.productItemId");
   
   
   const cartData = await cartHelper.offerCheck(cartItems);
+
+  
+    const result = await orderHelper.placeOrder(userId, body, cartData);
+
+    
+
+ 
   
 
-  const result = await orderHelper.placeOrder(userId, body, cartData);
+  
 
-  if (result) {
+  if (result.orderSuccess) {
     const allCartData = await cartHelper.getCart(userId);
 
     const stockUpdation = await productHelper.stockUpdation(allCartData);
@@ -744,9 +755,22 @@ const proceedPayment = async (req, res) => {
     if (stockUpdation) {
       const cart = await cartHelper.clearAllCartItems(userId);
       if (cart) {
-        res.json({ url: "/orderSuccess" });
+        res.json({ url: "/orderSuccess" ,status:true});
       }
     }
+  }
+  else if(result.orderSuccess===null){
+
+    console.log("failed")
+    res.json({status:false,message:"minimum amount for cod is 1000"})
+    
+  }
+  else{
+    console.log("failed")
+    res.json({status:false,message:"Insufficient Wallet Money"})
+    
+    
+    
   }
 };
 const createOrder = async (req, res) => {

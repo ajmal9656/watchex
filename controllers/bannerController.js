@@ -10,8 +10,14 @@ const loadBanners = async(req,res,next)=>{
         banner.formattedStartDate = formatDate(banner.startingDate.toString())
         banner.formattedEndDate = formatDate(banner.endingDate.toString())
       }
+      let itemsPerPage = 2
+      let currentPage = parseInt(req.query.page) || 1
+      let startIndex = (currentPage-1)* itemsPerPage
+      let endIndex = startIndex +itemsPerPage
+      let totalPages = Math.ceil(banners.length/itemsPerPage)
+      const bannersAll = banners.slice(startIndex,endIndex)
   
-      res.render("admin/banner-page",{banners})
+      res.render("admin/banner-page",{banners:bannersAll,totalPages,currentPage})
   
     }catch(error){
       next(error);

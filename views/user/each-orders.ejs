@@ -1971,10 +1971,14 @@
           confirmButtonText: 'OK',
           cancelButtonText: 'Cancel'
         }).then((result) => {
+          
           if (result.isConfirmed) {
+            console.log(productDetails)
             let filteredProducts = productDetails.filter((product) => {
-              return product.products.OrderStatus !== "cancelled";
+              return product.products.orderStatus !== "cancelled";
             });
+            console.log(filteredProducts)
+            console.log(filteredProducts)
             let products = filteredProducts.map((product) => ({
               quantity: product.products.quantity,
               description: product.orderedProduct[0].product_name,

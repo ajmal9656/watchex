@@ -68,6 +68,42 @@ const walletMoneyAdding = async (userId, subTotal) => {
         throw error;
     }
 }
+const walletDecreasion = async (user, orderAmount) => {
+    try {
+        // Fetching current user
+        
+
+        // Calculating new balance
+        const currentBalance = user.wallet.balance;
+        const amount = parseInt(orderAmount);
+        const newBalance = currentBalance - amount;
+
+        // Creating new detail
+        const newDetail = {
+            type: 'debit',
+            amount: amount,
+            date: new Date(),
+            transactionId: Math.floor(100000 + Math.random() * 900000)
+        };
+
+        // Updating user with new balance and new detail
+        const response = await userModel.findOneAndUpdate(
+            { _id: user._id },
+            {
+                $set: { "wallet.balance": newBalance },
+                $push: { "wallet.details": newDetail }
+            },
+            { new: true } // to return the updated document
+        );
+
+        return response;
+    } catch (error) {
+        console.error('Error updating wallet amount:', error);
+        throw error;
+    }
+}
+
+
 
 
 
@@ -81,6 +117,7 @@ const walletMoneyAdding = async (userId, subTotal) => {
 
 module.exports={
     walletAmountAdding,
-    walletMoneyAdding
+    walletMoneyAdding,
+    walletDecreasion
 
 }

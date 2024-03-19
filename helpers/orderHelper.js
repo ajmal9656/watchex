@@ -13,6 +13,98 @@ const placeOrder = async (userId, body, cartItems) => {
     try {
         const address = await userModel.findOne({_id: userId, "address._id": body.addressId}, {"address.$": 1, _id: 0});
         const user = await userModel.findOne({_id: userId});
+        console.log("user")
+        console.log(user)
+
+        let products = [];
+        for (const product of cartItems.products) {
+            products.push({product: product.productItemId._id, quantity: product.quantity, size: product.size,productPrice:product.productItemId.offerPrice
+            });
+        }
+        console.log(body.paymentOption)
+        if(body.paymentOption === "wallet"){
+            if(cartItems.totalAmount<=user.wallet.balance){
+                if (address) {
+                    const result = await orderModel.create({
+                        user: userId,
+                        products: products,
+                        address: {
+                            name: address.address[0].name,
+                            house: address.address[0].house,
+                            city: address.address[0].city,
+                            state: address.address[0].state,
+                            country: address.address[0].country,
+                            pincode: address.address[0].pincode,
+                            mobile: user.mobile,
+                        },
+                        paymentMethod: body.paymentOption,
+                        totalAmount: cartItems.totalAmount,
+                    });
+
+                    if(result){
+                        const walletDecrese= await walletHelper.walletDecreasion(user,cartItems.totalAmount);
+                        if(walletDecrese){
+                            result.orderSuccess=true;
+                            return result;
+
+                        }
+                    }
+                    
+                }
+    
+            
+        
+          }else{
+            return {orderSuccess:false};
+
+
+
+          }
+        
+        }else{
+            if(cartItems.totalAmount>=1000){
+                if (address) {
+                    const result = await orderModel.create({
+                        user: userId,
+                        products: products,
+                        address: {
+                            name: address.address[0].name,
+                            house: address.address[0].house,
+                            city: address.address[0].city,
+                            state: address.address[0].state,
+                            country: address.address[0].country,
+                            pincode: address.address[0].pincode,
+                            mobile: user.mobile,
+                        },
+                        paymentMethod: body.paymentOption,
+                        totalAmount: cartItems.totalAmount,
+                    });
+                    result.orderSuccess=true;
+                    return result;
+                }
+
+            }else{
+                console.log("no")
+                
+                return {orderSuccess:null};
+                
+
+            }
+           
+
+        }
+
+       
+    } catch (error) {
+        throw error;
+    }
+};
+const placeOrderByWallet = async (userId, body, cartItems) => {
+    try {
+        const address = await userModel.findOne({_id: userId, "address._id": body.addressId}, {"address.$": 1, _id: 0});
+        const user = await userModel.findOne({_id: userId});
+        console.log("user")
+        console.log(user)
 
         let products = [];
         for (const product of cartItems.products) {
@@ -20,24 +112,9 @@ const placeOrder = async (userId, body, cartItems) => {
             });
         }
 
-        if (address) {
-            const result = await orderModel.create({
-                user: userId,
-                products: products,
-                address: {
-                    name: address.address[0].name,
-                    house: address.address[0].house,
-                    city: address.address[0].city,
-                    state: address.address[0].state,
-                    country: address.address[0].country,
-                    pincode: address.address[0].pincode,
-                    mobile: user.mobile,
-                },
-                paymentMethod: body.paymentOption,
-                totalAmount: cartItems.totalAmount,
-            });
-            return result;
-        }
+       
+
+        
     } catch (error) {
         throw error;
     }
