@@ -59,6 +59,11 @@ router.get('/orderSuccess',userMiddleware.isCheck,userController.orderSuccess);
 router.patch('/cancelOrder/:id',userController.cancelOrder);
 router.get('/orderDetails/:id',userMiddleware.isCheck,userController.orderDetails); 
 
+router.get('/orderFailedPage',userMiddleware.isCheck,userController.getOrderFailed); 
+router.post('/createorders',userMiddleware.isCheck,userController.createOrders);
+router.post('/paymentSuccesses',userMiddleware.isCheck,userController.paymentSuccess);
+router.patch('/retryPayment',userMiddleware.isCheck,userController.retryPayment); 
+
 
 router.patch('/cancelOrders/:orderId/:productId/:subTotal',userController.cancelOrders);
 router.patch('/returnOrders/:orderId/:productId',userController.returnOrders);

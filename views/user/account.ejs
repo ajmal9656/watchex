@@ -378,10 +378,18 @@
                                                                     
                                                                     <td><%= orderData[i].formattedDate %></td>
                                                                     
-                                                                    <td>$<%= orderData[i].totalAmount %> for <%= orderData[i].quantity %> item</td>
+                                                                    <td>$ <span id="orderPrice<%= orderData[i].orderId %>"><%= orderData[i].totalAmount %> </span>  for <%= orderData[i].quantity %> item</td>
                                                                     
                                                                                 <td width="10%">
+                                                                                    <% if (orderData[i].status==="payment pending") { %>
+                                                                                        <a onclick="retryPayment('<%=orderData[i].orderId%>')" class="text-muted">Retry</a>
+                                                                                        
+                                                                                     
+                                                                                    
+                                                                                    <% } else { %>
+                                                                                     
                                                                                     <a href="/orderDetails/<%= orderData[i]._id %>" class="btn btn-md rounded font-sm">Details</a>
+                                                                                    <% } %>
                                                                                 </td>
 
                                                                 </tr>
@@ -1189,6 +1197,120 @@ myForm.addEventListener('submit',function(e){
            
         });
     });
+</script>
+<script>
+   function retryPayment(orderIds) {
+        
+          
+
+            
+           
+            
+
+   
+      console.log("razorpay");
+      console.log(orderIds);
+      const totalPric = document.getElementById("orderPrice"+orderIds).textContent;
+      console.log(totalPric);
+
+
+      fetch('/createorders', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ totalPric })
+      }).then(response => response.json())
+        .then(data => {
+          const parseAmount = parseInt(totalPric)
+          console.log(data);
+          var options = {
+            "key": "rzp_test_3xAnxikxa5xZNZ",
+            "amount": 100000,
+            "currency": "INR",
+            "name": "Watchex",
+            "description": "Test Transaction",
+            "image": "https://example.com/your_logo",
+            "order_id": data.orderId.id,
+            "handler": function (response) {
+              console.log(response);
+              console.log("Hello")
+
+              verify(response, data.orderId.id)
+              console.log("hey")
+            },
+            "prefill": {
+              "name": "Gaurav Kumar",
+              "email": "gaurav.kumar@example.com",
+              "contact": "9000090000"
+            },
+            "notes": {
+              "address": "Razorpay Corporate Office"
+            },
+            "theme": {
+              "color": "#3399cc"
+            }
+          };
+          var rzp = new Razorpay(options)
+          rzp.open();
+
+          function verify(response, orderId) {
+            console.log(response, orderId);
+            fetch('/paymentSuccesses', {
+              method: 'post',
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                paymentid: response.razorpay_payment_id,
+                razorpayorderid: response.razorpay_order_id,
+                signature: response.razorpay_signature,
+                orderId
+              })
+            })
+              .then(response => response.json())
+              .then((data) => {
+                if (data.success) {
+
+                  fetch('/retryPayment', {
+                    method: 'PATCH',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(
+                      {totalPrice:totalPric,orderIds:orderIds}
+                    ),
+
+                  })
+
+                    .then(response => response.json())
+                    .then(data => {
+                      console.log(data);
+                      window.location.href = '/orderSuccess'
+                    })
+                    .catch((error) => {
+                      console.error('Error:', error);
+                    })
+                } else {
+
+                  console.error('Payment failed:', data.error);
+
+                  alert('Payment failed. Please try again later.');
+                }
+              })
+              .catch(error => {
+                // Handle any errors that occur during the fetch operation
+                console.error('Error:', error);
+              });
+          }
+        })
+
+
+    
+
+           
+        
+    }
 </script>
 </body>
 

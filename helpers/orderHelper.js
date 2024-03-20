@@ -21,25 +21,38 @@ const placeOrder = async (userId, body, cartItems) => {
             products.push({product: product.productItemId._id, quantity: product.quantity, size: product.size,productPrice:product.productItemId.offerPrice
             });
         }
+        let orderStat = "pending"
+        if(body.status){
+           orderStat = "payment pending"
+        }
+        async function createOrder(userId, body, cartItems,products,address,orderStat){
+            const results = await orderModel.create({
+                user: userId,
+                products: products,
+                address: {
+                    name: address.address[0].name,
+                    house: address.address[0].house,
+                    city: address.address[0].city,
+                    state: address.address[0].state,
+                    country: address.address[0].country,
+                    pincode: address.address[0].pincode,
+                    mobile: user.mobile,
+                },
+                paymentMethod: body.paymentOption,
+                totalAmount: cartItems.totalAmount,
+                status: orderStat,
+
+            });
+            return results;
+
+        }
+       
         console.log(body.paymentOption)
         if(body.paymentOption === "wallet"){
             if(cartItems.totalAmount<=user.wallet.balance){
                 if (address) {
-                    const result = await orderModel.create({
-                        user: userId,
-                        products: products,
-                        address: {
-                            name: address.address[0].name,
-                            house: address.address[0].house,
-                            city: address.address[0].city,
-                            state: address.address[0].state,
-                            country: address.address[0].country,
-                            pincode: address.address[0].pincode,
-                            mobile: user.mobile,
-                        },
-                        paymentMethod: body.paymentOption,
-                        totalAmount: cartItems.totalAmount,
-                    });
+                    
+                  const  result =await createOrder(userId, body, cartItems,products,address);
 
                     if(result){
                         const walletDecrese= await walletHelper.walletDecreasion(user,cartItems.totalAmount);
@@ -61,24 +74,12 @@ const placeOrder = async (userId, body, cartItems) => {
 
           }
         
-        }else{
+        }else if(body.paymentOption === "COD"){
             if(cartItems.totalAmount>=1000){
+                console.log("enterrrrvgf")
                 if (address) {
-                    const result = await orderModel.create({
-                        user: userId,
-                        products: products,
-                        address: {
-                            name: address.address[0].name,
-                            house: address.address[0].house,
-                            city: address.address[0].city,
-                            state: address.address[0].state,
-                            country: address.address[0].country,
-                            pincode: address.address[0].pincode,
-                            mobile: user.mobile,
-                        },
-                        paymentMethod: body.paymentOption,
-                        totalAmount: cartItems.totalAmount,
-                    });
+                    const  result =await createOrder(userId, body, cartItems,products,address);
+                    console.log(result)
                     result.orderSuccess=true;
                     return result;
                 }
@@ -91,6 +92,14 @@ const placeOrder = async (userId, body, cartItems) => {
 
             }
            
+
+        }else{
+            if (address) {
+                const  result =await createOrder(userId, body, cartItems,products,address,orderStat);
+                result.orderSuccess=true;
+                return result;
+            }
+
 
         }
 

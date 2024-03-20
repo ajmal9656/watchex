@@ -15,6 +15,7 @@ const categoryHelper = require("../helpers/cateroryHelper");
 const passHelper = require("../helpers/passwordHelper");
 const walletHelper = require("../helpers/walletHelper");
 const orderHelper = require("../helpers/orderHelper");
+const orderModel = require("../models/orderModel");
 const couponHelper = require("../helpers/couponHelper");
 const bannerHelper = require("../helpers/bannerHelper");
 const offerHelper = require("../helpers/offerHelper");
@@ -790,6 +791,23 @@ const createOrder = async (req, res) => {
     console.log(error);
   }
 };
+const createOrders = async (req, res) => {
+  try {
+    const amount = parseInt(req.body.totalPric);
+    
+    const order = await razorpay.orders.create({
+      amount: amount * 100,
+      currency: "INR",
+      receipt: req.session.user._id,
+    });
+
+    
+
+    res.json({ orderId: order });
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 const paymentSuccess = (req, res) => {
   try {
@@ -873,7 +891,16 @@ const orderDetails = async (req, res,next) => {
   }
 
 };
+const getOrderFailed = function (req, res,next) {
+  try{
+    
+    res.render("user/orderFailed");
 
+  }catch(error){
+    next(error)
+  }
+ 
+};
 const cancelOrders = async (req, res) => {
   const orderId = req.params.orderId;
   const productId = req.params.productId;
@@ -1048,6 +1075,29 @@ const addMoneyToWallet = async(req,res)=>{
 console.log(error)
   }
 }
+const retryPayment = async (req, res) => {
+  try {
+    const orderId = req.body.orderIds;
+
+    const orderDetails = await orderModel.findOne({ orderId: orderId });
+    console.log(orderDetails);
+
+    // orderDetails.products.forEach((item) => {
+    //   item.status = "pending";
+    // });
+    orderDetails.status = "pending"
+    // Save the updated orderDetails
+    await orderDetails.save();
+    // Calculate total amount
+    
+
+    // Send response to the client with order ID and total amount
+    res.status(200).json({ orderId: orderDetails._id,url: "/orderSuccess" ,status:true});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
 
 
 module.exports = {
@@ -1085,6 +1135,7 @@ module.exports = {
   paymentSuccess,
   cancelOrder,
   createOrder,
+  createOrders,
   orderDetails,
   cancelOrders,
   addAddressPost,
@@ -1098,6 +1149,7 @@ module.exports = {
 
   sortedProductsLoad,
   addMoneyToWallet,
-  priceSortedProductsLoad
+  priceSortedProductsLoad,
+  getOrderFailed,retryPayment
  
 };
