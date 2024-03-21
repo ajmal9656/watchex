@@ -11,6 +11,7 @@ const multerMiddleware = require("../middleware/multer");
 
 router.get("/",adminController.loadAdmin);
 router.post("/",adminController.loadAdminHome);
+router.post("/showChart",adminMiddleware.isLogout,adminController.showChart)
 router.get("/logout",adminMiddleware.isLogout,adminController.logoutAdmin);
 
 
