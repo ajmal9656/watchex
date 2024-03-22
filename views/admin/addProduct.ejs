@@ -78,9 +78,10 @@
                 <div class="card-body">
                     <div class="input-upload">
                         <label class="form-label">Image</label>
-                        <input class="form-control" type="file" name="img" multiple>
+                        <input class="form-control" type="file" name="img" id="imageInput" multiple>
                     </div>
                 </div>
+                <div id="error5" class="text-danger"></div>
             </div> <!-- card end// -->
 
             <div class="card mb-4">
@@ -133,93 +134,99 @@
 
 
 <script>
-    const nameval=document.getElementById('product_name');
-    const priceval=document.getElementById('product_price');
-    const quantityval=document.getElementById('product_quantity');
-    const discountval=document.getElementById('product_discount');
-    const productForm=document.getElementById('productForm');
-    const error1=document.getElementById('error1');
-    const error2=document.getElementById('error2');
-    const error3=document.getElementById('error3');
-    const error4=document.getElementById('error4');
+    const nameval = document.getElementById('product_name');
+    const priceval = document.getElementById('product_price');
+    const quantityval = document.getElementById('product_quantity');
+    const discountval = document.getElementById('product_discount');
+    const imageInput = document.getElementById('imageInput'); // assuming your input file has id 'imageInput'
+    const productForm = document.getElementById('productForm');
+    const error1 = document.getElementById('error1');
+    const error2 = document.getElementById('error2');
+    const error3 = document.getElementById('error3');
+    const error4 = document.getElementById('error4');
+    const error5 = document.getElementById('error5');
 
-    function formvalidate(e){
-       const namevalue=nameval.value;
-       const pricevalue=priceval.value;
-        const quantityvalue=quantityval.value;
-       const discountvalue=discountval.value;
+    function formvalidate(e) {
+        const namevalue = nameval.value;
+        const pricevalue = priceval.value;
+        const quantityvalue = quantityval.value;
+        const discountvalue = discountval.value;
+        const imageFiles = imageInput.files;
 
-
-
-            error1.innerHTML = "";
-            error2.innerHTML = "";
-            error3.innerHTML = "";
-            error4.innerHTML = "";
-            let isValid = true;
-
+        error1.innerHTML = "";
+        error2.innerHTML = "";
+        error3.innerHTML = "";
+        error4.innerHTML = "";
+        error5.innerHTML = "";
+        let isValid = true;
 
         if (namevalue.trim() === "") {
             error1.style.display = "block";
             error1.innerHTML = "Product Name is required.";
             isValid = false;
-            } else if (/^\d+$/.test(namevalue) || /^-\d+$/.test(namevalue)) {
-                error1.innerHTML = "Product Name cannot contain numbers.";
+        } else if (/^\d+$/.test(namevalue) || /^-\d+$/.test(namevalue)) {
+            error1.innerHTML = "Product Name cannot contain numbers.";
+            isValid = false;
+        }
+
+        if (pricevalue.trim() === "") {
+            error2.style.display = "block";
+            error2.innerHTML = "Product Price is required.";
+            isValid = false;
+        } else if (isNaN(pricevalue) || parseFloat(pricevalue) <= 0) {
+            error2.style.display = "block";
+            error2.innerHTML = "Product Price must be a valid number greater than 0.";
+            isValid = false;
+        }
+
+        if (isNaN(quantityvalue) || parseInt(quantityvalue) < 0) {
+            error3.style.display = "block";
+            error3.innerHTML = "Product Quantity must be a valid non-negative integer.";
+            isValid = false;
+        } else if (quantityvalue.trim() === "") {
+            error3.style.display = "block";
+            error3.innerHTML = "Product Quantity is required.";
+            isValid = false;
+        }
+
+        if (discountvalue.trim() === "") {
+            error4.style.display = "block";
+            error4.innerHTML = "Discount is required.";
+            isValid = false;
+        } else if (isNaN(discountvalue) || parseFloat(discountvalue) < 0 || parseFloat(discountvalue) > 100) {
+            error4.style.display = "block";
+            error4.innerHTML = "Discount must be a valid percentage between 0 and 100.";
+            isValid = false;
+        }
+
+        // Image validation
+        if (imageFiles.length === 0) {
+            error5.innerHTML = "Please select an image file.";
+            isValid = false;
+        } else {
+            const imageFile = imageFiles[0];
+            const fileType = imageFile.type.split('/')[0];
+            if (fileType !== 'image') {
+                error5.innerHTML = "Check your file format";
                 isValid = false;
             }
-
-            if (pricevalue.trim() === "") {
-                error2.style.display = "block";
-                error2.innerHTML = "Product Price is required.";
+            const maxSizeInBytes = 10 * 1024 * 1024; // 10 MB
+            if (imageFile.size > maxSizeInBytes) {
+                error5.innerHTML = "File size exceeds the maximum limit (10MB).";
                 isValid = false;
             }
-            else if (isNaN(pricevalue) || parseFloat(pricevalue) <= 0) {
-                error2.style.display = "block";
-                error2.innerHTML = "Product Price must be a valid number greater than 0.";
-                isValid = false;
-            } 
-            if (isNaN(quantityvalue) || parseInt(quantityvalue) < 0) {
-                error3.style.display = "block";
-                error3.innerHTML = "Product Quantity must be a valid non-negative integer.";
-                isValid = false;
-            } else if (quantityvalue.trim() === "") {
-                error3.style.display = "block";
-                error3.innerHTML = "Product Quantity is required.";
-                isValid = false;
-            }
+        }
 
-            if (discountvalue.trim() === "") {
-                error4.style.display = "block";
-                error4.innerHTML = "Discount is required.";
-                isValid = false;
-            }
-            else if (isNaN(discountvalue) || parseFloat(discountvalue) < 0 || parseFloat(discountvalue) > 100) {
-                error4.style.display = "block";
-                error4.innerHTML = "Discount must be a valid percentage between 0 and 100.";
-                isValid = false;
-            }
-
-            
-
-            return isValid;
-
-
-
-   
-
-
-
-
+        return isValid;
     }
-   
 
-  productForm.addEventListener("submit", (e) => {
-    const isValid = formvalidate(e);
-    if (!isValid) {
-      e.preventDefault();
-    }
-  });
-
-
+    productForm.addEventListener("submit", (e) => {
+        const isValid = formvalidate(e);
+        if (!isValid) {
+            e.preventDefault();
+        }
+    });
 </script>
+
 
 <%- include("../partials/admin/admin-footer") %>

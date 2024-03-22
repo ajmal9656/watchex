@@ -9,103 +9,107 @@
 
     </div>
 
-    <div class="row d-flex justify-content-center">
-      <div class="col-lg-3">
-        <div class="card card-body mb-4">
-          <article class="icontext">
-            <span class="icon icon-sm rounded-circle bg-primary-light"><i
-                class="text-primary material-icons md-monetization_on"></i></span>
-            <div class="text">
-              <h6 class="mb-1 card-title">Revenue</h6>
-              <% let totalRevenue=0; %>
-                <% for (let i=0; i < salesDetails.length; i++) { %>
-                  <% totalRevenue +=salesDetails[i].totalAmount; %>
-                    <% } %>
-                      <span id="totalRevenue" style="font-size: 18px;">
-                        ₹ <%= totalRevenue %>
-                      </span>
-                      <span class="text-sm">
-                        Shipping fees are not included
-                      </span>
-            </div>
-          </article>
-        </div>
-      </div>
-      <div class="col-lg-3">
-        <div class="card card-body mb-4">
-          <article class="icontext">
-            <span class="icon icon-sm rounded-circle bg-success-light"><i
-                class="text-success material-icons md-local_shipping"></i></span>
-            <div class="text">
-              <h6 class="mb-1 card-title">Orders</h6> <span>
-                <%= salesDetails.length %>
-              </span>
-              <span class="text-sm">
-                Excluding orders in transit
-              </span>
-            </div>
-          </article>
-        </div>
-      </div>
-      <div class="col-lg-3">
-        <div class="card card-body mb-4">
-          <article class="icontext">
-            <span class="icon icon-sm rounded-circle bg-warning-light"><i
-                class="text-warning material-icons md-qr_code"></i></span>
-            <div class="text">
-              <h6 class="mb-1 card-title">Products</h6> <span>
-                <%= products.length %>
-              </span>
-              <span class="text-sm">
-                In <%= categories.length %> Categories
-              </span>
-            </div>
-          </article>
-        </div>
-      </div>
-
-    </div>
     <div class="row">
-      <div class="col-xl-8 col-lg-12">
-        <div class="card mb-4">
-          <article class="card-body">
-            <h5 class="card-title">Monthly Sales Statistics</h5>
-            <canvas id="monthlyChart" height="120px"></canvas>
-          </article>
+        <div class="col-lg-4">
+          <div class="card card-body mb-4">
+            <article class="icontext">
+              <span class="icon icon-sm rounded-circle bg-primary-light"><i
+                  class="text-primary material-icons md-monetization_on"></i></span>
+              <div class="text">
+                <h6 class="mb-1 card-title">Revenue</h6>
+                <% let totalRevenue=0; %>
+                  <% for (let i=0; i < salesDetails.length; i++) { %>
+                    <% totalRevenue +=salesDetails[i].totalAmount; %>
+                      <% } %>
+                        <span id="totalRevenue" style="font-size: 18px;">
+                          ₹ <%= totalRevenue %>
+                        </span>
+                        <span class="text-sm">
+                          Shipping fees are not included
+                        </span>
+              </div>
+            </article>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="card card-body mb-4">
+            <article class="icontext">
+              <span class="icon icon-sm rounded-circle bg-success-light"><i
+                  class="text-success material-icons md-local_shipping"></i></span>
+              <div class="text">
+                <h6 class="mb-1 card-title">Orders</h6> <span>
+                  <%= salesDetails.length %>
+                </span>
+                <span class="text-sm">
+                  Excluding orders in transit
+                </span>
+              </div>
+            </article>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="card card-body mb-4">
+            <article class="icontext">
+              <span class="icon icon-sm rounded-circle bg-warning-light"><i
+                  class="text-warning material-icons md-qr_code"></i></span>
+              <div class="text">
+                <h6 class="mb-1 card-title">Products</h6> <span>
+                  <%= products.length %>
+                </span>
+                <span class="text-sm">
+                  In <%= categories.length %> Categories
+                </span>
+              </div>
+            </article>
+          </div>
         </div>
       </div>
-      <div class="col-xl-4 col-lg-12">
-        <div class="card mb-4">
-          <article class="card-body">
-            <h5 class="card-title">Order Statuses</h5>
-            <input type="hidden" id="orderStatus">
-            <canvas id="myChart2" height="217"></canvas>
-          </article>
+      
+      <div class="row">
+        <div class="col-lg-8">
+          <div class="card mb-4">
+            <article class="card-body">
+              <h5 class="card-title">Monthly Sales Statistics</h5>
+              <canvas id="monthlyChart" height="120px"></canvas>
+            </article>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="card mb-4">
+            <article class="card-body">
+              <h5 class="card-title">Order Statuses</h5>
+              <input type="hidden" id="orderStatus">
+              <canvas id="myChart2" height="217"></canvas>
+            </article>
+          </div>
         </div>
       </div>
-      <div class="col-xl-8 col-lg-12">
-        <div class="card mb-4">
-          <article class="card-body">
-            <h5 class="card-title">Daily Sales Statistics</h5>
-            <canvas id="dailyChart" height="120px"></canvas>
-          </article>
+      
+      <div class="row">
+        <div class="col-lg-8">
+          <div class="card mb-4">
+            <article class="card-body">
+              <h5 class="card-title">Daily Sales Statistics</h5>
+              <canvas id="dailyChart" height="120px"></canvas>
+            </article>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="card mb-4">
+            <article class="icontext">
+              <div class="p-3">
+                <h3 class="mb-4 card-title text-center">Best Selling Categories</h3> <!-- Center align the title -->
+                <% for(let i=0; i < topSellingCategories.length; i++) { %>
+                  <div class="category-item mb-2 text-center"> <!-- Center align the category name -->
+                    <%= topSellingCategories[i].name %>
+                  </div>
+                  <% } %>
+              </div>
+            </article>
+          </div>
         </div>
       </div>
-      <div class="col-xl-4 col-lg-12">
-        <div class="card mb-4">
-          <article class="icontext">
-            <div class="p-3">
-              <h3 class="mb-4 card-title text-center">Best Selling Categories</h3> <!-- Center align the title -->
-              <% for(let i=0; i < topSellingCategories.length; i++) { %>
-                <div class="category-item mb-2 text-center"> <!-- Center align the category name -->
-                  <%= topSellingCategories[i].name %>
-                </div>
-                <% } %>
-            </div>
-          </article>
-        </div>
-      </div>
-    </div>
+      
 
 
     <div>

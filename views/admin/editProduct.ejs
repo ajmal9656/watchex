@@ -88,7 +88,8 @@
                                     <img src="/public/uploads/<%= product.image[0] %>"
                                         style="width: 100px; height: 72px;" alt="">
                                     <% } %>
-                                        <input class="form-control" type="file" name="img" multiple>
+                                        <input class="form-control" type="file" name="img" id="imageInput" multiple>
+                                        <div id="error5" class="text-danger"></div>
                                         <input type="hidden" value="<%= product.image %> " name="old_image">
                                         <% if(Array.isArray(product.image)) { %>
                                             <p>
@@ -181,16 +182,19 @@
             const quantityval=document.getElementById('product_quantity');
             const discountval=document.getElementById('product_discount');
             const productForm=document.getElementById('productForm');
+            const imageInput=document.getElementById('imageInput');
             const error1=document.getElementById('error1');
             const error2=document.getElementById('error2');
             const error3=document.getElementById('error3');
             const error4=document.getElementById('error4');
+            const error5=document.getElementById('error5');
         
             function formvalidate(e){
                const namevalue=nameval.value;
                const pricevalue=priceval.value;
                 const quantityvalue=quantityval.value;
                const discountvalue=discountval.value;
+               const imageFiles = imageInput.files;
         
         
         
@@ -240,6 +244,22 @@
                         error4.innerHTML = "Discount must be a valid percentage between 0 and 100.";
                         isValid = false;
                     }
+                    if (imageFiles.length === 0) {
+            error5.innerHTML = "Please select an image file.";
+            isValid = false;
+        } else {
+            const imageFile = imageFiles[0];
+            const fileType = imageFile.type.split('/')[0];
+            if (fileType !== 'image') {
+                error5.innerHTML = "Check your file format";
+                isValid = false;
+            }
+            const maxSizeInBytes = 10 * 1024 * 1024; // 10 MB
+            if (imageFile.size > maxSizeInBytes) {
+                error5.innerHTML = "File size exceeds the maximum limit (10MB).";
+                isValid = false;
+            }
+        }
         
                     
         

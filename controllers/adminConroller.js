@@ -137,6 +137,9 @@ const showChart = async (req, res) => {
           $sort: { _id: 1 }, // Sort by day of month
         },
       ]);
+      console.log("dailySalesData")
+      console.log(dailySalesData)
+      console.log("dailySalesData")
 
       const orderStatuses = await orderModel.aggregate([
         {
