@@ -376,17 +376,23 @@ const getSpecificOrder = async (orderId) => {
     
 
 // }
-const eachOrderCancellation = async (orderId, productId,subTotal,userId) => {
+const eachOrderCancellation = async (orderId, productId,subTotal,userId,size) => {
     try {
-        const cancelledProduct = await orderModel.findOne({ 
-            _id: orderId, 
-            products: { $elemMatch: { product: productId } } 
-        });
+        const cancelledProduct = await orderModel.findOne(
+            { 
+              _id: orderId, 
+              products: { $elemMatch: { product: productId, size: size } } 
+            },
+            { 
+              "products.$": 1 
+            }
+          );
+          
         console.log("cancelledProduct",cancelledProduct)
         
 
         const result = await orderModel.findOneAndUpdate(
-            { _id: orderId, "products.product": productId }, // Find the order by its ID and ensure the products array contains the specified product ID
+            { _id: orderId, "products.product": productId,"products.size": size }, // Find the order by its ID and ensure the products array contains the specified product ID
             { $set: { "products.$.orderStatus": "cancelled" } }, // Update the orderStatus of the matched product
             { new: true } // Return the updated document after the update operation
         );

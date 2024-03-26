@@ -1581,7 +1581,7 @@
                                   <% } else if (productDetails[i].products.orderStatus=="returned" ) { %>
                                     <a href="#" class="text-muted">Returned</a>
                                     <% } else { %>
-                                      <a  onclick="cancelOrder('<%=productDetails[i]._id%>','<%=productDetails[i].products.product%>')"
+                                      <a  onclick="cancelOrder('<%=productDetails[i]._id%>','<%=productDetails[i].products.product%>','<%= productDetails[i].products.size %>')"
                                         class="text-danger">Cancel</a>
     
                                       <% } %>
@@ -1893,7 +1893,7 @@
     </script>
     
     <script>
-      const cancelOrder = (orderId,productId) => {
+      const cancelOrder = (orderId,productId,size) => {
         
           Swal.fire({
               title: 'Are you sure?',
@@ -1910,7 +1910,7 @@
                 console.log(price)
               
                   $.ajax({
-                      url: `/cancelOrders/${orderId}/${productId}/${price}`,
+                      url: `/cancelOrders/${orderId}/${productId}/${price}/${size}`,
                       type: 'PATCH'
                   }).done(response => {
                       Swal.fire("Successfull", "Order Cancelled", "success").then(() => {

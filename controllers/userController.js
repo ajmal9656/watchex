@@ -909,11 +909,12 @@ const cancelOrders = async (req, res) => {
   const orderId = req.params.orderId;
   const productId = req.params.productId;
   const subTotal = req.params.subTotal;
+  const size = req.params.size;
   const userId = req.session.user._id;
   orderHelper
-    .eachOrderCancellation(orderId, productId,subTotal,userId)
+    .eachOrderCancellation(orderId, productId,subTotal,userId,size)
     .then(async (response) => {
-      
+
       const stockUpdation = await productHelper.stockIncreasion(
         orderId,
         productId
