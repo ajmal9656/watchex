@@ -378,6 +378,11 @@ const getSpecificOrder = async (orderId) => {
 // }
 const eachOrderCancellation = async (orderId, productId,subTotal,userId) => {
     try {
+        const cancelledProduct = await orderModel.findOne({ 
+            _id: orderId, 
+            products: { $elemMatch: { product: productId } } 
+        });
+        console.log("cancelledProduct",cancelledProduct)
         
 
         const result = await orderModel.findOneAndUpdate(
@@ -391,6 +396,11 @@ const eachOrderCancellation = async (orderId, productId,subTotal,userId) => {
             const walletUpdation = await walletHelper.walletAmountAdding(userId,subTotal);
 
         }
+
+        result.totalAmount = result.totalAmount - (cancelledProduct.products[0].productPrice*cancelledProduct.products[0].quantity);
+        result.save();
+        
+        
         
         
         return result;

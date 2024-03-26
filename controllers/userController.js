@@ -321,10 +321,9 @@ const loadAllProduct = async (req, res,next) => {
         .find({ product_name: { $regex: new RegExp("^" + payload + ".*", "i") } }).populate("product_category")
         .exec();
       // searchResult = searchResult.slice(0, 5);
-      console.log("searchResult");
-      console.log(searchResult);
+      
       const productDetails = await productHelper.AllProductOfferCheck(searchResult);
-      console.log(productDetails);
+      
       
       const categoryData = await categoryHelper.getAllCategory();
       res.render("user/shop-product", {
@@ -439,6 +438,10 @@ const addToCart = async (req, res) => {
   const productId = req.params.id;
   const size = req.params.size;
   const userId = req.session.user._id;
+
+  console.log("prod",productId)
+  console.log("size",size)
+  console.log("user",userId)
  
 
   if(req.session.user){
@@ -479,8 +482,7 @@ const updateQuantity = async (req, res) => {
   const price = parseInt(req.body.price);
   const quantity = parseInt(req.query.quantity);
   const userId = req.session.user._id;
-  console.log("entered")
-  console.log(price)
+  
 
   cartHelper
     .quantityUpdation(productId, userId, quantity, size,price)
@@ -509,10 +511,10 @@ const updateQuantity = async (req, res) => {
 };
 
 const removeFromCart = async (req, res) => {
-  console.log("ent")
+  
   const productId = req.params.id;
   const size = req.params.size;
-  console.log(size)
+ 
 
   
   const userId = req.session.user._id;
@@ -563,6 +565,8 @@ const addToWishlist = async (req, res) => {
 const removeFromWishlist = async (req, res) => {
   const productId = req.params.id;
   const userId = req.session.user._id;
+  console.log("ajscjac",productId)
+  console.log("ajscjac",userId)
   const result = await whishlistHelper.removeItem(userId, productId);
 
   if (result) {
@@ -762,12 +766,12 @@ const proceedPayment = async (req, res) => {
   }
   else if(result.orderSuccess===null){
 
-    console.log("failed")
+   
     res.json({status:false,message:"minimum amount for cod is 1000"})
     
   }
   else{
-    console.log("failed")
+   
     res.json({status:false,message:"Insufficient Wallet Money"})
     
     
@@ -909,6 +913,7 @@ const cancelOrders = async (req, res) => {
   orderHelper
     .eachOrderCancellation(orderId, productId,subTotal,userId)
     .then(async (response) => {
+      
       const stockUpdation = await productHelper.stockIncreasion(
         orderId,
         productId

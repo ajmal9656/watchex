@@ -350,9 +350,9 @@
                                                     <div class="attr-detail attr-size btn-group d-flex justify-content-center"> <!-- Added d-flex and justify-content-center -->
                                                         
                                                         <ul class="list-filter size-filter font-small">
-                                                            <li><a href="#" id="smallQuantit">S</a></li>
-                                                            <li class="active"><a href="#" id="mediumQuantit">M</a></li>
-                                                            <li><a href="#" id="largeQuantit">L</a></li>
+                                                            <li><a href="#" id="smallQuantits">S</a></li>
+                                                            <li class="active"><a href="#" id="mediumQuantits">M</a></li>
+                                                            <li><a href="#" id="largeQuantits">L</a></li>
                                                         </ul>
                                                     </div>
                                                 </div>
@@ -728,41 +728,43 @@
     //     }
         </script>
         <script>
-           
-            document.getElementById("smallQuantit").addEventListener("click", () => {
-             
-              document.getElementById("smallQuantit").classList.add("active");
-              document.getElementById("mediumQuantit").classList.remove("active");
-              document.getElementById("largeQuantit").classList.remove("active");
+            document.addEventListener("DOMContentLoaded", function() {
+                document.getElementById("smallQuantits").addEventListener("click", () => {
+                    console.log("s");
+                    document.getElementById("smallQuantits").classList.add("active");
+                    document.getElementById("mediumQuantits").classList.remove("active");
+                    document.getElementById("largeQuantits").classList.remove("active");
+                });
+    
+                document.getElementById("mediumQuantits").addEventListener("click", () => {
+                    console.log("m");
+                    document.getElementById("mediumQuantits").classList.add("active");
+                    document.getElementById("largeQuantits").classList.remove("active");
+                    document.getElementById("smallQuantits").classList.remove("active");
+                });
+    
+                document.getElementById("largeQuantits").addEventListener("click", () => {
+                    console.log("l");
+                    document.getElementById("largeQuantits").classList.add("active");
+                    document.getElementById("mediumQuantits").classList.remove("active");
+                    document.getElementById("smallQuantits").classList.remove("active");
+                });
             });
-            document
-              .getElementById("mediumQuantit")
-              .addEventListener("click", () => {
-                
-                document.getElementById("mediumQuantit").classList.add("active");
-                document.getElementById("largeQuantit").classList.remove("active");
-                document.getElementById("smallQuantit").classList.remove("active");
-              });
-            document.getElementById("largeQuantit").addEventListener("click", () => {
-                console.log("l");
-              
-              document.getElementById("largeQuantit").classList.add("active");
-              document.getElementById("mediumQuantit").classList.remove("active");
-              document.getElementById("smallQuantit").classList.remove("active");
-            });
-          </script>
+        </script>
         <script>
             
       const addToCart = (productId) => {
+        console.log("l");
+        
 
     let size="";
-    if(document.getElementById('smallQuantit').classList.contains('active')){
+    if(document.getElementById('smallQuantits').classList.contains('active')){
         size="S";
     }
-    else if(document.getElementById('mediumQuantit').classList.contains('active')){
+    else if(document.getElementById('mediumQuantits').classList.contains('active')){
         size="M";
     }
-    else if(document.getElementById('largeQuantit').classList.contains('active')){
+    else if(document.getElementById('largeQuantits').classList.contains('active')){
         size="L";
     }else{
         size="M";
