@@ -673,13 +673,15 @@ const loadOrderDetails = async(req,res,next)=>{
 const changeSpecificOrderStatus = async (req,res)=>{
   const orderId = req.body.orderId;
   const productId = req.body.productId;
+  const size = req.body.size;
+
 
   const changeStatus = req.body.status;
   console.log(orderId)
   console.log(productId)
   console.log(changeStatus)
 
-  await orderHelper.specificOrderStatusChange(orderId,productId,changeStatus).then((result)=>{
+  await orderHelper.specificOrderStatusChange(orderId,productId,changeStatus,size).then((result)=>{
     
     
     res.json({status:true})
@@ -690,6 +692,7 @@ const changeSpecificOrderStatus = async (req,res)=>{
 const acceptReturn = async (req,res)=>{
   const orderId = req.body.orderId;
   const productId = req.body.productId;
+  const size = req.body.size;
   const subTotal = req.params.subTotal;
   
 
@@ -698,7 +701,7 @@ const acceptReturn = async (req,res)=>{
   console.log(productId)
   console.log(changeStatus)
 
-  await orderHelper.returnApproval(orderId,productId,changeStatus,subTotal).then(async(result)=>{
+  await orderHelper.returnApproval(orderId,productId,changeStatus,subTotal,size).then(async(result)=>{
     const stockUpdation = await productHelper.stockIncreasion(
       orderId,
       productId

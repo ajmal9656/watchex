@@ -147,17 +147,17 @@
 
             <td >
                 <% if (orderDetails[i].products.orderStatus == 'pending') { %>
-                    <a id="changeStatus<%= orderDetails[i]._id %>" onclick="changeOrderStatus('<%= orderDetails[i]._id %>','<%= orderDetails[i].products.product %>','processing')" class="btn btn-outline-primary rounded font-sm">processing</a>
+                    <a id="changeStatus<%= orderDetails[i]._id %>" onclick="changeOrderStatus('<%= orderDetails[i]._id %>','<%= orderDetails[i].products.product %>','processing','<%= orderDetails[i].products.size %>')" class="btn btn-outline-primary rounded font-sm">processing</a>
                 <% } else if (orderDetails[i].products.orderStatus == 'processing') {%>
-                    <a id="changeStatus<%= orderDetails[i]._id %>" onclick="changeOrderStatus('<%= orderDetails[i]._id %>','<%= orderDetails[i].products.product %>','confirmed')" class="btn btn-outline-primary rounded font-sm">confirmed</a>
+                    <a id="changeStatus<%= orderDetails[i]._id %>" onclick="changeOrderStatus('<%= orderDetails[i]._id %>','<%= orderDetails[i].products.product %>','confirmed','<%= orderDetails[i].products.size %>')" class="btn btn-outline-primary rounded font-sm">confirmed</a>
                 <% } else if (orderDetails[i].products.orderStatus == 'confirmed') {%>
-                    <a id="changeStatus<%= orderDetails[i]._id %>" onclick="changeOrderStatus('<%= orderDetails[i]._id %>','<%= orderDetails[i].products.product %>','shipped')" class="btn btn-outline-primary rounded font-sm">shipped</a>
+                    <a id="changeStatus<%= orderDetails[i]._id %>" onclick="changeOrderStatus('<%= orderDetails[i]._id %>','<%= orderDetails[i].products.product %>','shipped','<%= orderDetails[i].products.size %>')" class="btn btn-outline-primary rounded font-sm">shipped</a>
                 <% } else if (orderDetails[i].products.orderStatus == 'shipped') {%>
-                    <a id="changeStatus<%= orderDetails[i]._id %>" onclick="changeOrderStatus('<%= orderDetails[i]._id %>','<%= orderDetails[i].products.product %>','outForDelivery')" class="btn  btn-outline-primary rounded font-sm">out for delivery</a>
+                    <a id="changeStatus<%= orderDetails[i]._id %>" onclick="changeOrderStatus('<%= orderDetails[i]._id %>','<%= orderDetails[i].products.product %>','outForDelivery','<%= orderDetails[i].products.size %>')" class="btn  btn-outline-primary rounded font-sm">out for delivery</a>
                 <% } else if (orderDetails[i].products.orderStatus == 'outForDelivery') {%>
-                    <a id="changeStatus<%= orderDetails[i]._id %>" onclick="changeOrderStatus('<%= orderDetails[i]._id %>','<%= orderDetails[i].products.product %>','delivered')" class="btn btn-outline-primary rounded font-sm">delivered</a>
+                    <a id="changeStatus<%= orderDetails[i]._id %>" onclick="changeOrderStatus('<%= orderDetails[i]._id %>','<%= orderDetails[i].products.product %>','delivered','<%= orderDetails[i].products.size %>')" class="btn btn-outline-primary rounded font-sm">delivered</a>
                 <% } else if (orderDetails[i].products.orderStatus == 'return pending') {%>
-                    <a id="changeStatus<%= orderDetails[i]._id %>" onclick="approveReturn('<%= orderDetails[i]._id %>','<%= orderDetails[i].products.product %>','returned')" class="btn btn-outline-primary rounded font-sm">Approve Return</a>
+                    <a id="changeStatus<%= orderDetails[i]._id %>" onclick="approveReturn('<%= orderDetails[i]._id %>','<%= orderDetails[i].products.product %>','returned','<%= orderDetails[i].products.size %>')" class="btn btn-outline-primary rounded font-sm">Approve Return</a>
                 <% } %>
             </td>
             <td>
@@ -206,7 +206,7 @@
 
 
 <script>
-    function changeOrderStatus(orderId,productId,status){
+    function changeOrderStatus(orderId,productId,status,size){
         console.log(orderId);
         console.log(status);
 
@@ -224,7 +224,8 @@
                         orderId:orderId,
                         productId:productId,
 
-                        status:status
+                        status:status,
+                        size:size,
                     }
                 })
                 .done((res)=>{
@@ -251,7 +252,7 @@
     }
 </script>
 <script>
-    function approveReturn(orderId,productId,status){
+    function approveReturn(orderId,productId,status,size){
         console.log(orderId);
         console.log(status);
 
@@ -270,7 +271,8 @@
                         orderId:orderId,
                         productId:productId,
 
-                        status:status
+                        status:status,
+                        size:size,
                     }
                 })
                 .done((res)=>{

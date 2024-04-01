@@ -1574,7 +1574,7 @@
                               <a href="#" class="text-muted">Cancelled</a>
     
                               <% } else if (productDetails[i].products.orderStatus=="delivered" ) { %>
-                                <a onclick="returnOrder('<%=productDetails[i]._id%>','<%=productDetails[i].products.product%>')"
+                                <a onclick="returnOrder('<%=productDetails[i]._id%>','<%=productDetails[i].products.product%>','<%= productDetails[i].products.size %>')"
                                   class="text-Primary">Return</a>
                                 <% } else if (productDetails[i].products.orderStatus=="return pending" ) { %>
                                   <a href="#" class="text-muted">Return Pending</a>
@@ -1926,7 +1926,7 @@
       }
     </script>
  <script>
-  const returnOrder = (orderId,productId) => {
+  const returnOrder = (orderId,productId,size) => {
       Swal.fire({
           title: 'Are you sure?',
           text: 'You will not be able to undo this',
@@ -1939,7 +1939,7 @@
           console.log(response);
           if (response.isConfirmed) {
               $.ajax({
-                  url: `/returnOrders/${orderId}/${productId}`,
+                  url: `/returnOrders/${orderId}/${productId}/${size}`,
                   type: 'PATCH'
               }).done(response => {
                   Swal.fire("Successfull", "Return Process Started", "success").then(() => {

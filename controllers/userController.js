@@ -609,8 +609,8 @@ const addToWishlist = async (req, res) => {
 const removeFromWishlist = async (req, res) => {
   const productId = req.params.id;
   const userId = req.session.user._id;
-  console.log("ajscjac",productId)
-  console.log("ajscjac",userId)
+  console.log("productId",productId)
+  console.log("userId",userId)
   const result = await whishlistHelper.removeItem(userId, productId);
 
   if (result) {
@@ -971,9 +971,10 @@ const cancelOrders = async (req, res) => {
 const returnOrders = async (req, res) => {
   const orderId = req.params.orderId;
   const productId = req.params.productId;
+  const size = req.params.size;
  
   orderHelper
-    .eachOrderReturn(orderId, productId)
+    .eachOrderReturn(orderId, productId,size)
     .then( (response) => {
       
       res.json(response);
@@ -1135,7 +1136,7 @@ const retryPayment = async (req, res) => {
     // orderDetails.products.forEach((item) => {
     //   item.status = "pending";
     // });
-    orderDetails.status = "pending"
+    orderDetails.status = "pendings"
     // Save the updated orderDetails
     await orderDetails.save();
     // Calculate total amount

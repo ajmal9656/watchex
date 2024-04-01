@@ -67,7 +67,7 @@ router.patch('/retryPayment',userMiddleware.isCheck,userController.retryPayment)
 
 
 router.patch('/cancelOrders/:orderId/:productId/:subTotal/:size',userController.cancelOrders);
-router.patch('/returnOrders/:orderId/:productId',userController.returnOrders);
+router.patch('/returnOrders/:orderId/:productId/:size',userController.returnOrders);
 
 
 

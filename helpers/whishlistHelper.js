@@ -57,8 +57,7 @@ const addProductToWishlist = async (productId, userId) => {
 
 const removeItem = async (userId, productId) => {
   return new Promise(async (resolve, reject) => {
-    console.log("ajscjac", productId);
-    console.log("ajscjac", userId);
+    
 
     
 

@@ -414,10 +414,10 @@ const eachOrderCancellation = async (orderId, productId,subTotal,userId,size) =>
         throw error;
     }
 };
-const eachOrderReturn = async (orderId, productId) => {
+const eachOrderReturn = async (orderId, productId,size) => {
     try {
         const result = await orderModel.findOneAndUpdate(
-            { _id: orderId, "products.product": productId }, // Find the order by its ID and ensure the products array contains the specified product ID
+            { _id: orderId, "products.product": productId, "products.size": size  }, // Find the order by its ID and ensure the products array contains the specified product ID
             { $set: { "products.$.orderStatus": "return pending" } }, // Update the orderStatus of the matched product
             { new: true } // Return the updated document after the update operation
         );
@@ -429,10 +429,10 @@ const eachOrderReturn = async (orderId, productId) => {
     }
 };
 
-const specificOrderStatusChange = async (orderId, productId, changeStatus) => {
+const specificOrderStatusChange = async (orderId, productId, changeStatus,size) => {
     try {
         const result = await orderModel.findOneAndUpdate(
-            { _id: orderId, "products.product": productId }, // Find the order by its ID and ensure the products array contains the specified product ID
+            { _id: orderId, "products.product": productId, "products.size": size}, // Find the order by its ID and ensure the products array contains the specified product ID
             { $set: { "products.$.orderStatus": changeStatus } }, // Update the orderStatus of the matched product
             { new: true } // Return the updated document after the update operation
         );
@@ -443,10 +443,10 @@ const specificOrderStatusChange = async (orderId, productId, changeStatus) => {
     }
 };
 
-const returnApproval = async (orderId, productId, changeStatus,subTotal) => {
+const returnApproval = async (orderId, productId, changeStatus,subTotal,size) => {
     try {
         const result = await orderModel.findOneAndUpdate(
-            { _id: orderId, "products.product": productId }, // Find the order by its ID and ensure the products array contains the specified product ID
+            { _id: orderId, "products.product": productId, "products.size": size }, // Find the order by its ID and ensure the products array contains the specified product ID
             { $set: { "products.$.orderStatus": changeStatus } }, // Update the orderStatus of the matched product
             { new: true } // Return the updated document after the update operation
         );
