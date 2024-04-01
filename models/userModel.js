@@ -23,6 +23,12 @@ const userSchema =new mongoose.Schema({
         type:Boolean,
         default:true,
     },
+    referalCode:{
+        type:String,
+        required:true
+
+
+    },
     wallet: {
         balance: { type: Number, default: 0 },
         details: [

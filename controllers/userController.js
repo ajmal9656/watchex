@@ -24,6 +24,7 @@ const { response } = require("express");
 const moment = require("moment");
 const Razorpay = require("razorpay");
 const { resolve } = require("node:path");
+const { log } = require("node:console");
 var razorpay = new Razorpay({
   key_id: "rzp_test_3xAnxikxa5xZNZ",
   key_secret: "ok69vIQiyLSK9Y7aEzAL2Zax",
@@ -77,8 +78,16 @@ const loadlogin = function (req, res,next) {
   //   res.send("/adminhome");
   // }
   else {
-    const message = req.flash("message");
+    if(req.query.message){
+      const message = req.query.message;
     res.render("user/login-page", { message: message });
+
+    }else{
+      const message = req.flash("message");
+    res.render("user/login-page", { message: message });
+
+    }
+    
   }
 }
 catch(error){
@@ -116,9 +125,11 @@ const userlogout = function (req, res,next) {
 
 const insertUser = async (req, res) => {
   const user = req.body;
-  userHelper.signUpHelper(user).then((response) => {
+  userHelper.signUpHelper(user).then(async(response) => {
     if (response.registeredData) {
       req.session.userdata = response.registeredData;
+
+      
 
       res.redirect("/otp-verification");
     } else {
@@ -177,16 +188,31 @@ const verifyOtp = async (req, res) => {
   const storedOtp = req.session.otp;
 
   const enteredOtp = req.body.otp;
+  
 
   if (storedOtp === enteredOtp) {
     const result = await User.create(userData);
     if (result) {
+      if(userData.referalUser){
+        console.log("1");
+        const referalAmountAdding = await walletHelper.referalAmountAdding(userData.referalUser)
+        console.log("2");
+        console.log(result._id);
+        const referedAmountAdding = await walletHelper.referalAmountAdding(result._id)
+    
+      }
+
+      
+      
       delete req.session.userdata;
-      req.flash("message", "OTP verified.You can login now");
-      res.redirect("/login");
+
+      // req.flash("message", "OTP verified.You can login now");
+      // res.redirect("/login");
+      res.json({status:true})
     }
   } else {
-    res.render("user/otp-verification", { message: "Invalid OTP" });
+    res.json({status:false})
+    // res.render("user/otp-verification", { message: "Invalid OTP" });
   }
 };
 const resendOtp = async (req, res) => {
@@ -262,11 +288,29 @@ const otpVerification = async (req, res) => {
   if (storedOtp === enteredOtp) {
     // delete req.session.email;
 
-    res.render("user/new-password");
+    res.json({status:true});
   } else {
-    res.render("user/otp-page", { message: "Invalid OTP" });
+    res.json({status:false})
   }
 };
+const getNewPassword = function (req, res,next) {
+  try{
+ 
+    if(req.query.message){
+      const message = req.query.message;
+    res.render("user/new-password", { message: message });
+
+    }else{
+      const message = req.flash("message");
+      res.render("user/otp-page", { message: "Invalid OTP" });
+
+    }
+    
+  
+}
+catch(error){
+  next(error)
+}};
 
 const confirmPassword = async (req, res) => {
   const email = req.session.email;
@@ -1131,6 +1175,7 @@ module.exports = {
   editAddress,
   loadForgotPass,
   forgotPassword,
+  getNewPassword,
   otpVerification,
   confirmPassword,
   removeFromWishlist,

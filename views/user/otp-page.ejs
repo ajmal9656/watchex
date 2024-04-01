@@ -259,6 +259,13 @@
                                             <h3 class="mb-30">OTP Verification</h3>
                                         </div>
                                         <span id="timer"></span>
+                                        <div
+                        class="text-center text-success"
+                        style="display: block" 
+                        id="messageDiv"
+                      >
+                        <%= message %>
+                      </div>
                                         <% if (locals.message) { %>
                                             <div class="text-center text-success" style="display: block;"><%= message %></div>
                                           <% } %>
@@ -525,6 +532,35 @@
     <script src="/public/user/assets/js/main.js?v=3.4"></script>
     
     <script src="/public/user/assets/js/plugins/login-validation.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#otpform").submit(function (event) {
+                event.preventDefault();
+                
+                var formData = $(this).serialize();
+                $.ajax({
+                    url: "/otpEnter",
+                    method: "POST",
+                    data: formData,
+                    success: (response) => {
+                        if (response.status) {
+                            console.log("sdbvdhdvbdvbc")
+                          var url = "/new-password?message=OTP verified.You can change the password now";
+                        window.location.href = url;
+                          
+  
+                            
+                        }else{
+                          document.getElementById("messageDiv").textContent = "Invalid OTP"
+  
+                            
+                        }
+                    }
+  
+                })
+            })
+        })
+    </script>
 </body>
 
 </html>

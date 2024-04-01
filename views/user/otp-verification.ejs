@@ -269,10 +269,18 @@
                       <div>
                         <span id="timer"></span>
                       </div>
+                      <div
+                        class="text-center text-success"
+                        style="display: block" 
+                        id="messageDiv"
+                      >
+                        <%= message %>
+                      </div>
                       <% if (locals.message) { %>
                       <div
                         class="text-center text-success"
-                        style="display: block"
+                        style="display: block" 
+                        
                       >
                         <%= message %>
                       </div>
@@ -280,7 +288,7 @@
                       <form
                         action="/otp-verification"
                         method="post"
-                        id="otpform"
+                        id="otpForm"
                       >
                         <div class="form-group">
                           <input
@@ -578,6 +586,7 @@
         });
       };
     </script>
+    
 
     <script src="/public/user/assets/js/vendor/modernizr-3.6.0.min.js"></script>
     <script src="/public/user/assets/js/vendor/jquery-3.6.0.min.js"></script>
@@ -603,5 +612,34 @@
     <script src="/public/user/assets/js/main.js?v=3.4"></script>
 
     <script src="/public/user/assets/js/plugins/login-validation.js"></script>
+
+    <script>
+      $(document).ready(function () {
+          $("#otpForm").submit(function (event) {
+              event.preventDefault();
+              console.log("sdbvdhdvbdvbc")
+              var formData = $(this).serialize();
+              $.ajax({
+                  url: "/otp-verification",
+                  method: "POST",
+                  data: formData,
+                  success: (response) => {
+                      if (response.status) {
+                        var url = "/login?message=OTP verified.You can login now";
+                      window.location.href = url;
+                        
+
+                          
+                      }else{
+                        document.getElementById("messageDiv").textContent = "Invalid OTP"
+
+                          
+                      }
+                  }
+
+              })
+          })
+      })
+  </script>
   </body>
 </html>

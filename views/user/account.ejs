@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css" />
 
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 
@@ -341,7 +342,7 @@
                                                 <p>From your account dashboard. you can easily check &amp; view your <a
                                                         href="#">recent orders</a>, manage your <a href="#">shipping and
                                                         billing addresses</a> and <a href="#">edit your password and
-                                                        account details.</a></p>
+                                                        account details.</a><br><i class="bi bi-share-fill" onclick="refferalShare('<%=userData.referalCode%>')"> click , share and reffer someOne,And get 100 rs</i> Share referral code : <%= userData.referalCode %></p>
                                             </div>
                                         </div>
                                     </div>
@@ -1311,6 +1312,30 @@ myForm.addEventListener('submit',function(e){
            
         
     }
+</script>
+<script>
+    async function refferalShare(userRefferalCode) {
+    // console.log(userRefferalCode);
+
+    if (navigator.share) {
+        
+        const shareData = {
+            title: 'Watchex',
+            text: `Use my referral code ${userRefferalCode} to sign up and explore `,
+            
+        };
+
+        
+        try {
+            await navigator.share(shareData);
+            console.log('Shared successfully');
+        } catch (error) {
+            console.error('Error sharing:', error);
+        }
+    } else {
+        console.log('Web Share API is not supported in this browser');
+    }
+}
 </script>
 </body>
 

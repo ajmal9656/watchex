@@ -3,6 +3,7 @@ const productModel = require("../models/productModel");
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const ObjectId = require('mongoose').Types.ObjectId;
+const walletHelper = require("../helpers/walletHelper");
 
 const loginHelper = async (userData) => {
   return new Promise(async (resolve, reject) => {
@@ -43,7 +44,11 @@ const signUpHelper = async(data) => {
               });
               let response = {};
               if (!check) {
+               
+
+
                  const hashedPassword = await bcrypt.hash(data.password, 10);
+                 const referalCode = await generateRandomString();
               
                   const userIn = {
                      name: data.username,
@@ -51,8 +56,29 @@ const signUpHelper = async(data) => {
                      mobile: data.mobile,
                      password: hashedPassword,
                       isAdmin: 0,
+                      referalCode:referalCode,
+                      "wallet.balance":0,
+                      
                     };
                     response.registeredData=userIn;
+                    if(data.referal){
+                      const referalUser = await User.findOne({referalCode:data.referal})
+    
+                      if(referalUser){
+                        response.registeredData.referalUser =referalUser._id;
+                        
+    
+                      }else{
+                        console.log("invalid referal code")
+    
+                      }
+    
+                      
+                      
+    
+                      
+                    }
+                    
                     resolve(response);
 
                 
@@ -197,6 +223,16 @@ const addressEdit=async(userId,body)=>{
 
   resolve(result);
   })
+}
+
+function generateRandomString() {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < 15; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      result += characters.charAt(randomIndex);
+  }
+  return result;
 }
 
 

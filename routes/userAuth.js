@@ -5,11 +5,11 @@ const userMiddleware = require("../middleware/userMiddleware");
 const couponController=require("../controllers/couponController");
 
 
-router.get('/',userMiddleware.isRegistered,userController.loadhome)
+router.get('/',userController.loadhome)
 router.get('/login',userController.loadlogin);
 router.post('/login',userController.loaduserhome);
 router.get('/logout',userMiddleware.isLogout,userController.userlogout);
-router.get('/register',userMiddleware.isRegistered,userController.loadregister);
+router.get('/register',userController.loadregister);
 router.post('/register',userController.insertUser);
 router.get('/otp-verification',userController.generateOtp)
 router.post('/otp-verification',userMiddleware.otpExpiry,userController.verifyOtp);
@@ -21,6 +21,7 @@ router.post('/forgotPassword',userController.forgotPassword)
 router.get('/otpEnter',userController.sendOtp)
 router.post('/otpEnter',userMiddleware.forgotOtpExpiry,userController.otpVerification);
 router.post('/newPassword',userController.confirmPassword)
+router.get('/new-password',userController.getNewPassword)
 router.post('/resendOtpForgot',userController.resendOtpForgotPass);
 
 
