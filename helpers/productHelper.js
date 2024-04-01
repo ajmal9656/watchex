@@ -113,14 +113,58 @@ const checkDuplicateProduct= async(productId,body)=>{
 
 const editImages = async (oldImages, newImages) => {
   return new Promise((resolve, reject) => {
+    console.log("oldImages")
+    console.log(oldImages)
+    console.log("newImages")
+    console.log(newImages)
     if (newImages && newImages.length > 0) {
+      
       // if new files are uploaded
       let filenames = [];
       for (let i = 0; i < newImages.length; i++) {
         filenames.push(newImages[i].filename);
       }
-      // delete old images if they exist
+      console.log(filenames)
+      console.log(filenames.length)
+      console.log(4-filenames.length)
+      console.log(oldImages.length)
+      console.log(oldImages)
+
+      
+        if(filenames.length<=3){
+          
+          
+            let i = 0;
+            while (filenames.length < 4 && i < oldImages.length) {
+              filenames.push(oldImages[i]);
+              console.log(i);
+              i++;
+            }
+          
+
+          if (oldImages && oldImages.length > 0) {
+            console.log("skjdfvsakjdfc");
+            for (let i = 3; i > 3 - newImages.length; i--) {
+              console.log(oldImages[i])
+              fs.unlink("public/uploads/" + oldImages[i], (err) => {
+                if (err) {
+                  reject(err);
+                }
+              });
+            }
+            resolve(filenames);
+          }else{
+            resolve(oldImages);
+
+          }
+          
+  
+        }
+
+      else{
+        // delete old images if they exist
       if (oldImages && oldImages.length > 0) {
+        console.log("asdfgh")
         for (let i = 0; i < oldImages.length; i++) {
           fs.unlink("public/uploads/" + oldImages[i], (err) => {
             if (err) {
@@ -128,8 +172,16 @@ const editImages = async (oldImages, newImages) => {
             }
           });
         }
+        resolve(filenames);
+      }else{
+        resolve(oldImages);
+
       }
-      resolve(filenames);
+
+      }
+     
+      
+      
     } else {
       // use old images if new images are not uploaded
       resolve(oldImages);

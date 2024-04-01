@@ -519,7 +519,7 @@ const editProduct = async (req, res) => {
         product.product_name = req.body.product_name;
         product.product_description = req.body.product_description;
         product.product_price = req.body.product_price;
-        // product.product_quantity = req.body.product_quantity;
+        
         quantityS.quantity = req.body.smallQuantity;
         quantityM.quantity = req.body.mediumQuantity;
         quantityL.quantity = req.body.largeQuantity;
@@ -531,18 +531,13 @@ const editProduct = async (req, res) => {
         product.product_name = req.body.product_name;
         product.product_description = req.body.product_description;
         product.product_price = req.body.product_price;
-        // product.product_quantity = req.body.product_quantity;
+        
         quantityS.quantity = req.body.smallQuantity;
         quantityM.quantity = req.body.mediumQuantity;
         quantityL.quantity = req.body.largeQuantity;
         product.product_category = req.body.product_category;
         product.product_discount = req.body.product_discount;
-        // product.product_name = req.body.product_name;
-        // product.product_description = req.body.product_description;
-        // product.product_price = req.body.product_price;
-        // product.product_quantity = req.body.product_quantity;
-        // product.product_category = req.body.product_category;
-        // product.product_discount = req.body.product_discount
+        
         break;
       case 3:
         console.log("Product already Exists");
