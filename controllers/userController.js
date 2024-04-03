@@ -25,6 +25,7 @@ const moment = require("moment");
 const Razorpay = require("razorpay");
 const { resolve } = require("node:path");
 const { log } = require("node:console");
+const couponModel = require("../models/couponModel");
 var razorpay = new Razorpay({
   key_id: "rzp_test_3xAnxikxa5xZNZ",
   key_secret: "ok69vIQiyLSK9Y7aEzAL2Zax",
@@ -609,8 +610,8 @@ const addToWishlist = async (req, res) => {
 const removeFromWishlist = async (req, res) => {
   const productId = req.params.id;
   const userId = req.session.user._id;
-  console.log("productId",productId)
-  console.log("userId",userId)
+  console.log(productId)
+  
   const result = await whishlistHelper.removeItem(userId, productId);
 
   if (result) {
@@ -723,18 +724,28 @@ const loadCheckout = async (req, res,next) => {
     const userData = await userHelper.getAllAddress(userId);
     const cartData = await cartHelper.getAllCartItems(userId);
     const couponData = await couponHelper.getAllCoupons();
-  
+let couponStatus = false;
+console.log("cartData",cartData)
+    if(cartData[0].coupon!=null){
+      var couponAdded = await couponModel.findOne({code:cartData[0].coupon});
+      couponStatus = true;
+    }
+ 
     const productDetails = await cartHelper.cartProductOfferCheck(cartData);
     
   
     
     let totalandSubTotal = await cartHelper.totalSubtotal(userId, productDetails);
+
+
   
     res.render("user/checkout-page", {
       userData,
       cartItems: productDetails,
       totalandSubTotal,
       coupons: couponData,
+      couponAdded:couponAdded,
+      couponStatus
     });
 
   }catch(error){
@@ -782,6 +793,7 @@ const proceedPayment = async (req, res) => {
   const userId = req.session.user._id;
   const body = req.body;
   const cartItems = await cartModel.findOne({ user: userId }).populate("products.productItemId");
+  console.log("cartttt",cartItems)
   
   
   const cartData = await cartHelper.offerCheck(cartItems);
@@ -929,9 +941,16 @@ const orderDetails = async (req, res,next) => {
   
       
       const productDetails = await orderHelper.orderProductOfferCheck(response);
+      let couponStatus = false;
+      console.log("fffff",productDetails)
+
+    if(productDetails[0].couponAmount!=0){
+      
+      couponStatus = true;
+    }
       
   
-      res.render("user/each-orders", { productDetails: response });
+      res.render("user/each-orders", { productDetails: response,couponStatus });
     });
 
   }catch(error){

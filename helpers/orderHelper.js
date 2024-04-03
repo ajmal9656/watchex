@@ -1,6 +1,7 @@
 const cartModel=require("../models/cartModel");
 const orderModel=require("../models/orderModel");
 const userModel=require("../models/userModel");
+const couponModel=require("../models/couponModel");
 const productModel=require("../models/productModel");
 const { Promise } = require("mongoose");
 const ObjectId = require('mongoose').Types.ObjectId;
@@ -13,6 +14,14 @@ const placeOrder = async (userId, body, cartItems) => {
     try {
         const address = await userModel.findOne({_id: userId, "address._id": body.addressId}, {"address.$": 1, _id: 0});
         const user = await userModel.findOne({_id: userId});
+
+        let couponAmount = 0;
+        if(cartItems.coupon!=null){
+            var couponAdded = await couponModel.findOne({code:cartItems.coupon});
+            couponAmount = couponAdded.discount;
+
+            
+          }
         console.log("user")
         console.log(user)
 
@@ -41,6 +50,7 @@ const placeOrder = async (userId, body, cartItems) => {
                 paymentMethod: body.paymentOption,
                 totalAmount: cartItems.totalAmount,
                 status: orderStat,
+                couponAmount:couponAmount,
 
             });
             return results;

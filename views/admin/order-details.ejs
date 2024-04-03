@@ -170,10 +170,38 @@
         <tr style="text-align: center;">
             <td colspan="4">
                 <article class="float-end">
-                    <dl class="dlist">
-                        <dt>Grand total:</dt>
-                        <dd><b class="h5">$<%= orderDetails[0].totalAmount %></b></dd>
-                    </dl>
+                    <% if (couponStatus) { %>
+                        <dl class="dlist">
+                            <dt>Order Total:</dt>
+                            <dd><b class="h5">$<%= orderDetails[0].totalAmount + orderDetails[0].couponAmount %></b></dd>
+                        </dl>
+                        <dl class="dlist">
+                            <dt>Coupon Amount:</dt>
+                            <dd><b class="h5">-$<%= orderDetails[0].couponAmount %></b></dd>
+                        </dl>
+                        <dl class="dlist">
+                            <dt>Grand Total:</dt>
+                            <dd><b class="h5">$<%= orderDetails[0].totalAmount %></b></dd>
+                        </dl>
+                        
+
+
+                        <% } else { %>
+                            <dl class="dlist">
+                                <dt>Order Total:</dt>
+                                <dd><b class="h5">$<%= orderDetails[0].totalAmount + orderDetails[0].couponAmount %></b></dd>
+                            </dl>
+                            <dl class="dlist">
+                                <dt>Coupon Amount:</dt>
+                                <dd><b class="h5">No coupons added</b></dd>
+                            </dl>
+                            <dl class="dlist">
+                                <dt>Grand Total:</dt>
+                                <dd><b class="h5">$<%= orderDetails[0].totalAmount %></b></dd>
+                            </dl>
+                         
+                     
+                    <% } %>
                     
                 </article>
             </td>

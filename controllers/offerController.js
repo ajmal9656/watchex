@@ -7,6 +7,7 @@ const offerModel = require("../models/offerModel");
 const loadCategoryOffers = async(req,res,next)=>{
     try{
       const offers = await offerHelper.getAllCatOffers();
+      console.log("cfff",offers)
       const category = await categoryHelper.getAllCategory();
 
       for(const offer of offers){
@@ -34,6 +35,7 @@ const loadCategoryOffers = async(req,res,next)=>{
   const loadProductOffers = async(req,res,next)=>{
     try{
       const offers = await offerHelper.getAllProdOffers();
+      console.log("Offf",offers)
       const product = await productHelper.getAllProduct();
 
       for(const offer of offers){

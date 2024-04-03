@@ -646,6 +646,13 @@ const loadOrderDetails = async(req,res,next)=>{
       
   
       const productDetails = await orderHelper.orderedProductOfferCheck(response);
+      let couponStatus = false;
+      console.log("fffff",productDetails)
+
+    if(productDetails[0].couponAmount!=0){
+      
+      couponStatus = true;
+    }
   
       console.log(response)
       console.log(response[0].orderedProduct)
@@ -656,7 +663,7 @@ const loadOrderDetails = async(req,res,next)=>{
   
       
   
-      res.render("admin/order-details",{orderDetails:productDetails})
+      res.render("admin/order-details",{orderDetails:productDetails,couponStatus})
   
   
     })

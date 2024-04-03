@@ -19,6 +19,7 @@ const getAllCartItems = async (userId) => {
           item: "$products.productItemId",
           quantity: "$products.quantity",
           size: "$products.size",
+          coupon:"$coupon",
         },
       },
       {
@@ -35,6 +36,7 @@ const getAllCartItems = async (userId) => {
           quantity: 1,
           _id: 1,
           size: 1,
+          coupon:1,
           product: {
             $arrayElemAt: ["$product", 0],
           },

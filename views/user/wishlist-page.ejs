@@ -334,7 +334,7 @@
                                             
                                         </td>
                                         <td>
-                                        <a onclick="removeFromWishlist('<%= products[i].product._id %>,')" class="text-muted"
+                                        <a onclick="removeFromWishlist('<%= products[i].product._id %>')" class="text-muted"
                                             ><i class="fi-rs-trash"></i
                                           ></a>
                                         </td>
@@ -359,7 +359,7 @@
                                                 <span class="text-center" id="displayMessage<%= products[i].product._id %>"></span>
                                                 <div class="text-center mt-3">
                                                     <div class="d-inline-block">
-                                                        <button class="btn btn-sm btn-primary" id="addButton<%= products[i].product._id %>" style="width: 200px; margin-bottom: 30px; background-color: rgb(85, 172, 143); color: white;" onclick="addToCart('<%= products[i].product._id %>')">Add</button>
+                                                        <button class="btn btn-sm btn-primary" id="addButton<%= products[i].product._id %>" style="width: 200px; margin-bottom: 30px; background-color: rgb(85, 172, 143); color: white;" onclick="addToCarts('<%= products[i].product._id %>')">Add</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -539,6 +539,7 @@
   </script>
     <script>
         const removeFromWishlist = (productId)=>{
+            console.log(productId)
 
             swal("Are you sure you want to do this?",{
                     buttons:["NO","YES"]
@@ -753,8 +754,8 @@
         </script>
         <script>
             
-      const addToCart = (productId) => {
-        console.log("l");
+      const addToCarts = (productId) => {
+        
         
 
     let size="";

@@ -63,7 +63,7 @@ const removeItem = async (userId, productId) => {
 
     const removeItem = await whishlistModel.updateOne(
       { user: userId },
-      { $pull: { products: { productItemId: productId } } }
+      { $pull: { products: { productItemId: new ObjectId(productId) } } }
     );
 
     resolve(removeItem);

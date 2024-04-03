@@ -847,12 +847,35 @@
                                                         </td>
                                                     </tr>
                                                     <% } %>
-                                                    <tr>
-                                                        <th>SubTotal</th>
-                                                        <td class="product-subtotal" colspan="2" class="text-dark">
-                                                            $<%=totalandSubTotal%>
-                                                        </td>
-                                                    </tr>
+
+                                                    
+                                                    <% if (couponStatus) { %>
+                                                        <tr>
+                                                            <th>SubTotal</th>
+                                                            <td class="product-subtotal" colspan="2" class="text-dark">
+                                                                $<%=totalandSubTotal + couponAdded.discount %>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Coupon</th>
+                                                            <td colspan="2" class="text-dark"><em>-<%= couponAdded.discount %></em></td>
+                                                        </tr>
+
+                                                        <% } else { %>
+                                                            <tr>
+                                                                <th>SubTotal</th>
+                                                                <td class="product-subtotal" colspan="2" class="text-dark">
+                                                                    $<%=totalandSubTotal%>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Coupon</th>
+                                                                <td colspan="2" class="text-dark"><em>No Coupons Added</em></td>
+                                                            </tr>
+                                                         
+                                                     
+                                                    <% } %>
+                                                  
                                                     <tr>
                                                         <th>Shipping</th>
                                                         <td colspan="2" class="text-dark"><em>Free Shipping</em></td>
