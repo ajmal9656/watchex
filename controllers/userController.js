@@ -195,10 +195,9 @@ const verifyOtp = async (req, res) => {
     const result = await User.create(userData);
     if (result) {
       if(userData.referalUser){
-        console.log("1");
+        
         const referalAmountAdding = await walletHelper.referalAmountAdding(userData.referalUser)
-        console.log("2");
-        console.log(result._id);
+       
         const referedAmountAdding = await walletHelper.referalAmountAdding(result._id)
     
       }
@@ -356,34 +355,62 @@ const loaduserhome = async (req, res) => {
   //   res.send(error.message);
   // }
 };
-
-const loadAllProduct = async (req, res,next) => {
-  try{
-    if(req.query.searchInput){
-      let payload = req.query.searchInput.trim();
-    try {
+const loadAllProduct = async (req, res, next) => {
+  console.log("shop")
+  try {
+    if (req.query.search) {
+      let payload = req.query.search.trim();
       let searchResult = await productModel
-        .find({ product_name: { $regex: new RegExp("^" + payload + ".*", "i") } }).populate("product_category")
+        .find({
+          productName: { $regex: new RegExp("^" + payload + ".*", "i") },
+        })
+        .populate("product_category")
         .exec();
-      // searchResult = searchResult.slice(0, 5);
-      
+      if (searchResult) {
+        var sorted = true;
+      }
+
       const productDetails = await productHelper.AllProductOfferCheck(searchResult);
+
+     
+     
+
+      let itemsPerPage = 2;
+      let currentPage = parseInt(req.query.page) || 1;
+      let startIndex = (currentPage - 1) * itemsPerPage;
+      let endIndex = startIndex + itemsPerPage;
+      let totalPages = Math.ceil(productDetails.length / 2);
       
-      
+      const currentProduct = productDetails.slice(startIndex, endIndex);
+
       const categoryData = await categoryHelper.getAllCategory();
+      let user = false;
+
+      if(req.session.user){
+        
+
+        user = true
+       var userId = req.session.user._id;
+      
+       var cartCount = await cartHelper.userCartCount(userId);
+     var wishlistCount = await whishlistHelper.userWishlistCount(userId);
+        
+      }
+      
+
       res.render("user/shop-product", {
-        message: "hello",
-        product: productDetails,
+        product: currentProduct,
         categories: categoryData,
-        sort:true
-        // cartcount:cartCount,
-        // wishlistcount:wishlistCount
+        cartcount: cartCount,
+        wishlistcount: wishlistCount,
+        user,
+        
+        
+        sorted,
+        totalPages,
+        payload,
       });
-    } catch (error) {
-      res.status(500).render("error", { error, layout: false });
-    }
-    }
-    else{
+    } else {
       const productData = await productHelper.getAllProducts();
       
       const productDetails = await productHelper.AllProductOfferCheck(productData);
@@ -391,24 +418,159 @@ const loadAllProduct = async (req, res,next) => {
   
     
     const categoryData = await categoryHelper.getAllCategory();
-   
-    res.render("user/shop-product", {
-      message: "hi",
-      product: productDetails,
-      categories: categoryData,
-      sort:false
-      // cartcount:cartCount,
-      // wishlistcount:wishlistCount
-    });
-  
+     
+
+      
+
+      
+
+      
+      let sorted = false;
+      let normalSorted;
+
+      if (req.query.filter) {
+        if (req.query.filter == "Ascending") {
+          console.log("inside ascending");
+          productDetails.sort(
+            (a, b) => a.offerPrice - b.offerPrice
+          );
+          normalSorted="Ascending"
+       
+        } else if (req.query.filter == "Descending") {
+          productDetails.sort(
+            (a, b) => b.offerPrice - a.offerPrice
+          );
+          normalSorted="Descending"
+      
+        } else if (req.query.filter == "Alpha") {
+          productDetails.sort((a, b) => {
+            const nameA = a.product_name.toUpperCase();
+            const nameB = b.product_name.toUpperCase();
+            if (nameA < nameB) {
+              return -1;
+            }
+            if (nameA > nameB) {
+              return 1;
+            }
+            return 0;
+          });
+          normalSorted="Alpha"
+        }
+      }
+
+      let itemsPerPage = 2;
+      let currentPage = parseInt(req.query.page) || 1;
+      let startIndex = (currentPage - 1) * itemsPerPage;
+      let endIndex = startIndex + itemsPerPage;
+      let totalPages = Math.ceil(productDetails.length / 2);
+      
+      const currentProduct = productDetails.slice(startIndex, endIndex);
+
+      let user = false;
+
+      if(req.session.user){
+        console.log("skdjgvgsjkvn")
+
+        user = true
+       var userId = req.session.user._id;
+      
+       var cartCount = await cartHelper.userCartCount(userId);
+     var wishlistCount = await whishlistHelper.userWishlistCount(userId);
+        
+      }
+     
+
+      res.render("user/shop-product", {
+        product: currentProduct,
+        categories: categoryData,
+        
+        
+        normalSorted,
+        totalPages: totalPages,sorted,filter:req.query.filter,
+        cartcount: cartCount,
+        wishlistcount: wishlistCount,
+        user
+      });
     }
-
-  }catch(error){
-    next(error)
-
+  } catch (error) {
+    next(error);
   }
-  
-  
+};
+
+
+const shopFilterLoad = async (req, res, next) => {
+  console.log("reached dgbdxbbhere");
+  try {
+    
+    let filteredProducts;
+    
+    const { search, category, sort, page, limit } = req.query;
+    if (category) {
+      
+      var categories = await categoryHelper.getAllCategory();
+
+      
+
+      
+
+      var products = await productHelper.getAllProducts();
+      console.log("products",products)
+      
+
+      let categorySortedProducts = await products.filter((product) => {
+        return product.product_category.toString().trim() == category.trim();
+      });
+
+      filteredProducts = await productHelper.AllProductOfferCheck(categorySortedProducts);
+
+      
+      var sorted = false;
+    }
+    
+    if (sort) {
+      if (sort == "Ascending") {
+        console.log("inside ascending");
+        filteredProducts.sort(
+          (a, b) => a.offerPrice - b.offerPrice
+        );
+        sorted = "Ascending";
+      } else if (sort == "Descending") {
+        filteredProducts.sort(
+          (a, b) => b.offerPrice - a.offerPrice
+        );
+        sorted = "Descending";
+      } else if (sort == "Alpha") {
+        filteredProducts.sort((a, b) => {
+          const nameA = a.product_name.toUpperCase();
+          const nameB = b.product_name.toUpperCase();
+          if (nameA < nameB) {
+            return -1;
+          }
+          if (nameA > nameB) {
+            return 1;
+          }
+          return 0;
+        });
+        sorted = "Alpha";
+      }
+    }
+   
+    let itemsPerPage = 2;
+    let currentPage = parseInt(req.query.page) || 1;
+    let startIndex = (currentPage - 1) * itemsPerPage;
+    let endIndex = startIndex + itemsPerPage;
+    let totalPages = Math.ceil(filteredProducts.length / 2);
+    const currentProduct = filteredProducts.slice(startIndex, endIndex);
+    res.json({
+      product: currentProduct,
+      totalPages,
+      
+      categories,
+      sorted,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 const viewProduct = async (req, res,next) => {
@@ -434,10 +596,14 @@ const viewProduct = async (req, res,next) => {
         }
 
       }
+      const userId = req.session.user._id;
+    const cartCount = await cartHelper.userCartCount(userId);
+    const wishlistCount = await whishlistHelper.userWishlistCount(userId);
 
      
 
-      res.render("user/productView", { product: productDetails });
+      res.render("user/productView", { product: productDetails,cartcount: cartCount,
+        wishlistcount: wishlistCount, });
     });
    
 
@@ -463,12 +629,19 @@ const userCart = async (req, res,next) => {
   
       const removeCouponFromCart = await cartHelper.removeCoupon(user);
       let totalandSubTotal = await cartHelper.totalSubtotal(user, productDetails);
+
+      const userId = req.session.user._id;
+    const cartCount = await cartHelper.userCartCount(userId);
+    const wishlistCount = await whishlistHelper.userWishlistCount(userId);
+      
   
       
   
       res.render("user/cart-page", {
         products: productDetails,
         totalAmount: totalandSubTotal,
+        cartcount: cartCount,
+      wishlistcount: wishlistCount,
       });
     });
     
@@ -484,15 +657,13 @@ const addToCart = async (req, res) => {
   const size = req.params.size;
   const userId = req.session.user._id;
 
-  console.log("prod",productId)
-  console.log("size",size)
-  console.log("user",userId)
+  
  
 
   if(req.session.user){
     
     productHelper.cartChecking(productId,size,userId).then(async(response)=>{
-      console.log("sokgvskj")
+      
       if(response.status){
         const stockCheck = await productHelper.stockChecking(productId, size);
         if (!stockCheck.status) {
@@ -579,9 +750,13 @@ const userWhishlist = async (req, res,next) => {
     whishlistHelper.getAllWhishlistItems(userId).then(async (response) => {
       const productDetails = await whishlistHelper.wishlistProductOfferCheck(userId,response);
       
+    const cartCount = await cartHelper.userCartCount(userId);
+    const wishlistCount = await whishlistHelper.userWishlistCount(userId);
+      
       
   
-      res.render("user/wishlist-page", { products: productDetails });
+      res.render("user/wishlist-page", { products: productDetails,cartcount: cartCount,
+        wishlistcount: wishlistCount, });
     });
 
   }catch(error){
@@ -610,7 +785,7 @@ const addToWishlist = async (req, res) => {
 const removeFromWishlist = async (req, res) => {
   const productId = req.params.id;
   const userId = req.session.user._id;
-  console.log(productId)
+ 
   
   const result = await whishlistHelper.removeItem(userId, productId);
 
@@ -644,8 +819,12 @@ const loadUserProfile = async (req, res,next) => {
 
       
     }
+   
+    const cartCount = await cartHelper.userCartCount(userId);
+    const wishlistCount = await whishlistHelper.userWishlistCount(userId);
 
-    res.render("user/account", { userData: response, orderData ,walletData});
+    res.render("user/account", { userData: response, orderData ,walletData,cartcount: cartCount,
+      wishlistcount: wishlistCount,});
   });
 
   }catch(error){
@@ -725,7 +904,7 @@ const loadCheckout = async (req, res,next) => {
     const cartData = await cartHelper.getAllCartItems(userId);
     const couponData = await couponHelper.getAllCoupons();
 let couponStatus = false;
-console.log("cartData",cartData)
+
     if(cartData[0].coupon!=null){
       var couponAdded = await couponModel.findOne({code:cartData[0].coupon});
       couponStatus = true;
@@ -736,6 +915,9 @@ console.log("cartData",cartData)
   
     
     let totalandSubTotal = await cartHelper.totalSubtotal(userId, productDetails);
+    
+    const cartCount = await cartHelper.userCartCount(userId);
+    const wishlistCount = await whishlistHelper.userWishlistCount(userId);
 
 
   
@@ -745,7 +927,9 @@ console.log("cartData",cartData)
       totalandSubTotal,
       coupons: couponData,
       couponAdded:couponAdded,
-      couponStatus
+      couponStatus,
+      cartcount: cartCount,
+      wishlistcount: wishlistCount,
     });
 
   }catch(error){
@@ -879,15 +1063,15 @@ const paymentSuccess = (req, res) => {
       .digest("hex");
 
     if (hash === signature) {
-      console.log("success");
+      
       res.status(200).json({ success: true, message: "Payment successful" });
     } else {
-      console.log("skbvsbnc")
-      console.log("error");
+      
+      
       res.json({ success: false, message: "Invalid payment details" });
     }
   } catch (error) {
-    console.log("afasfgvrgvskbvsbnc")
+    
     console.log(error);
     res.status(500).json({ success: false, message: "Internal server error" });
   }
@@ -915,8 +1099,7 @@ const orderDetails = async (req, res,next) => {
     const orderId = req.params.id;
 
     orderHelper.getSpecificOrder(orderId).then(async(response) => {
-      console.log("response");
-      console.log(response[0].orderedProduct);
+      
   
       let check = true;
       let count = 0;
@@ -942,7 +1125,7 @@ const orderDetails = async (req, res,next) => {
       
       const productDetails = await orderHelper.orderProductOfferCheck(response);
       let couponStatus = false;
-      console.log("fffff",productDetails)
+     
 
     if(productDetails[0].couponAmount!=0){
       
@@ -1010,7 +1193,7 @@ const searchProduct = async (req, res) => {
       .find({ product_name: { $regex: new RegExp("^" + payload + ".*", "i") } })
       .exec();
     searchResult = searchResult.slice(0, 5);
-    console.log(searchResult);
+    
     res.json({ searchResult: searchResult });
   } catch (error) {
     res.status(500).render("error", { error, layout: false });
@@ -1021,8 +1204,7 @@ const sortedProductsLoad = async (req, res) => {
   try {
     if (req.query.category) {
       const products =JSON.parse(req.body.products);
-      console.log("prod")
-      console.log(products)
+     
       const category = req.query.category;
 
     
@@ -1054,8 +1236,7 @@ const sortedProductsLoad = async (req, res) => {
       }
 const productDetails = await productHelper.AllProductOfferCheck(checkingCategory);
 
-console.log("checkingCategory")
-console.log(checkingCategory)
+
 
       
       res.json({product:productDetails})
@@ -1088,8 +1269,7 @@ const priceSortedProductsLoad = async (req, res) => {
        const sortedProd = products.sort((a,b)=>{
           return a.offerPrice - b.offerPrice
         })
-        console.log(sort)
-        console.log(sortedProd)
+        
 
         res.json({product:sortedProd})
         
@@ -1097,8 +1277,7 @@ const priceSortedProductsLoad = async (req, res) => {
         const sortedProd =  products.sort((a,b)=>{
           return b.offerPrice - a.offerPrice
         })
-        console.log(sort)
-        console.log(sortedProd)
+       
         res.json({product:sortedProd})
 
       }
@@ -1132,7 +1311,7 @@ const addMoneyToWallet = async(req,res)=>{
   try{
     const userId = req.session.user._id;
     const amount = parseInt(req.body.totalPrice);
-    console.log(amount);
+    
 
     const walletAdding = await walletHelper.walletMoneyAdding(userId,amount);
 
@@ -1150,7 +1329,7 @@ const retryPayment = async (req, res) => {
     const orderId = req.body.orderIds;
 
     const orderDetails = await orderModel.findOne({ orderId: orderId });
-    console.log(orderDetails);
+    
 
     // orderDetails.products.forEach((item) => {
     //   item.status = "pending";
@@ -1215,6 +1394,7 @@ module.exports = {
   getEditAddress,
   postEditAddress,
   loadAllProduct,
+  shopFilterLoad,
   searchProduct,
   returnOrders,
 

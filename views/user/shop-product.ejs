@@ -166,22 +166,34 @@
                                 </div>
                             </form>
                         </div>
-                        <div class="header-action-right">
-                            <div class="header-action-2">
+                        <% if (user) { %>
+                            <div class="header-action-right">
+                              <div class="header-action-2">
                                 <div class="header-action-icon-2">
-                                    <a href="shop-wishlist.html">
-                                        <img class="svgInject" alt="Evara" src="/public/user/assets/imgs/theme/icons/icon-heart.svg">
-                                        <span class="pro-count blue">4</span>
-                                    </a>
+                                  <a href="/whishlistView">
+                                    <img
+                                      class="svgInject"
+                                      alt="Evara"
+                                      src="/public/user/assets/imgs/theme/icons/icon-heart.svg"
+                                    />
+                                    <span class="pro-count blue"><%= wishlistcount %></span>
+                                  </a>
                                 </div>
                                 <div class="header-action-icon-2">
-                                    <a class="mini-cart-icon" href="shop-cart.html">
-                                        <img alt="Evara" src="/public/user/assets/imgs/theme/icons/icon-cart.svg">
-                                        <span class="pro-count blue">2</span>
-                                    </a>
-                                </div>
+                                  <a class="mini-cart-icon" href="/cartView">
+                                    <img
+                                      alt="Evara"
+                                      src="/public/user/assets/imgs/theme/icons/icon-cart.svg"
+                                    />
+                                    <span class="pro-count blue"><%= cartcount %></span>
+                                  </a>
+                                 
+                              </div>
+                              
                             </div>
-                        </div>
+                          </div>
+                           
+                          <% } %>
                     </div>
                 </div>
             </div>
@@ -421,7 +433,36 @@
                                     </div>
                                 </div> -->
                                 <div class="sort-by-cover">
-                                    <div class="sort-by-product-wrap">
+                                    <div id="sorter">
+                                        <% if (normalSorted=="Ascending") { %>
+                                            <select name="" id="normalSorter" class="form-select" style=" border-radius: 18px;">
+                                                <option value="Ascending" style="font-size: 16px;">Price: Low to High</option>
+                                                <option value="Descending" style="font-size: 16px;">Price: High to Low</option>
+                                                <option value="Alpha" style="font-size: 16px;">Aa-Zz</option>                     
+                                                </select>
+                                                <% } else if (normalSorted=="Descending") { %>
+                                                    <select name="" id="normalSorter" class="form-select" style=" border-radius: 18px;">
+                                                    <option value="Descending" style="font-size: 16px;">Price: High to Low</option>
+                                                    <option value="Ascending" style="font-size: 16px;">Price: Low to High</option>
+                                                    <option value="Alpha" style="font-size: 16px;">Aa-Zz</option>  
+                                                </select>
+                                                    <% } else if (normalSorted=="Alpha") { %>
+                                                        <select name="" id="normalSorter" class="form-select" style=" border-radius: 18px;">
+                                                        <option value="Alpha" style="font-size: 16px;">Aa-Zz</option>
+                                                        <option value="Ascending" style="font-size: 16px;">Price: Low to High</option>
+                                                        <option value="Descending" style="font-size: 16px;">Price: High to Low</option>
+                                                    </select>
+                                                        <% } else { %>
+                                                            <select name="" id="normalSorter" class="form-select" style=" border-radius: 18px;">
+                                                                <option value="Ascending" style="font-size: 16px;">Price: Low to High</option>
+                                      <option value="Descending" style="font-size: 16px;">Price: High to Low</option>
+                                      <option value="Alpha" style="font-size: 16px;">Aa-Zz</option>
+                                                              </select>
+                                        <% } %>
+                                      
+                                    </div>
+                                
+                                    <!-- <div class="sort-by-product-wrap">
                                         <div class="sort-by">
                                             <span><i class="fi-rs-apps-sort"></i>Sort by:</span>
                                         </div>
@@ -437,11 +478,11 @@
                                             <li><a href="#">Release Date</a></li>
                                             <li><a href="#">Avg. Rating</a></li>
                                         </ul>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
                         </div>
-                        <input type="hidden" value="<%=JSON.stringify(product)%>" id="sortedProducts">
+                        
                         <div class="row product-grid-3">
                             <% for( let i = 0; i < product.length; i++ ) { %>
                                 <div class="col-lg-4 col-md-4 col-12 col-sm-6">
@@ -489,7 +530,7 @@
                                         </div>
                                       </div>
                                       <div class="product-content-wrap">
-                                        <% if (sort) { %>
+                                        <% if (sorted) { %>
                                             <div class="product-category">
                                                 <a href="shop-grid-right.html"><%= product[i].product_category.name %></a>
                                               </div>
@@ -533,31 +574,58 @@
                            
                         </div>
                         <!--pagination-->
+                        <div id="paginationLinks" class="d-flex">
+                            <!-- Pagination links will be dynamically added here -->
+                           <% if (sorted) { %>
+                            <% for( let i = 1; i <= totalPages; i++ ) { %>
+                                <a href="/shopProduct?search=<%=payload%>&page=<%= i %>" class="page-link"><%= i %></a>
+                             <% } %>
+                             <% } else if (normalSorted) { %>
+                                <% for( let i = 1; i < totalPages; i++ ) { %>
+                                  <a href="/shop?filter=<%=filter%>&page=<%= i %>" class="page-link"><%= i %></a>
+                                <% } %>
+                            <% } else { %>
+                                <% for( let i = 1; i <= totalPages; i++ ) { %>
+                                    <a href="/shopProduct?page=<%= i %>" class="page-link"><%= i %></a>
+                                 <% } %>
+                           <% } %>
+                             
+                            
+                           
+                        </div>
+              
                         
-                        <div class="pagination-area mt-15 mb-sm-5 mb-lg-0">
+                        <!-- <div class="pagination-area mt-15 mb-sm-5 mb-lg-0">
                             <nav aria-label="Page navigation example">
                                 <ul class="pagination justify-content-start">
                                     <li class="page-item active"><a class="page-link" href="#">01</a></li>
                                    
                                 </ul>
                             </nav>
-                        </div>
+                        </div> -->
                        
                     </div>
                     <div class="col-lg-3 primary-sidebar sticky-sidebar">
+                        
                         <div class="widget-category mb-30">
-                            <h5 class="section-title style-1 mb-30 wow fadeIn animated">Category</h5>
-                            <ul class="categories">
-                                <% for( let i = 0; i < categories.length; i++ ) { %>
+                            <h5 class="section-title style-1 mb-30 wow fadeIn animated">Category Filter</h5>
+                            <select name="" id="categoryFilter" class="form-select" style=" border-radius: 18px;">
+                                
+                                <% for( let i=0; i < categories.length; i++ ) { %>
                                     <% if (categories[i].status) { %>
-                                      <li><a onclick="categorySort('<%= categories[i]._id%>')"  ><%= categories[i].name %></a></li>
-                                    <% } %>
                                     
-                                  <% } %>
-                            </ul>
+                                    <option value="<%= categories[i]._id %>
+                                        " class="form-select-input" style="font-size: 16px;">
+                                        <%= categories[i].name %>
+                                    </option>
+                                    <% } %>
+                                    <% } %>
+
+                            </select>
+
                         </div>
                         <!-- Fillter By Price -->
-                        <div class="sidebar-widget price_range range mb-30">
+                        <!-- <div class="sidebar-widget price_range range mb-30">
                             <div class="widget-header position-relative mb-20 pb-10">
                                 <h5 class="widget-title mb-10">Fill by price</h5>
                                 <div class="bt-1 border-color-1"></div>
@@ -599,7 +667,7 @@
                                 </div>
                             </div>
                             <a href="shop-grid-right.html" class="btn btn-sm btn-default"><i class="fi-rs-filter mr-5"></i> Fillter</a>
-                        </div>
+                        </div> -->
                         <!-- Product sidebar Widget -->
                         <!-- <div class="sidebar-widget product-sidebar  mb-30 p-30 bg-grey border-radius-10">
                             <div class="widget-header position-relative mb-20 pb-10">
@@ -783,159 +851,186 @@
         </div>
     </div>
     <!-- Vendor JS-->
-    <script>
-        function categorySort(categoryId) {
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-           let products = document.getElementById("sortedProducts").value;
-           
-            
-        //   swal("Are you sure you want to delete this address", {
-        //     buttons: ["cancel", "ok"],
-        //   }).then((res) => {
-        //     if (res) {
-            console.log("okecvjkanc");
-            console.log(products)
-              $.ajax({
-                url:`/sortedProducts?category=${categoryId}`,
-                type: "post",
-                data: {products:products},
-                success : (response)=>{
-                    console.log(response);
-                    updateProductGrid(response.product)
+       <script>
+        // Function to fetch and display products based on search, filter, sort, and pagination
+        const fetchProducts = (event,page) => {
+            console.log("fetched");
+            // const searchQuery = document.getElementById('searchInput').value;
+            const categoryFilter = $('#categoryFilter').val();
+            const sortOption = $('#sortOptions').val();
+            const currentPage = page||1; // Initial page
+            const limitPerPage = 10; // Number of products per page
+            if(sortOption === undefined){
+                console.log("assdfsdasas")
 
+                const sortOption = $('#normalSorter').val();
 
+            }
+            console.log(sortOption)
 
+            const url = `/shopFilter?category=${categoryFilter}&sort=${sortOption}&page=${currentPage}&limit=${limitPerPage}`;
+            console.log(url)
 
-                
+            $.ajax({
+                url: url,
+                method: 'GET',
+                success: function (data) {
+                    console.log(data)
+                    const products = data.product;
+                    const pageInfo = data.pageInfo;
+
+                    // Update the product list on the page based on the fetched products
+                    const productGrid = $('.product-grid-3');
+                    productGrid.empty(); // Clear previous products
+
+                    products.forEach(product => {
+                        const productDiv = $('<div></div>').addClass('col-lg-4 col-md-4 col-sm-6');
+                        productDiv.html(`
+     
+     <div class="product-cart-wrap mb-30">
+                                       <div class="product-img-action-wrap">
+                                           <div class="product-img product-img-zoom">
+                                               <a href="/userHome/productView/${product._id}">
+                                                   <img class="default-img" src="/public/uploads/${product.image[0]}" alt="">
+                                                   <img class="hover-img" src="/public/uploads/${product.image[1]}" alt="">
+                                               </a>
+                                           </div>
+                                           <div class="product-action-1">
+                                               <a aria-label="Quick view" class="action-btn hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal"><i class="fi-rs-eye"></i></a>
+                                               <a aria-label="Add To Wishlist" class="action-btn hover-up" href="#"><i class="fi-rs-heart"></i></a>
+                                               <a aria-label="Compare" class="action-btn hover-up" href="#"><i class="fi-rs-shuffle"></i></a>
+                                           </div>
+                                           <div class="product-badges product-badges-position product-badges-mrg">
+                                               <span class="hot">Hot</span>
+                                           </div>
+                                       </div>
+                                       <div class="product-content-wrap">
+                                           
+                                               <div class="product-category">
+                                                   <a href="#">
+                                                       ${product.category[0].name}
+                                                   </a>
+                                               </div>
+                                               
+                                                       <h2>
+                                                           <a href="#">
+                                                               ${product.product_name}
+                                                           </a>
+                                                       </h2>
+                                                       <div class="rating-result" title="90%">
+                                                           <span>
+                                                               <span>
+                                                                   80%
+                                                               </span>
+                                                           </span>
+                                                       </div>
+                                                       <div class="product-price">$
+                                                           <span class="text-dark">
+                                                               ${product.offerPrice}
+
+                                                           </span>
+                                                           <span class="old-price">
+                                                               ${product.product_price}
+                                                           </span>
+                                                       </div>
+                                                       <div class="product-action-1 show">
+                                                           <a aria-label="Add To Cart" class="action-btn hover-up" href="shop-cart.html"><i class="fi-rs-shopping-bag-add"></i></a>
+                                                       </div>
+                                       </div>                                 
+                                   `);
+                        productGrid.append(productDiv); // Append the new product to the grid
+                    });
+
+                    // const paginationInfo = `Page ${currentPage} of ${pageInfo.totalPages}`;
+                    // document.getElementById('paginationInfo').textContent = paginationInfo;
+
+                    updatePaginationLinks(currentPage, data.totalPages);
+                    updateFilterOptions(data.sorted);
+                   
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error('Error fetching products:', errorThrown);
                 }
-              });
+            });
+        };
+
+        // Event listeners for search, filter, sort, and pagination interactions
+        // $('#searchInput').on('input', fetchProducts);
+        $('#categoryFilter').on('change', fetchProducts);
+        $('#sortOptions').on('change', fetchProducts);
+        // $('#prevPage').on('click', fetchProducts);
+        // $('#nextPage').on('click', fetchProducts);
+    
+        // Initial fetch of products when the page loads
+        // $(document).ready(function () {
+        //     fetchProducts()
+        // })
+
+    </script>
+     <script>
+        const updatePaginationLinks = (currentPage, totalPages) => {
+            // Clear previous pagination links
+            $('#paginationLinks').empty();
+
+            // Generate and append new pagination links based on the current page and total pages
+            for (let i = 1; i <= totalPages; i++) {
+                const pageLink = $(`<a href="#" class="page-link">${i}</a>`);
+                pageLink.on('click', function () {
+                    fetchProducts(0,i); // Fetch products for the selected page
+                });
+                $('#paginationLinks').append(pageLink);
             }
         
-      </script>
-      <script>
-        function priceSort(sort){
-            
+        };
+    </script>
 
-            if(!document.getElementById("Sorted")){
-                let prods = document.getElementById("sortedProducts").value;
-                console.log(prods)
-                
-
-                $.ajax({
-                url:`/priceSortProducts?sort=${sort}`,
-                type: "post",
-                data: {products:prods},
-                success : (response)=>{
-                    console.log(response);
-                    updateProductGrid(response.product)
-
-               
-                    
-
-
-                
-                }
-              });
-
+    <script>
+        const updateFilterOptions=(sorted)=>{
+            $("#sorter").empty();
+            let option;
+            if(sorted=="Ascending"){
+                option=$(`
+                <select name="" id="sortOptions" class="form-select" style=" border-radius: 18px;">
+                <option value="Ascending" style="font-size: 16px;">Price: Low to High</option>
+                <option value="Descending" style="font-size: 16px;">Price: High to Low</option>
+                <option value="Alpha" style="font-size: 16px;">Aa-Zz</option>                     
+                </select>
+        `);
+            }else if(sorted=="Descending"){
+                option=$(`
+                <select name="" id="sortOptions" class="form-select" style=" border-radius: 18px;">
+                <option value="Descending" style="font-size: 16px;">Price: High to Low</option>
+                <option value="Ascending" style="font-size: 16px;">Price: Low to High</option>
+                <option value="Alpha" style="font-size: 16px;">Aa-Zz</option>                    
+                </select>
+        `);
             }else{
-                const prod = document.getElementById("Sorted").value;
-            
-            console.log("prod")
-                $.ajax({
-                url:`/priceSortProducts?sort=${sort}`,
-                type: "post",
-                data: {products:prod},
-                success : (response)=>{
-                    console.log(response);
-                    updateProductGrid(response.product)
-
-               
+                option=$(`
+                <select name="" id="sortOptions" class="form-select" style=" border-radius: 18px;">
+                <option value="Alpha" style="font-size: 16px;">Aa-Zz</option>  
+                <option value="Descending" style="font-size: 16px;">Price: High to Low</option>
+                <option value="Ascending" style="font-size: 16px;">Price: Low to High</option>
                     
+                </select>
+        `);
+            }         
+        $("#sorter").append(option);
+        $('#sortOptions').on('change', fetchProducts);
 
+   
+    }
+    </script>
 
-                
-                }
-              });
+    <script>
+        document.getElementById("normalSorter").addEventListener("change",()=>{
+            const normalFilter = $('#normalSorter').val();
+            window.location.href=`/shopProduct?filter=${normalFilter}`
+        })
+    </script>
 
-            }
-
-            
-            console.log("prod");
-            console.log(prod);
-            
-
-        }
-      </script>
-      <script>
-                            function updateProductGrid(product) {
-                        const productGrid = document.querySelector('.product-grid-3');
-                        productGrid.innerHTML = ''; // Clear the existing product grid
-
-                        product.forEach(produc => {
-                            const productDiv = document.createElement('div');
-                            productDiv.classList.add('col-lg-4', 'col-md-4', 'col-sm-6');
-                            productDiv.innerHTML = `
-     
-      <div class="product-cart-wrap mb-30">
-                                        <div class="product-img-action-wrap">
-                                            <div class="product-img product-img-zoom">
-                                                <a href="/productView/${produc._id}">
-                                                    <img class="default-img" src="/public/uploads/${produc.image[0]}" alt="">
-                                                    <img class="hover-img" src="/${produc.image[1]}" alt="">
-                                                </a>
-                                            </div>
-                                            <div class="product-action-1">
-                                                <a aria-label="Quick view" class="action-btn hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal"><i class="fi-rs-eye"></i></a>
-                                                <a aria-label="Add To Wishlist" class="action-btn hover-up" href="#"><i class="fi-rs-heart"></i></a>
-                                                <a aria-label="Compare" class="action-btn hover-up" href="#"><i class="fi-rs-shuffle"></i></a>
-                                            </div>
-                                            <div class="product-badges product-badges-position product-badges-mrg">
-                                                <span class="hot">Hot</span>
-                                            </div>
-                                        </div>
-                                        <div class="product-content-wrap">
-                                            
-                                                <div class="product-category">
-                                                    <a href="#">
-                                                        ${produc.product_category.name}
-                                                    </a>
-                                                </div>
-                                                
-
-                                                        <h2>
-                                                            <a href="#">
-                                                                ${produc.product_name}
-                                                            </a>
-                                                        </h2>
-                                                        <div class="rating-result" title="90%">
-                                                            <span>
-                                                                <span>
-                                                                    80%
-                                                                </span>
-                                                            </span>
-                                                        </div>
-                                                        <div class="product-price">
-                                                           $ <span class="text-dark">
-                                                                ${produc.offerPrice}
-
-                                                            </span>
-                                                            <span class="old-price">
-                                                                ${produc.product_price}
-                                                            </span>
-                                                        </div>
-                                                        <div class="product-action-1 show">
-                                                            <a aria-label="Add To Cart" class="action-btn hover-up" href="shop-cart.html"><i class="fi-rs-shopping-bag-add"></i></a>
-                                                        </div>
-                                        </div>
-                                    </div>
-                                    <input type="text" id="Sorted" hidden>`;
-                                    
-                            productGrid.appendChild(productDiv); // Append the new product to the grid
-                        });
-                        const sortedProduct = document.getElementById("Sorted").value = JSON.stringify(product);
-                        
-                    }
-      </script>
+    
     <script src="/public/user/assets/js/vendor/modernizr-3.6.0.min.js"></script>
     <script src="/public/user/assets/js/vendor/jquery-3.6.0.min.js"></script>
     <script src="/public/user/assets/js/vendor/jquery-migrate-3.3.0.min.js"></script>

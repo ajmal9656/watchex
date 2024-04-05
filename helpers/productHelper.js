@@ -83,7 +83,7 @@ const deleteProduct= async(id)=>{
   
   return new Promise(async(resolve,reject)=>{
     const result = await productSchema.findOne({_id:id});
-    console.log(result);
+    
     if(result){
       result.product_status=!result.product_status;
       await result.save();
@@ -113,10 +113,7 @@ const checkDuplicateProduct= async(productId,body)=>{
 
 const editImages = async (oldImages, newImages) => {
   return new Promise((resolve, reject) => {
-    console.log("oldImages")
-    console.log(oldImages)
-    console.log("newImages")
-    console.log(newImages)
+    
     if (newImages && newImages.length > 0) {
       
       // if new files are uploaded
@@ -124,11 +121,7 @@ const editImages = async (oldImages, newImages) => {
       for (let i = 0; i < newImages.length; i++) {
         filenames.push(newImages[i].filename);
       }
-      console.log(filenames)
-      console.log(filenames.length)
-      console.log(4-filenames.length)
-      console.log(oldImages.length)
-      console.log(oldImages)
+      
 
       
         if(filenames.length<=3){
@@ -137,15 +130,15 @@ const editImages = async (oldImages, newImages) => {
             let i = 0;
             while (filenames.length < 4 && i < oldImages.length) {
               filenames.push(oldImages[i]);
-              console.log(i);
+              
               i++;
             }
           
 
           if (oldImages && oldImages.length > 0) {
-            console.log("skjdfvsakjdfc");
+            
             for (let i = 3; i > 3 - newImages.length; i--) {
-              console.log(oldImages[i])
+              
               fs.unlink("public/uploads/" + oldImages[i], (err) => {
                 if (err) {
                   reject(err);
@@ -164,7 +157,7 @@ const editImages = async (oldImages, newImages) => {
       else{
         // delete old images if they exist
       if (oldImages && oldImages.length > 0) {
-        console.log("asdfgh")
+        
         for (let i = 0; i < oldImages.length; i++) {
           fs.unlink("public/uploads/" + oldImages[i], (err) => {
             if (err) {
@@ -216,8 +209,7 @@ const getAllProducts = async ()=>{
     // });
 
     resolve(product);
-    console.log("oskjvklxvnxjkv");
-    console.log(product)
+    
   })}catch(error){
     console.log(error);
   }
@@ -248,8 +240,7 @@ const stockUpdation=async(allCartData)=>{
 }
 const stockIncreasion=async(orderId,productId)=>{
   return new Promise(async(resolve,reject)=>{
-    console.log(orderId);
-    console.log(productId);
+    
 
     const allOrders = await orderModel.aggregate([{$match:{_id:new objectId(orderId)}},{$unwind:"$products"},{$match:{"products.product":new objectId(productId)}},{
       $project: {
@@ -332,7 +323,7 @@ const stockChecking=async(productId,size)=>{
      const product =await productModel.findById(productId);
      
      if(product.product_quantity[size].quantity<=0){
-      console.log(product.product_quantity[size].quantity);
+      
       resolve({status:false})
 
 

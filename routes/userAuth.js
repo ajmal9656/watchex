@@ -28,6 +28,7 @@ router.post('/resendOtpForgot',userController.resendOtpForgotPass);
 
 router.get('/productView/:id',userController.viewProduct);
 router.get('/shopProduct',userController.loadAllProduct);
+router.get("/shopFilter", userController.shopFilterLoad);
 
 router.get('/cartView',userMiddleware.isCheck,userController.userCart);
 router.post('/addToCart/:id/:size',userMiddleware.isCheck,userController.addToCart);
