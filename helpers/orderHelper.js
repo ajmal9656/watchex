@@ -22,8 +22,7 @@ const placeOrder = async (userId, body, cartItems) => {
 
             
           }
-        console.log("user")
-        console.log(user)
+        
 
         let products = [];
         for (const product of cartItems.products) {
@@ -57,7 +56,7 @@ const placeOrder = async (userId, body, cartItems) => {
 
         }
        
-        console.log(body.paymentOption)
+        
         if(body.paymentOption === "wallet"){
             if(cartItems.totalAmount<=user.wallet.balance){
                 if (address) {
@@ -86,16 +85,16 @@ const placeOrder = async (userId, body, cartItems) => {
         
         }else if(body.paymentOption === "COD"){
             if(cartItems.totalAmount>=1000){
-                console.log("enterrrrvgf")
+               
                 if (address) {
                     const  result =await createOrder(userId, body, cartItems,products,address);
-                    console.log(result)
+                    
                     result.orderSuccess=true;
                     return result;
                 }
 
             }else{
-                console.log("no")
+                
                 
                 return {orderSuccess:null};
                 
@@ -122,8 +121,7 @@ const placeOrderByWallet = async (userId, body, cartItems) => {
     try {
         const address = await userModel.findOne({_id: userId, "address._id": body.addressId}, {"address.$": 1, _id: 0});
         const user = await userModel.findOne({_id: userId});
-        console.log("user")
-        console.log(user)
+      
 
         let products = [];
         for (const product of cartItems.products) {
@@ -204,7 +202,7 @@ const getOrderDetails = async (userId) => {
         for (const item of result) {
             for (const product of item.products) {
                 const prod = await productModel.findOne({ _id: product.product });
-                console.log("prod:", prod);
+                
 
                 // Check if the product has an image
                 if (prod && prod.image && prod.image.length > 0) {
@@ -214,7 +212,7 @@ const getOrderDetails = async (userId) => {
             }
         }
 
-        console.log("Order details:", result);
+        
         return result;
     } catch (error) {
         throw error;
@@ -398,7 +396,7 @@ const eachOrderCancellation = async (orderId, productId,subTotal,userId,size) =>
             }
           );
           
-        console.log("cancelledProduct",cancelledProduct)
+        
         
 
         const result = await orderModel.findOneAndUpdate(
@@ -406,8 +404,7 @@ const eachOrderCancellation = async (orderId, productId,subTotal,userId,size) =>
             { $set: { "products.$.orderStatus": "cancelled" } }, // Update the orderStatus of the matched product
             { new: true } // Return the updated document after the update operation
         );
-        console.log("result")
-        console.log(result)
+        
         if(result.paymentMethod==="Razorpay"){
             const walletUpdation = await walletHelper.walletAmountAdding(userId,subTotal);
 
@@ -446,7 +443,7 @@ const specificOrderStatusChange = async (orderId, productId, changeStatus,size) 
             { $set: { "products.$.orderStatus": changeStatus } }, // Update the orderStatus of the matched product
             { new: true } // Return the updated document after the update operation
         );
-        console.log(result);
+        
         return result;
     } catch (error) {
         throw error; // You might want to handle errors appropriately in your actual application
@@ -460,7 +457,7 @@ const returnApproval = async (orderId, productId, changeStatus,subTotal,size) =>
             { $set: { "products.$.orderStatus": changeStatus } }, // Update the orderStatus of the matched product
             { new: true } // Return the updated document after the update operation
         );
-        console.log(result);
+        
         
             const walletUpdation = await walletHelper.walletAmountAdding(result.user,subTotal);
 
@@ -556,7 +553,7 @@ const orderProductOfferCheck = async (response) => {
 };
 const orderedProductOfferCheck = async (response) => {
     response.formattedDate = moment(response.orderedOn).format("MMM Do, YYYY");
-    console.log("asasasasasa")
+    
 
     
     try {

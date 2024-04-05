@@ -128,7 +128,7 @@ const addUserAddress=async(userId,body)=>{
 
     const result = await User.updateOne({_id:userId},{$push:{address:body}});
 
-    console.log(result)
+    
 
     resolve(result);
     
@@ -141,7 +141,7 @@ const addressDeletion = async(addressId,userId)=>{
 
     const result = await User.updateOne({_id:userId},{$pull:{address:{_id:addressId}}});
 
-    console.log(result)
+    
 
     resolve(result);
 
@@ -183,10 +183,70 @@ const postEditAddress=async(userId,addressId,body)=>{
       { $set: { 'address.$': body } } // Update
   );
 
-  console.log("res")
-  console.log(result)
+  
 
   resolve(result);
+  })
+}
+
+const postEditAccount=async(userdata,body)=>{
+  return new Promise(async(resolve,reject)=>{
+
+    
+    const check = await User.find({email:body.accountEmail});
+    console.log("checkl",check)
+
+    
+
+    if(check.length!=0){
+      let email = false;
+    
+      if(check[0].email==userdata.email){
+        console.log("check[0].email")
+
+        console.log(check[0].email)
+        console.log(userdata.email)
+        email = true;
+
+
+      }
+      
+      if(email){
+        console.log("both true")
+
+        userdata.email = body.accountEmail;
+      userdata.mobile = body.accountMobile;
+      userdata.name = body.accountName;
+      await userdata.save();
+
+      resolve({Email:true})
+
+      }else{
+        console.log("email false")
+        resolve({Email:false})
+
+      }
+
+
+  
+    }else{
+      console.log("elseeeeee")
+
+      userdata.email = body.accountEmail;
+      userdata.mobile = body.accountMobile;
+      userdata.name = body.accountName;
+      await userdata.save();
+      resolve({Email:true})
+
+    }
+
+
+
+    
+
+  
+
+  
   })
 }
 
@@ -202,7 +262,7 @@ const getAllAddress= async(userId)=>{
 const addressDetails=async(addressId,userId)=>{
   return new Promise(async(resolve,reject)=>{
       const result = await User.findOne({_id:userId,'address._id':addressId},{ 'address.$': 1 } );
-      console.log(result)
+      
 
       if(result){
           resolve(result);
@@ -247,6 +307,7 @@ module.exports = {
   editAddress,postEditAddress,
   getAllAddress,
   addressDetails,
-  addressEdit
+  addressEdit,
+  postEditAccount
   
 };

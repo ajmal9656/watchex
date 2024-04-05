@@ -184,39 +184,45 @@
                                             </div>
                                             <div class="card-body">
 
-                                                <form method="post" action="/addAddress" id="myForm" name="enq">
+                                                <form method="post" action="/addAddress" id="myForms" name="enq">
                                                     <div class="row">
                                                         <div class="form-group col-md-12">
                                                             <label>Full Name <span class="required">*</span></label>
                                                             <input required="" class="form-control square" name="name"
-                                                                type="text">
+                                                                type="text" id="addressName">
+                                                                <div id="errordiv1"></div>
                                                         </div>
 
 
                                                         <div class="form-group col-md-12">
                                                             <label>House<span class="required">*</span></label>
                                                             <input required="" class="form-control square" name="house"
-                                                                type="text">
+                                                                type="text" id="addressHouse">
+                                                                <div id="errordiv2"></div>
                                                         </div>
                                                         <div class="form-group col-md-6">
                                                             <label>State<span class="required">*</span></label>
                                                             <input required="" class="form-control square" name="state"
-                                                                type="text">
+                                                                type="text" id="addressState">
+                                                                <div id="errordiv3"></div>
                                                         </div>
                                                         <div class="form-group col-md-6">
                                                             <label>Country<span class="required">*</span></label>
                                                             <input required="" class="form-control square"
-                                                                name="country" type="text">
+                                                                name="country" type="text" id="addressCountry">
+                                                                <div id="errordiv4"></div>
                                                         </div>
                                                         <div class="form-group col-md-6">
                                                             <label>City<span class="required">*</span></label>
                                                             <input required="" class="form-control square" name="city"
-                                                                type="text">
+                                                                type="text" id="addressCity">
+                                                                <div id="errordiv5"></div>
                                                         </div>
                                                         <div class="form-group col-md-6">
                                                             <label>Pin Code<span class="required">*</span></label>
                                                             <input required="" class="form-control square"
-                                                                name="pincode" type="text">
+                                                                name="pincode" type="text" id="addressPin">
+                                                                <div id="errordiv6"></div>
                                                         </div>
                                                         <div class="form-group col-md-4">
                                                             <label>Address Type<span class="required">*</span></label>
@@ -289,24 +295,27 @@
                                             </div>
                                             <div class="card-body">
 
-                                                <form method="post" name="enq">
+                                                <form method="put" name="enqs" id="enqs" action="/editAccountdata">
                                                     <div class="row">
                                                         <div class="form-group col-md-12">
                                                             <label>Full Name <span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="name"
+                                                            <input required="" class="form-control square" name="accountName"
                                                                 type="text" value="<%= userData.name %>">
+                                                                <div id="errordiv7"></div>
                                                         </div>
 
 
                                                         <div class="form-group col-md-12">
                                                             <label>Email<span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="house"
+                                                            <input required="" class="form-control square" name="accountEmail"
                                                                 type="text" value="<%= userData.email %>">
+                                                                <div id="errordiv8"></div>
                                                         </div>
                                                         <div class="form-group col-md-12">
                                                             <label>Phone<span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="state"
+                                                            <input required="" class="form-control square" name="accountMobile"
                                                                 type="text" value="<%= userData.mobile %>">
+                                                                <div id="errordiv9"></div>
                                                         </div>
                                                         
                                                         
@@ -315,7 +324,7 @@
                                                             <label>Enter Password <span
                                                                     class="required">*</span></label>
                                                             <input required="" class="form-control square"
-                                                                name="password" type="password">
+                                                                name="accountPassword" type="password">
                                                         </div>
                                                         <div class="col-md-12">
                                                             <button type="submit" class="btn btn-fill-out submit"
@@ -613,12 +622,156 @@
     });
 
     </script>
+<script>
+
+const addressName = document.getElementById('addressName')
+const addressHouse = document.getElementById('addressHouse')
+const addressState = document.getElementById('addressState')
+const addressCountry = document.getElementById('addressCountry')
+const addressCity = document.getElementById('addressCity')
+const addressPin = document.getElementById('addressPin')
+const errordiv1 = document.getElementById('errordiv1')
+const errordiv2 = document.getElementById('errordiv2')
+const errordiv3 = document.getElementById('errordiv3')
+const errordiv4 = document.getElementById('errordiv4')
+const errordiv5 = document.getElementById('errordiv5')
+const errordiv6 = document.getElementById('errordiv6')
+const regforms = document.getElementById('myForms')
+
+
+
+
+
+
+
+function namevalidate() {
+    const nameval = addressName.value;
+    const alphabeticRegex = /^[a-zA-Z]+$/; // Regex to match only alphabetic characters
+    
+    if (nameval.trim() === "") {
+        errordiv1.style.display = "block";
+        errordiv1.innerHTML = "Please enter a valid name.";
+    } else if (!alphabeticRegex.test(nameval)) {
+        errordiv1.style.display = "block";
+        errordiv1.innerHTML = "Name should contain only alphabetic characters.";
+    } else {
+        errordiv1.style.display = "none";
+        errordiv1.innerHTML = "";
+    }
+}
+function housevalidate(){
+    const nameval = addressHouse.value
+    if(nameval.trim() === "")
+    {
+        errordiv2.style.display = "block"
+        errordiv2.innerHTML = "Please Enter a valid Name."
+    }
+    else{
+        errordiv2.style.display = "none"
+        errordiv2.innerHTML = ""
+    }
+}
+
+function statevalidate() {
+    const nameval = addressState.value;
+    const alphabeticRegex = /^[a-zA-Z]+$/; // Regex to match only alphabetic characters
+    
+    if (nameval.trim() === "") {
+        errordiv3.style.display = "block";
+        errordiv3.innerHTML = "Please enter a valid state name.";
+    } else if (!alphabeticRegex.test(nameval)) {
+        errordiv3.style.display = "block";
+        errordiv3.innerHTML = "State name should contain only alphabetic characters.";
+    } else {
+        errordiv3.style.display = "none";
+        errordiv3.innerHTML = "";
+    }
+}
+
+function countryvalidate() {
+    const nameval = addressCountry.value;
+    const alphabeticRegex = /^[a-zA-Z]+$/; // Regex to match only alphabetic characters
+    
+    if (nameval.trim() === "") {
+        errordiv4.style.display = "block";
+        errordiv4.innerHTML = "Please enter a valid country name.";
+    } else if (!alphabeticRegex.test(nameval)) {
+        errordiv4.style.display = "block";
+        errordiv4.innerHTML = "Country name should contain only alphabetic characters.";
+    } else {
+        errordiv4.style.display = "none";
+        errordiv4.innerHTML = "";
+    }
+}
+
+function cityvalidate() {
+    const nameval = addressCity.value;
+    const alphabeticRegex = /^[a-zA-Z]+$/; // Regex to match only alphabetic characters
+    
+    if (nameval.trim() === "") {
+        errordiv5.style.display = "block";
+        errordiv5.innerHTML = "Please enter a valid city name.";
+    } else if (!alphabeticRegex.test(nameval)) {
+        errordiv5.style.display = "block";
+        errordiv5.innerHTML = "City name should contain only alphabetic characters.";
+    } else {
+        errordiv5.style.display = "none";
+        errordiv5.innerHTML = "";
+    }
+}
+
+
+
+
+
+
+function pinvalidate() {
+    const addressPinval = addressPin.value;
+    const numericRegex = /^[0-9]+$/; // Regex to match only numbers
+    
+    if (addressPinval.trim() === "") {
+        errordiv6.style.display = "block";
+        errordiv6.innerHTML = "Please enter a valid pincode.";
+    } else if (addressPinval.length !== 6 || !numericRegex.test(addressPinval)) {
+        errordiv6.style.display = "block";
+        errordiv6.innerHTML = "Please enter a valid 6-digit pincode containing only numbers.";
+    } else {
+        errordiv6.style.display = "none";
+        errordiv6.innerHTML = "";
+    }
+}
+
+
+addressName.addEventListener('blur', namevalidate)
+addressHouse.addEventListener('blur',housevalidate)
+addressState.addEventListener('blur',statevalidate)
+addressCountry.addEventListener('blur',countryvalidate)
+addressCity.addEventListener('blur',cityvalidate)
+addressPin.addEventListener('blur',pinvalidate)
+
+
+
+regforms.addEventListener('submit',function(e){
+        namevalidate()
+        housevalidate()
+        statevalidate()
+        countryvalidate()
+        cityvalidate()
+        pinvalidate()
+        
+        if(errordiv2.innerHTML || errordiv4.innerHTML || errordiv1.innerHTML || errordiv3.innerHTML || errordiv5.innerHTML  || errordiv6.innerHTML  )
+        {
+            e.preventDefault()
+        }
+})
+</script>
+    
     
     
     
     <script>
         $(document).ready(function () {
-            $("#myForm").submit(function (event) {
+            $("#myForms").submit(function (event) {
                 event.preventDefault();
                 var formData = $(this).serialize();
                 $.ajax({
@@ -643,6 +796,48 @@
                         }else{
                             Toastify({
                                 text: "Something wrong",
+                                duration: 3000,
+                                gravity: "top", // top or bottom
+                                position: "center", // left, center or right
+                                stopOnFocus: true, // Prevents dismissing of toast on hover
+                                style: {
+                                    background: "linear-gradient(to right, red, white)",
+                                },
+                            }).showToast();
+                        }
+                    }
+
+                })
+            })
+        })
+    </script>
+    <script>
+        $(document).ready(function () {
+            $("#enqs").submit(function (event) {
+                event.preventDefault();
+                var formData = $(this).serialize();
+                $.ajax({
+                    url: "/editAccount",
+                    method: "PUT",
+                    data: formData,
+                    success: (response) => {
+                        if (response.editStatus) {
+                            Toastify({
+                                text: `${response.message}`,
+                                duration: 3000,
+                                gravity: "top", // top or bottom
+                                position: "center", // left, center or right
+                                stopOnFocus: true, // Prevents dismissing of toast on hover
+                                style: {
+                                    background: "linear-gradient(to right, aqua, blue)",
+                                },
+                            }).showToast();
+                            setTimeout(() => {
+                                location.reload();
+                            }, 1000);
+                        }else{
+                            Toastify({
+                                text: `${response.message}`,
                                 duration: 3000,
                                 gravity: "top", // top or bottom
                                 position: "center", // left, center or right
@@ -811,6 +1006,7 @@ myForm.addEventListener('submit',function(e){
             })
         }
     </script>
+
 <script>
     $(document).ready(function () {
         $("#walletForm").submit(function (e) {

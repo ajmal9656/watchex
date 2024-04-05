@@ -356,7 +356,7 @@ const loaduserhome = async (req, res) => {
   // }
 };
 const loadAllProduct = async (req, res, next) => {
-  console.log("shop")
+  
   try {
     if (req.query.search) {
       let payload = req.query.search.trim();
@@ -430,7 +430,7 @@ const loadAllProduct = async (req, res, next) => {
 
       if (req.query.filter) {
         if (req.query.filter == "Ascending") {
-          console.log("inside ascending");
+          
           productDetails.sort(
             (a, b) => a.offerPrice - b.offerPrice
           );
@@ -469,7 +469,7 @@ const loadAllProduct = async (req, res, next) => {
       let user = false;
 
       if(req.session.user){
-        console.log("skdjgvgsjkvn")
+        
 
         user = true
        var userId = req.session.user._id;
@@ -499,7 +499,7 @@ const loadAllProduct = async (req, res, next) => {
 
 
 const shopFilterLoad = async (req, res, next) => {
-  console.log("reached dgbdxbbhere");
+  
   try {
     
     let filteredProducts;
@@ -514,7 +514,7 @@ const shopFilterLoad = async (req, res, next) => {
       
 
       var products = await productHelper.getAllProducts();
-      console.log("products",products)
+      
       
 
       let categorySortedProducts = await products.filter((product) => {
@@ -529,7 +529,7 @@ const shopFilterLoad = async (req, res, next) => {
     
     if (sort) {
       if (sort == "Ascending") {
-        console.log("inside ascending");
+        
         filteredProducts.sort(
           (a, b) => a.offerPrice - b.offerPrice
         );
@@ -607,9 +607,7 @@ const viewProduct = async (req, res,next) => {
     });
    
 
-  // const products = await productModel.findById(id)
-  // console.log(products);
-  // res.render("user/productView",{product:products});
+  
 
   }catch(error){
     next(error)
@@ -886,6 +884,36 @@ const editAddress = async (req, res) => {
     res.redirect("/profileView");
   });
 };
+const editAccount = async (req, res) => {
+  
+  const userId = req.session.user._id;
+  const userdata = await User.findById(userId);
+  
+  const body = req.body;
+
+
+  console.log(body)
+  console.log(userdata)
+  const passCheck = await bcrypt.compare(body.accountPassword,userdata.password)
+  if(passCheck){
+    console.log("skhfsjhfsuhfsiuf")
+    userHelper.postEditAccount(userdata, body).then((response) => {
+
+      if(response.Email){
+        res.json({editStatus:true,message:"Details updated successfully"})
+
+      }else{
+        res.json({editStatus:false,message:"Email already exist"})
+
+      }
+      
+    });
+
+  }else{
+    res.json({editStatus:false,message:"Incorrect password"})
+  }
+  
+};
 
 const changePassword = async (req, res) => {
   const userId = req.session.user._id;
@@ -977,7 +1005,7 @@ const proceedPayment = async (req, res) => {
   const userId = req.session.user._id;
   const body = req.body;
   const cartItems = await cartModel.findOne({ user: userId }).populate("products.productItemId");
-  console.log("cartttt",cartItems)
+  
   
   
   const cartData = await cartHelper.offerCheck(cartItems);
@@ -1372,6 +1400,7 @@ module.exports = {
   deleteAddress,
   loadEditAddress,
   editAddress,
+  editAccount,
   loadForgotPass,
   forgotPassword,
   getNewPassword,

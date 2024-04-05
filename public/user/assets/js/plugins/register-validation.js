@@ -9,6 +9,7 @@ const error4 = document.getElementById('error4')
 const regform = document.getElementById('formcontrol')
 
 function emailvalidate(e){
+    
     const emailval = emailid.value
     const emailpattern = /^([a-zA-Z0-9._-]+)@([a-zA-Z.-]+).([a-zA-z]{2,4})$/ 
     if(!emailpattern.test(emailval))

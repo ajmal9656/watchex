@@ -45,6 +45,7 @@ router.patch('/deleteAddress/:id',userMiddleware.isCheck,userController.deleteAd
 router.get('/editAddress',userMiddleware.isCheck,userController.loadEditAddress);
 router.post('/editAddress',userController.editAddress);
 router.post('/addressPost',userController.addAddressPost);
+router.put('/editAccount',userController.editAccount);
 router.patch('/addMoneyToWallet',userMiddleware.isCheck,userController.addMoneyToWallet);
 
 router.post('/changepassword',userMiddleware.isCheck,userController.changePassword);
