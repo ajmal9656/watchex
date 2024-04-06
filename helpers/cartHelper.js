@@ -186,8 +186,7 @@ const quantityUpdation = async (productId, userId, quantity,size,price) => {
 
 const removeItem = async (userId, productId,size) => {
   return new Promise(async (resolve, reject) => {
-    console.log(size);
-    console.log(typeof size)
+    
     const removeItem = await cartModel.updateOne(
       { user: userId },
       { $pull: { products: { productItemId: new ObjectId(productId),size:size } } }
@@ -431,8 +430,7 @@ const offerCheck=async(response)=>{
   return new Promise(async(resolve,reject)=>{
     const currentDate = Date.now();
     
-    console.log("response")
-    console.log(response)
+    
 
 
 

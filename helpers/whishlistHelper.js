@@ -110,7 +110,7 @@ const userWishlistCount = async (userId) => {
 const wishlistProductOfferCheck = async (userId, response) => {
   return new Promise(async (resolve, reject) => {
     const currentDate = Date.now();
-    console.log(response);
+    
     for (const products of response) {
       const cartStatus = await cartHelper.checkCart(
         products.product._id,
@@ -126,7 +126,7 @@ const wishlistProductOfferCheck = async (userId, response) => {
         startingDate: { $lte: currentDate },
         endingDate: { $gte: currentDate },
       });
-      console.log("jkadvnjnv", prodOffers);
+      
       const catOffers = await offerModel.findOne({
         "categoryOffer.category": products.product.product_category,
         status: true,
@@ -135,7 +135,7 @@ const wishlistProductOfferCheck = async (userId, response) => {
       });
 
       if (prodOffers && catOffers) {
-        console.log("aljkdcajc");
+        
         if (
           prodOffers.productOffer.discount >= catOffers.categoryOffer.discount
         ) {
@@ -148,20 +148,20 @@ const wishlistProductOfferCheck = async (userId, response) => {
               (products.product.product_price * discount) / 100
           );
         } else {
-          console.log("tttttt");
+          
           let discount =
             parseInt(products.product.product_discount) +
             parseInt(catOffers.categoryOffer.discount);
-          console.log(discount);
+          
 
           products.product.offerPrice = Math.round(
             products.product.product_price -
               (products.product.product_price * discount) / 100
           );
-          console.log(products.product.offerPrice);
+          
         }
       } else if (prodOffers) {
-        console.log("djfisjinvsjcv");
+        
         let discount =
           parseInt(products.product.product_discount) +
           parseInt(prodOffers.productOffer.discount);
@@ -180,7 +180,7 @@ const wishlistProductOfferCheck = async (userId, response) => {
             (products.product.product_price * discount) / 100
         );
       } else {
-        console.log("else");
+        
         products.product.offerPrice = Math.round(
           products.product.product_price -
             (products.product.product_price *

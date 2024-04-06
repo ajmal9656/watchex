@@ -5,7 +5,7 @@ const moment = require("moment")
 const loadCoupons = async(req,res,next)=>{
     try{
       const coupons = await couponHelper.getAllCoupons();
-      console.log(coupons)
+      
       for(const coupon of coupons){
         coupon.formattedDate = formatDate(coupon.expiryDate.toString())
         
@@ -67,7 +67,7 @@ const loadCoupons = async(req,res,next)=>{
       const couponId= req.params.id;
   
     couponHelper.couponDetails(couponId).then((response)=>{
-      console.log(response)
+      
       
       
       res.json(response)
@@ -87,7 +87,7 @@ const loadCoupons = async(req,res,next)=>{
     const body= req.body;
   
     couponHelper.couponEdit(body).then((response)=>{
-      console.log(response)
+      
       res.redirect("/admin/coupons")
     }).catch((error)=>{
       console.log(error)
@@ -101,7 +101,7 @@ const loadCoupons = async(req,res,next)=>{
       const userId = req.session.user._id;
       const couponCode = req.body.couponCode;
       const totalAmount = parseInt(req.params.totalAmount);
-      console.log(couponCode)
+      
   
       const result = await couponHelper.applyCoupon(userId, couponCode,totalAmount);
       

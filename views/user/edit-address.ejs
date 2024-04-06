@@ -282,68 +282,62 @@
                             <div class="col-md-4">
                                 <div class="dashboard-menu">
                                     <ul class="nav flex-column" role="tablist">
-                                        
-                                        
                                         <li class="nav-item">
-                                            <a class="nav-link" id="track-orders-tab" data-bs-toggle="tab"
+                                            <a class="nav-link active" id="track-orders-tab" data-bs-toggle="tab"
                                                 href="#track-orders" role="tab" aria-controls="track-orders"
-                                                aria-selected="false"><i class="fi-rs-marker mr-10"></i>Edit Address
-                                                </Address></a>
+                                                aria-selected="true"><i class="fi-rs-marker mr-10"></i>Edit Address
+                                            </a>
                                         </li>
-                                      
-                                        
-                                       
                                     </ul>
                                 </div>
                             </div>
-                             
                             <div class="col-md-8">
                                 <div class="tab-content dashboard-content">
-                                   
-                                    
-                                    
-                                    <div class="tab-pane fade" id="track-orders" role="tabpanel"
+                                    <div class="tab-pane fade show active" id="track-orders" role="tabpanel"
                                         aria-labelledby="track-orders-tab">
                                         <div class="card">
                                             <div class="card-header">
-                                                <h5>Add Address</h5>
+                                                <h5>Edit Address</h5>
                                             </div>
                                             <div class="card-body">
-
-                                                <form method="post" action="/editAddress?addressId=<%= userData[0].address._id %>" id="myForm" name="enq">
+                                                <!-- Your address form content here -->
+                                                <form method="post" action="/editAddress?addressId=<%= userData[0].address._id %>" id="myFormss" name="enq">
                                                     <div class="row">
                                                         <div class="form-group col-md-12">
                                                             <label>Full Name <span class="required">*</span></label>
-                                                            
-                                                            <input required="" class="form-control square" name="name"
+                                                            <input required="" class="form-control square" name="name" id="acName"
                                                                 type="text" value="<%= userData[0].address.name %>">
+                                                                <div id="err1"></div>
                                                         </div>
-
-
                                                         <div class="form-group col-md-12">
                                                             <label>House<span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="house"
+                                                            <input required="" class="form-control square" name="house" id="acHouse"
                                                                 type="text" value="<%= userData[0].address.house %>">
+                                                                <div id="err2"></div>
                                                         </div>
                                                         <div class="form-group col-md-6">
                                                             <label>State<span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="state"
+                                                            <input required="" class="form-control square" name="state" id="acState"
                                                                 type="text" value="<%= userData[0].address.state %>">
+                                                                <div id="err3"></div>
                                                         </div>
                                                         <div class="form-group col-md-6">
                                                             <label>Country<span class="required">*</span></label>
-                                                            <input required="" class="form-control square"
+                                                            <input required="" class="form-control square" id="acCountry"
                                                                 name="country" type="text" value="<%= userData[0].address.country %>">
+                                                                <div id="err4"></div>
                                                         </div>
                                                         <div class="form-group col-md-6">
                                                             <label>City<span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="city"
+                                                            <input required="" class="form-control square" name="city" id="acCity"
                                                                 type="text" value="<%= userData[0].address.city %>">
+                                                                <div id="err5"></div>
                                                         </div>
                                                         <div class="form-group col-md-6">
                                                             <label>Pin Code<span class="required">*</span></label>
-                                                            <input required="" class="form-control square"
+                                                            <input required="" class="form-control square" id="acPin"
                                                                 name="pincode" type="text" value="<%= userData[0].address.pincode %>">
+                                                                <div id="err6"></div>
                                                         </div>
                                                         <div class="form-group col-md-4">
                                                             <label>Address Type<span class="required">*</span></label>
@@ -356,7 +350,6 @@
                                                                 </option>
                                                             </select>
                                                         </div>
-                                                        
                                                         <div class="col-md-12 mt-2">
                                                             <button type="submit" class="btn btn-fill-out submit"
                                                                 name="submit" value="Submit">Save</button>
@@ -366,11 +359,10 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
-                                    
                                 </div>
                             </div>
                         </div>
+                        
                     </div>
                 </div>
             </div>
@@ -503,6 +495,149 @@
         </div>
     </div>
     <!-- Vendor JS-->
+    <script>
+
+        const acName = document.getElementById('acName')
+        const acHouse = document.getElementById('acHouse')
+        const acState = document.getElementById('acState')
+        const acCountry = document.getElementById('acCountry')
+        const acCity = document.getElementById('acCity')
+        const acPin = document.getElementById('acPin')
+        const err1 = document.getElementById('err1')
+        const err2 = document.getElementById('err2')
+        const err3 = document.getElementById('err3')
+        const err4 = document.getElementById('err4')
+        const err5 = document.getElementById('err5')
+        const err6 = document.getElementById('err6')
+        const regformss = document.getElementById('myFormss')
+        
+        
+        
+        
+        
+        
+        
+        function namevalidate() {
+            const nameval = acName.value;
+            const alphabeticRegex = /^[a-zA-Z]+$/; // Regex to match only alphabetic characters
+            
+            if (nameval.trim() === "") {
+                err1.style.display = "block";
+                err1.innerHTML = "Please enter a valid name.";
+            } else if (!alphabeticRegex.test(nameval)) {
+                err1.style.display = "block";
+                err1.innerHTML = "Name should contain only alphabetic characters.";
+            } else {
+                err1.style.display = "none";
+                err1.innerHTML = "";
+            }
+        }
+        function housevalidate(){
+            const nameval = acHouse.value
+            if(nameval.trim() === "")
+            {
+                err2.style.display = "block"
+                err2.innerHTML = "Please Enter a valid Name."
+            }
+            else{
+                err2.style.display = "none"
+                err2.innerHTML = ""
+            }
+        }
+        
+        function statevalidate() {
+            const nameval = acState.value;
+            const alphabeticRegex = /^[a-zA-Z]+$/; // Regex to match only alphabetic characters
+            
+            if (nameval.trim() === "") {
+                err3.style.display = "block";
+                err3.innerHTML = "Please enter a valid state name.";
+            } else if (!alphabeticRegex.test(nameval)) {
+                err3.style.display = "block";
+                err3.innerHTML = "State name should contain only alphabetic characters.";
+            } else {
+                err3.style.display = "none";
+                err3.innerHTML = "";
+            }
+        }
+        
+        function countryvalidate() {
+            const nameval = acCountry.value;
+            const alphabeticRegex = /^[a-zA-Z]+$/; // Regex to match only alphabetic characters
+            
+            if (nameval.trim() === "") {
+                err4.style.display = "block";
+                err4.innerHTML = "Please enter a valid country name.";
+            } else if (!alphabeticRegex.test(nameval)) {
+                err4.style.display = "block";
+                err4.innerHTML = "Country name should contain only alphabetic characters.";
+            } else {
+                err4.style.display = "none";
+                err4.innerHTML = "";
+            }
+        }
+        
+        function cityvalidate() {
+            const nameval = acCity.value;
+            const alphabeticRegex = /^[a-zA-Z]+$/; // Regex to match only alphabetic characters
+            
+            if (nameval.trim() === "") {
+                err5.style.display = "block";
+                err5.innerHTML = "Please enter a valid city name.";
+            } else if (!alphabeticRegex.test(nameval)) {
+                err5.style.display = "block";
+                err5.innerHTML = "City name should contain only alphabetic characters.";
+            } else {
+                err5.style.display = "none";
+                err5.innerHTML = "";
+            }
+        }
+        
+        
+        
+        
+        
+        
+        function pinvalidate() {
+            const acPinval = acPin.value;
+            const numericRegex = /^[0-9]+$/; // Regex to match only numbers
+            
+            if (acPinval.trim() === "") {
+                err6.style.display = "block";
+                err6.innerHTML = "Please enter a valid pincode.";
+            } else if (acPinval.length !== 6 || !numericRegex.test(acPinval)) {
+                err6.style.display = "block";
+                err6.innerHTML = "Please enter a valid 6-digit pincode containing only numbers.";
+            } else {
+                err6.style.display = "none";
+                err6.innerHTML = "";
+            }
+        }
+        
+        
+        acName.addEventListener('blur', namevalidate)
+        acHouse.addEventListener('blur',housevalidate)
+        acState.addEventListener('blur',statevalidate)
+        acCountry.addEventListener('blur',countryvalidate)
+        acCity.addEventListener('blur',cityvalidate)
+        acPin.addEventListener('blur',pinvalidate)
+        
+        
+        
+        regformss.addEventListener('submit',function(e){
+                namevalidate()
+                housevalidate()
+                statevalidate()
+                countryvalidate()
+                cityvalidate()
+                pinvalidate()
+                
+                if(err2.innerHTML || err4.innerHTML || err1.innerHTML || err3.innerHTML || err5.innerHTML  || err6.innerHTML  )
+                {
+                    e.preventDefault()
+                }
+        })
+        </script>
 
   
     <script src="/public/user/assets/js/vendor/modernizr-3.6.0.min.js"></script>

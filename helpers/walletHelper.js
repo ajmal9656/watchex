@@ -106,7 +106,7 @@ const referalAmountAdding = async (userId) => {
     try {
         // Fetching current user
         const user = await userModel.findById(userId);
-        console.log(user);
+        
 
         // Calculating new balance
         const currentBalance = user.wallet.balance;

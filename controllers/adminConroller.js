@@ -120,7 +120,7 @@ const showChart = async (req, res) => {
           $sort: { _id: 1 }, // Sort by month
         },
       ]);
-      console.log(monthlySalesData);
+      
 
       // Aggregate daily sales data
       const dailySalesData = await orderModel.aggregate([
@@ -137,9 +137,7 @@ const showChart = async (req, res) => {
           $sort: { _id: 1 }, // Sort by day of month
         },
       ]);
-      console.log("dailySalesData")
-      console.log(dailySalesData)
-      console.log("dailySalesData")
+     
 
       const orderStatuses = await orderModel.aggregate([
         {
@@ -152,14 +150,14 @@ const showChart = async (req, res) => {
           },
         },
       ]);
-      console.log(orderStatuses);
+      
 
       // Map order statuses to object format
       const eachOrderStatusCount = {};
       orderStatuses.forEach((status) => {
         eachOrderStatusCount[status._id] = status.count;
       });
-      console.log(eachOrderStatusCount);
+      
 
       res
         .status(200)
@@ -488,7 +486,7 @@ const loadEditProduct = async (req, res,next) => {
     const id = req.params.id;
   const productData = await productModel.findById(id);
   const catData = await categoryHelper.getAllCategory();
-  console.log(productData)
+  
   res.render("admin/editProduct", {
     product: productData,
     categories: catData,
@@ -566,14 +564,14 @@ const deleteImage = async (req,res)=>{
     const productId = req.params.id;
     const image = req.params.image;
 
-    console.log(image)
+    
 
     const updatedProduct = await productModel.findByIdAndUpdate(
       {_id:productId},
       { $pull: { image: image } }, // Use $pull to remove the specified image from the images array
       { new: true } // Set { new: true } to return the updated document after the update operation
   );
-  console.log(updatedProduct)
+  
   fs.unlink("public/uploads/" + image, (err) => {
     if (err) {
       reject(err);
@@ -641,21 +639,19 @@ const loadOrderDetails = async(req,res,next)=>{
     const orderId = req.params.id;
 
     orderHelper.getSpecificOrder(orderId).then(async(response)=>{
-      console.log(response)
-      console.log(response[0].orderedProduct)
+      
       
   
       const productDetails = await orderHelper.orderedProductOfferCheck(response);
       let couponStatus = false;
-      console.log("fffff",productDetails)
+      
 
     if(productDetails[0].couponAmount!=0){
       
       couponStatus = true;
     }
   
-      console.log(response)
-      console.log(response[0].orderedProduct)
+      
       
   
   
@@ -684,9 +680,7 @@ const changeSpecificOrderStatus = async (req,res)=>{
 
 
   const changeStatus = req.body.status;
-  console.log(orderId)
-  console.log(productId)
-  console.log(changeStatus)
+  
 
   await orderHelper.specificOrderStatusChange(orderId,productId,changeStatus,size).then((result)=>{
     
@@ -704,9 +698,7 @@ const acceptReturn = async (req,res)=>{
   
 
   const changeStatus = req.body.status;
-  console.log(orderId)
-  console.log(productId)
-  console.log(changeStatus)
+  
 
   await orderHelper.returnApproval(orderId,productId,changeStatus,subTotal,size).then(async(result)=>{
     const stockUpdation = await productHelper.stockIncreasion(
@@ -725,8 +717,7 @@ const loadSalesReport = async (req, res,next) => {
     orderHelper
     .salesReport()
     .then((response) => {
-      console.log("sojiouajcn");
-      console.log(response)
+      
       response.forEach((order) => {
         const orderDate = new Date(order.orderedOn)
         const formattedDate = orderDate.toLocaleDateString('en-GB', {
@@ -763,8 +754,7 @@ const endDate = req.body.endDate;
   orderHelper
     .salesReportDateSort(startDate,endDate)
     .then((response) => {
-      console.log("sojiouajcn");
-      console.log(response)
+      
       response.forEach((order) => {
         const orderDate = new Date(order.orderedOn)
         const formattedDate = orderDate.toLocaleDateString('en-GB', {

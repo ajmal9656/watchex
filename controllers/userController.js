@@ -1,5 +1,5 @@
 const User = require("../models/userModel");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const { EMAIL, PASSWORD } = require("../env");
 const { KEY_ID, KEY_SECRET } = require("../env");
@@ -896,7 +896,7 @@ const editAccount = async (req, res) => {
   console.log(userdata)
   const passCheck = await bcrypt.compare(body.accountPassword,userdata.password)
   if(passCheck){
-    console.log("skhfsjhfsuhfsiuf")
+    
     userHelper.postEditAccount(userdata, body).then((response) => {
 
       if(response.Email){

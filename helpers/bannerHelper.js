@@ -85,7 +85,7 @@ const editImages = async (oldImages, newImages) => {
   
     return new Promise(async(resolve,reject)=>{
       const result = await bannerModel.findOne({_id:id});
-      console.log(result);
+      
       if(result){
         result.status=!result.status;
         await result.save();

@@ -72,12 +72,9 @@ const loadBanners = async(req,res,next)=>{
 
   const editBanner = async (req, res) => {
     try {
-      console.log(req.body.title)
-      console.log(req.body.description)
-      console.log(req.body.startDate)
-      console.log(req.body.endDate)
+      
       const banner = await bannerModel.findById(req.params.id);
-      console.log(banner)
+      
       
      
       

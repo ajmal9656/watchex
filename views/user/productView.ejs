@@ -180,19 +180,13 @@
                       <div class="bt-1 border-color-1 mt-30 mb-30"></div>
                       <div class="detail-extralink">
                         <div class="product-extra-link2">
-                        <% if (product.isCart) { %>
                         
-                          <button
-                            type="submit"
-                            class="button button-add-to-cart"
-                            onclick="viewCart()"
-                          >
-                            View cart
-                          </button>
+                        
+                         
                          
                        
 
-                        <% } else { %>
+                        
                         
                           <button
                             type="submit"
@@ -204,7 +198,7 @@
                           
                        
 
-                        <% } %>
+                        
                         <% if (product.isWishlist) { %>
                         
                           <a aria-label="Add To Wishlist"
@@ -214,12 +208,7 @@
                           <i class="fi-rs-heart" ></i>
                        </a>
                        
-                        <a
-                          aria-label="Compare"
-                          class="action-btn hover-up"
-                          href="shop-compare.html"
-                          ><i class="fi-rs-shuffle"></i
-                        ></a>
+                       
                         
                         
                         <% } else { %>
@@ -230,12 +219,7 @@
                             
                             onclick="addToWishlist('<%= product._id %>')"
                             ><i class="fi-rs-heart" ></i></a>
-                          <a
-                            aria-label="Compare"
-                            class="action-btn hover-up"
-                            href="shop-compare.html"
-                            ><i class="fi-rs-shuffle"></i
-                          ></a>
+                          
                           
                           
                           <% } %>
@@ -1214,6 +1198,19 @@
               setTimeout(() => {
                 location.reload();
               }, 600);
+            }
+            else if(!response.status){
+              Toastify({
+                text: `${response.message}`,
+                duration: 3000,
+                gravity: "top", // top or bottom
+                position: "center", // left, center or right
+                stopOnFocus: true, // Prevents dismissing of toast on hover
+                style: {
+                  background: "red",
+                },
+              }).showToast();
+
             }
             else if(!response.user){
 

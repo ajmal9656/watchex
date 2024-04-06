@@ -30,8 +30,8 @@ const otpGeneration=(email)=>{
     if (error) {
       console.error(error);
     } else {
-      console.log(otp)
-      console.log("Email sent: " + info.response);
+      
+      console.log("Email sent");
       
       
     }

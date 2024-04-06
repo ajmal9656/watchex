@@ -1,7 +1,7 @@
 const cartModel = require("../models/cartModel");
 const productModel = require("../models/productModel");
 const User = require("../models/userModel");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const ObjectId = require('mongoose').Types.ObjectId;
 const walletHelper = require("../helpers/walletHelper");
 
@@ -194,7 +194,7 @@ const postEditAccount=async(userdata,body)=>{
 
     
     const check = await User.find({email:body.accountEmail});
-    console.log("checkl",check)
+    
 
     
 
@@ -202,17 +202,14 @@ const postEditAccount=async(userdata,body)=>{
       let email = false;
     
       if(check[0].email==userdata.email){
-        console.log("check[0].email")
-
-        console.log(check[0].email)
-        console.log(userdata.email)
+        
         email = true;
 
 
       }
       
       if(email){
-        console.log("both true")
+        
 
         userdata.email = body.accountEmail;
       userdata.mobile = body.accountMobile;
@@ -222,7 +219,7 @@ const postEditAccount=async(userdata,body)=>{
       resolve({Email:true})
 
       }else{
-        console.log("email false")
+        
         resolve({Email:false})
 
       }
@@ -230,7 +227,7 @@ const postEditAccount=async(userdata,body)=>{
 
   
     }else{
-      console.log("elseeeeee")
+      
 
       userdata.email = body.accountEmail;
       userdata.mobile = body.accountMobile;

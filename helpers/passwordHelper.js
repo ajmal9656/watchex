@@ -1,5 +1,5 @@
 const User = require("../models/userModel");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 
 const setNewPassword = async(email,password) => {
     return new Promise(async(resolve,reject)=>{

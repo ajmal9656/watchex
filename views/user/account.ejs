@@ -53,6 +53,7 @@
                                     </ul>
                                 </div>
                             </div>
+                            
                             <div class="col-md-8">
                                 <div class="tab-content dashboard-content">
                                     <div class="tab-pane fade active show " id="dashboard" role="tabpanel"
@@ -299,7 +300,7 @@
                                                     <div class="row">
                                                         <div class="form-group col-md-12">
                                                             <label>Full Name <span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="accountName"
+                                                            <input required="" class="form-control square" name="accountName" id="accname"
                                                                 type="text" value="<%= userData.name %>">
                                                                 <div id="errordiv7"></div>
                                                         </div>
@@ -307,13 +308,13 @@
 
                                                         <div class="form-group col-md-12">
                                                             <label>Email<span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="accountEmail"
+                                                            <input required="" class="form-control square" name="accountEmail" id="accemail"
                                                                 type="text" value="<%= userData.email %>">
                                                                 <div id="errordiv8"></div>
                                                         </div>
                                                         <div class="form-group col-md-12">
                                                             <label>Phone<span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="accountMobile"
+                                                            <input required="" class="form-control square" name="accountMobile" id="accmobile"
                                                                 type="text" value="<%= userData.mobile %>">
                                                                 <div id="errordiv9"></div>
                                                         </div>
@@ -617,10 +618,104 @@
 
     </script>
     <script>
+        window.onload = function() {
+            const order = location.hash;
+            if (order === "#orders") {
+                const orderId = document.getElementById('orders-tab');
+                orderId.click();
+            }
+        };
+    </script>
+    
+    <script>
         $(document).ready(function () {
         $('#walletTable').DataTable();
     });
 
+    </script>
+    <script>
+        
+const nam = document.getElementById('accname')
+const mob = document.getElementById('accmobile')
+const email = document.getElementById('accemail')
+const errdiv1 = document.getElementById('errordiv7')
+const errdiv2 = document.getElementById('errordiv8')
+const errdiv3 = document.getElementById('errordiv9')
+
+const accform = document.getElementById('enqs')
+
+function emailvalidate(e){
+    
+    const emailval = email.value
+    const emailpattern = /^([a-zA-Z0-9._-]+)@([a-zA-Z.-]+).([a-zA-z]{2,4})$/ 
+    if(!emailpattern.test(emailval))
+    {    
+        errdiv2.style.display = "block"
+        errdiv2.innerHTML = "Invalid Format!!"
+    }
+    else{
+        errdiv2.style.display = "none"
+        errdiv2.innerHTML = ""
+    }
+}
+
+
+
+
+
+function namevalidate() {
+    const nameval = nam.value.trim(); // Trim whitespace from both ends of the input
+
+    // Regular expression to match only alphabets
+    const alphabetsRegex = /^[a-zA-Z]+$/;
+
+    if (nameval === "" || !alphabetsRegex.test(nameval)) {
+        errdiv1.style.display = "block";
+        errdiv1.innerHTML = "Please enter a valid name containing only alphabets.";
+    } else {
+        errdiv1.style.display = "none";
+        errdiv1.innerHTML = "";
+    }
+}
+
+
+function mobvalidate() {
+    const mobval = mob.value.trim(); // Trim whitespace from both ends of the input
+
+    // Regular expression to match only numbers
+    const numbersRegex = /^[0-9]+$/;
+
+    if (mobval === "") {
+        errdiv3.style.display = "block";
+        errdiv3.innerHTML = "Please enter a valid Mobile Number.";
+    } else if (mobval.length !== 10 || !numbersRegex.test(mobval)) {
+        errdiv3.style.display = "block";
+        errdiv3.innerHTML = "Please enter exactly 10 digits.";
+    } else {
+        errdiv3.style.display = "none";
+        errdiv3.innerHTML = "";
+    }
+}
+
+
+email.addEventListener('blur', emailvalidate)
+nam.addEventListener('blur',namevalidate)
+mob.addEventListener('blur',mobvalidate)
+
+
+
+
+accform.addEventListener('submit',function(e){
+        emailvalidate()
+        namevalidate()
+        mobvalidate()
+        
+        
+        if(errdiv2.innerHTML || errdiv3.innerHTML || errdiv1.innerHTML )
+        {
+            e.preventDefault()
+        }
+})
     </script>
 <script>
 

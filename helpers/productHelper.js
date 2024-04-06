@@ -284,6 +284,7 @@ const cartChecking=async(productId,size,userId)=>{
        })
        if(check){
         
+        
         resolve({status:false})
 
        }else{

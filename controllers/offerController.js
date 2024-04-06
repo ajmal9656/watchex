@@ -7,7 +7,7 @@ const offerModel = require("../models/offerModel");
 const loadCategoryOffers = async(req,res,next)=>{
     try{
       const offers = await offerHelper.getAllCatOffers();
-      console.log("cfff",offers)
+      
       const category = await categoryHelper.getAllCategory();
 
       for(const offer of offers){
@@ -35,7 +35,7 @@ const loadCategoryOffers = async(req,res,next)=>{
   const loadProductOffers = async(req,res,next)=>{
     try{
       const offers = await offerHelper.getAllProdOffers();
-      console.log("Offf",offers)
+      
       const product = await productHelper.getAllProduct();
 
       for(const offer of offers){
@@ -95,7 +95,7 @@ const loadCategoryOffers = async(req,res,next)=>{
         response.formattedStartDate = formatDate(response.startingDate.toString())
         response.formattedEndDate = formatDate(response.endingDate.toString())
       
-      console.log(response)
+      
       res.json(response)
     }).catch((error)=>{
       console.log(error)
@@ -113,7 +113,7 @@ const loadCategoryOffers = async(req,res,next)=>{
     const body= req.body;
   
     offerHelper.offerEdit(body).then((response)=>{
-      console.log(response)
+      
       res.redirect("/admin/categoryOffers")
     }).catch((error)=>{
       console.log(error)
@@ -125,7 +125,7 @@ const loadCategoryOffers = async(req,res,next)=>{
     const id = req.params.id;
   
     offerHelper.catOfferSoftDeletion(id).then((response) => {
-        console.log(response)
+        
       if (response.status) {
         res
           .status(200)
@@ -166,7 +166,7 @@ const loadCategoryOffers = async(req,res,next)=>{
     const body= req.body;
   
     offerHelper.prodOfferEdit(body).then((response)=>{
-      console.log(response)
+      
       res.redirect("/admin/productOffers")
     }).catch((error)=>{
       console.log(error)
@@ -177,7 +177,7 @@ const loadCategoryOffers = async(req,res,next)=>{
     const id = req.params.id;
   
     offerHelper.catOfferSoftDeletion(id).then((response) => {
-        console.log(response)
+        
       if (response.status) {
         res
           .status(200)

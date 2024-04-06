@@ -255,50 +255,50 @@
                             <div id="collapseAddress" class="different_address collapse in">
                                 <div class="form-group">
                                     <label>Full Name <span class="required">*</span></label>
-                                                <input required="" class="form-control square" name="name"
+                                                <input required="" class="form-control square" name="name" id="adname"
                                                     type="text">
                                 </div>
-                                <p><span id="error1" style="display: none;"
+                                <p><span id="errr1" style="display: none;"
                                         class="mt-15 err text-danger"></span></p>
 
                                 <div class="form-group">
                                     <label>House<span class="required">*</span></label>
-                                                <input required="" class="form-control square" name="house"
+                                                <input required="" class="form-control square" name="house" id="adhouse"
                                                     type="text">
                                 </div>
-                                <p><span id="error2" style="display: none;"
+                                <p><span id="errr2" style="display: none;"
                                         class="mt-15 err text-danger"></span></p>
 
                                 <div class="form-group">
                                     <label>State<span class="required">*</span></label>
-                                                <input required="" class="form-control square" name="state"
+                                                <input required="" class="form-control square" name="state" id="adstate"
                                                     type="text">
                                 </div>
-                                <p><span id="error3" style="display: none;"
+                                <p><span id="errr3" style="display: none;"
                                         class="mt-15 err text-danger"></span></p>
 
                                 <div class="form-group">
                                     <label>Country<span class="required">*</span></label>
-                                                <input required="" class="form-control square"
+                                                <input required="" class="form-control square" id="adcountry"
                                                     name="country" type="text">
                                 </div>
-                                <p><span id="error4" style="display: none;"
+                                <p><span id="errr4" style="display: none;"
                                         class="mt-15 err text-danger"></span></p>
 
                                 <div class="form-group">
                                     <label>City<span class="required">*</span></label>
-                                                <input required="" class="form-control square" name="city"
+                                                <input required="" class="form-control square" name="city" id="adcity"
                                                     type="text">
                                 </div>
-                                <p><span id="error5" style="display: none;"
+                                <p><span id="errr5" style="display: none;"
                                         class="mt-15 err text-danger"></span></p>
 
                                 <div class="form-group">
                                     <label>Pin Code<span class="required">*</span></label>
-                                    <input required="" class="form-control square"
+                                    <input required="" class="form-control square" id="adpin"
                                         name="pincode" type="text">
                                 </div>
-                                <p><span id="error6" style="display: none;"
+                                <p><span id="errr6" style="display: none;"
                                         class="mt-15 err text-danger"></span></p>
 
                                 <div class="form-group col-md-4">
@@ -367,10 +367,11 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="/edit-address" method="post">
+                        <form action="/edit-address" method="post" id="regformsss">
                             <div class="mb-3">
                                 <label for="recipient-name" class="col-form-label">Name</label>
                                 <input type="text" class="form-control" name="name" id="addressname">
+                                <div id="err1"></div>
                             </div>
                             <!-- <div class="mb-3">
                                 <label for="recipient-name" class="col-form-label">Coupon Code</label>
@@ -379,22 +380,28 @@
                             <div class="mb-3">
                                 <label for="recipient-name" class="col-form-label">House</label>
                                 <input type="text" class="form-control" name="house" id="addresshouse">
+                                <div id="err2"></div>
                             </div>
-                            <div class="mb-3">
-                                <label for="recipient-name" class="col-form-label">City</label>
-                                <input type="text" class="form-control" name="city" id="addresscity">
-                            </div>
+                            
                             <div class="mb-3">
                                 <label for="recipient-name" class="col-form-label">State</label>
                                 <input type="text" class="form-control" name="state" id="addressstate">
+                                <div id="err3"></div>
                             </div>
                             <div class="mb-3">
                                 <label for="recipient-name" class="col-form-label">Country</label>
                                 <input type="text" class="form-control" name="country" id="addresscountry">
+                                <div id="err4"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="recipient-name" class="col-form-label">City</label>
+                                <input type="text" class="form-control" name="city" id="addresscity">
+                                <div id="err5"></div>
                             </div>
                             <div class="mb-3">
                                 <label for="recipient-name" class="col-form-label">Pincode</label>
                                 <input type="number" class="form-control" name="pincode" id="addresspincode">
+                                <div id="err6"></div>
                             </div>
                             <div class="mb-3">
                                 <input type="hidden" class="form-control" id="addressIdd" name="addressId" />
@@ -512,6 +519,295 @@
         </div>
     </div>
     <!-- Vendor JS-->
+    
+        <script>
+
+        const addressName = document.getElementById('addressname')
+        const addressHouse = document.getElementById('addresshouse')
+        const addressState = document.getElementById('addressstate')
+        const addressCountry = document.getElementById('addresscountry')
+        const addressCity = document.getElementById('addresscity')
+        const addressPin = document.getElementById('addresspincode')
+        const err1 = document.getElementById('err1')
+        const err2 = document.getElementById('err2')
+        const err3 = document.getElementById('err3')
+        const err4 = document.getElementById('err4')
+        const err5 = document.getElementById('err5')
+        const err6 = document.getElementById('err6')
+        const regforms = document.getElementById('regformsss')
+        
+        
+        
+        
+        
+        
+        
+        function namevalidate() {
+            const nameval = addressName.value;
+            const alphabeticRegex = /^[a-zA-Z]+$/; // Regex to match only alphabetic characters
+            
+            if (nameval.trim() === "") {
+                err1.style.display = "block";
+                err1.innerHTML = "Please enter a valid name.";
+            } else if (!alphabeticRegex.test(nameval)) {
+                err1.style.display = "block";
+                err1.innerHTML = "Name should contain only alphabetic characters.";
+            } else {
+                err1.style.display = "none";
+                err1.innerHTML = "";
+            }
+        }
+        function housevalidate(){
+            const nameval = addressHouse.value
+            if(nameval.trim() === "")
+            {
+                err2.style.display = "block"
+                err2.innerHTML = "Please Enter a valid Name."
+            }
+            else{
+                err2.style.display = "none"
+                err2.innerHTML = ""
+            }
+        }
+        
+        function statevalidate() {
+            const nameval = addressState.value;
+            const alphabeticRegex = /^[a-zA-Z]+$/; // Regex to match only alphabetic characters
+            
+            if (nameval.trim() === "") {
+                err3.style.display = "block";
+                err3.innerHTML = "Please enter a valid state name.";
+            } else if (!alphabeticRegex.test(nameval)) {
+                err3.style.display = "block";
+                err3.innerHTML = "State name should contain only alphabetic characters.";
+            } else {
+                err3.style.display = "none";
+                err3.innerHTML = "";
+            }
+        }
+        
+        function countryvalidate() {
+            const nameval = addressCountry.value;
+            const alphabeticRegex = /^[a-zA-Z]+$/; // Regex to match only alphabetic characters
+            
+            if (nameval.trim() === "") {
+                err4.style.display = "block";
+                err4.innerHTML = "Please enter a valid country name.";
+            } else if (!alphabeticRegex.test(nameval)) {
+                err4.style.display = "block";
+                err4.innerHTML = "Country name should contain only alphabetic characters.";
+            } else {
+                err4.style.display = "none";
+                err4.innerHTML = "";
+            }
+        }
+        
+        function cityvalidate() {
+            const nameval = addressCity.value;
+            const alphabeticRegex = /^[a-zA-Z]+$/; // Regex to match only alphabetic characters
+            
+            if (nameval.trim() === "") {
+                err5.style.display = "block";
+                err5.innerHTML = "Please enter a valid city name.";
+            } else if (!alphabeticRegex.test(nameval)) {
+                err5.style.display = "block";
+                err5.innerHTML = "City name should contain only alphabetic characters.";
+            } else {
+                err5.style.display = "none";
+                err5.innerHTML = "";
+            }
+        }
+        
+        
+        
+        
+        
+        
+        function pinvalidate() {
+            const addressPinval = addressPin.value;
+            const numericRegex = /^[0-9]+$/; // Regex to match only numbers
+            
+            if (addressPinval.trim() === "") {
+                err6.style.display = "block";
+                err6.innerHTML = "Please enter a valid pincode.";
+            } else if (addressPinval.length !== 6 || !numericRegex.test(addressPinval)) {
+                err6.style.display = "block";
+                err6.innerHTML = "Please enter a valid 6-digit pincode containing only numbers.";
+            } else {
+                err6.style.display = "none";
+                err6.innerHTML = "";
+            }
+        }
+        
+        
+        addressName.addEventListener('blur', namevalidate)
+        addressHouse.addEventListener('blur',housevalidate)
+        addressState.addEventListener('blur',statevalidate)
+        addressCountry.addEventListener('blur',countryvalidate)
+        addressCity.addEventListener('blur',cityvalidate)
+        addressPin.addEventListener('blur',pinvalidate)
+        
+        
+        
+        regforms.addEventListener('submit',function(e){
+                namevalidate()
+                housevalidate()
+                statevalidate()
+                countryvalidate()
+                cityvalidate()
+                pinvalidate()
+                
+                if(err2.innerHTML || err4.innerHTML || err1.innerHTML || err3.innerHTML || err5.innerHTML  || err6.innerHTML  )
+                {
+                    e.preventDefault()
+                }
+        })
+
+        </script>
+        <script>
+
+            const addressName1 = document.getElementById('adname')
+            const addressHouse1 = document.getElementById('adhouse')
+            const addressState1 = document.getElementById('adstate')
+            const addressCountry1 = document.getElementById('adcountry')
+            const addressCity1 = document.getElementById('adcity')
+            const addressPin1 = document.getElementById('adpin')
+            const errr1 = document.getElementById('errr1')
+            const errr2 = document.getElementById('errr2')
+            const errr3 = document.getElementById('errr3')
+            const errr4 = document.getElementById('errr4')
+            const errr5 = document.getElementById('errr5')
+            const errr6 = document.getElementById('errr6')
+            const editforms = document.getElementById('formId')
+            
+            
+            
+            
+            
+            
+            
+            function namevalidate() {
+                const nameval = addressName1.value;
+                const alphabeticRegex = /^[a-zA-Z]+$/; // Regex to match only alphabetic characters
+                
+                if (nameval.trim() === "") {
+                    errr1.style.display = "block";
+                    errr1.innerHTML = "Please enter a valid name.";
+                } else if (!alphabeticRegex.test(nameval)) {
+                    errr1.style.display = "block";
+                    errr1.innerHTML = "Name should contain only alphabetic characters.";
+                } else {
+                    errr1.style.display = "none";
+                    errr1.innerHTML = "";
+                }
+            }
+            function housevalidate(){
+                const nameval = addressHouse1.value
+                if(nameval.trim() === "")
+                {
+                    errr2.style.display = "block"
+                    errr2.innerHTML = "Please Enter a valid Name."
+                }
+                else{
+                    errr2.style.display = "none"
+                    errr2.innerHTML = ""
+                }
+            }
+            
+            function statevalidate() {
+                const nameval = addressState1.value;
+                const alphabeticRegex = /^[a-zA-Z]+$/; // Regex to match only alphabetic characters
+                
+                if (nameval.trim() === "") {
+                    errr3.style.display = "block";
+                    errr3.innerHTML = "Please enter a valid state name.";
+                } else if (!alphabeticRegex.test(nameval)) {
+                    errr3.style.display = "block";
+                    errr3.innerHTML = "State name should contain only alphabetic characters.";
+                } else {
+                    errr3.style.display = "none";
+                    errr3.innerHTML = "";
+                }
+            }
+            
+            function countryvalidate() {
+                const nameval = addressCountry1.value;
+                const alphabeticRegex = /^[a-zA-Z]+$/; // Regex to match only alphabetic characters
+                
+                if (nameval.trim() === "") {
+                    errr4.style.display = "block";
+                    errr4.innerHTML = "Please enter a valid country name.";
+                } else if (!alphabeticRegex.test(nameval)) {
+                    errr4.style.display = "block";
+                    errr4.innerHTML = "Country name should contain only alphabetic characters.";
+                } else {
+                    errr4.style.display = "none";
+                    errr4.innerHTML = "";
+                }
+            }
+            
+            function cityvalidate() {
+                const nameval = addressCity1.value;
+                const alphabeticRegex = /^[a-zA-Z]+$/; // Regex to match only alphabetic characters
+                
+                if (nameval.trim() === "") {
+                    errr5.style.display = "block";
+                    errr5.innerHTML = "Please enter a valid city name.";
+                } else if (!alphabeticRegex.test(nameval)) {
+                    errr5.style.display = "block";
+                    errr5.innerHTML = "City name should contain only alphabetic characters.";
+                } else {
+                    errr5.style.display = "none";
+                    errr5.innerHTML = "";
+                }
+            }
+            
+            
+            
+            
+            
+            
+            function pinvalidate() {
+                const addressPinval = addressPin1.value;
+                const numericRegex = /^[0-9]+$/; // Regex to match only numbers
+                
+                if (addressPinval.trim() === "") {
+                    errr6.style.display = "block";
+                    errr6.innerHTML = "Please enter a valid pincode.";
+                } else if (addressPinval.length !== 6 || !numericRegex.test(addressPinval)) {
+                    errr6.style.display = "block";
+                    errr6.innerHTML = "Please enter a valid 6-digit pincode containing only numbers.";
+                } else {
+                    errr6.style.display = "none";
+                    errr6.innerHTML = "";
+                }
+            }
+            
+            
+            addressName1.addEventListener('blur', namevalidate)
+            addressHouse1.addEventListener('blur',housevalidate)
+            addressState1.addEventListener('blur',statevalidate)
+            addressCountry1.addEventListener('blur',countryvalidate)
+            addressCity1.addEventListener('blur',cityvalidate)
+            addressPin1.addEventListener('blur',pinvalidate)
+            
+            
+            
+            editforms.addEventListener('submit',function(e){
+                    namevalidate()
+                    housevalidate()
+                    statevalidate()
+                    countryvalidate()
+                    cityvalidate()
+                    pinvalidate()
+                    
+                    if(errr2.innerHTML || errr4.innerHTML || errr1.innerHTML || errr3.innerHTML || errr5.innerHTML  || errr6.innerHTML  )
+                    {
+                        e.preventDefault()
+                    }
+            })
+    
+            </script>
     <script src="/public/user/assets/js/vendor/modernizr-3.6.0.min.js"></script>
     <script src="/public/user/assets/js/vendor/jquery-3.6.0.min.js"></script>
     <script src="/public/user/assets/js/vendor/jquery-migrate-3.3.0.min.js"></script>

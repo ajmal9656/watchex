@@ -56,7 +56,7 @@ const couponDetails=async(couponId)=>{
     return new Promise(async(resolve,reject)=>{
         const result = await couponModel.findOne({_id:couponId}).lean();
         result.formattedDate = formatDate(result.expiryDate.toString())
-        console.log(result.formattedDate)
+        
 
         if(result){
             resolve(result);
@@ -86,7 +86,7 @@ const couponEdit=async(body)=>{
 const applyCoupon=async(userId, couponCode,totalAmount)=>{
     return new Promise(async (resolve, reject) => {
         const coupon = await couponModel.findOne({ code: couponCode })
-        console.log(coupon)
+        
         if(coupon){
             if(coupon.minAmount<=totalAmount){
                 if (coupon.isActive === "Active") {
@@ -95,14 +95,14 @@ const applyCoupon=async(userId, couponCode,totalAmount)=>{
                       
           
                       if(cart.coupon===null){ 
-                        console.log("sgsfg")
+                        
                           const discount = coupon.discount;
               
                           cart.totalAmount = cart.totalAmount - discount;
                           cart.coupon = couponCode;
                   
                           await cart.save();
-                          console.log(cart)
+                          
                   
                           coupon.usedBy.push(userId);
                           await coupon.save();
