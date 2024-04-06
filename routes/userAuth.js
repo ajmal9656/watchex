@@ -52,7 +52,7 @@ router.post('/changepassword',userMiddleware.isCheck,userController.changePasswo
 
 router.post('/applyCoupon/:totalAmount',userMiddleware.isCheck,couponController.applyCoupon)
 
-router.get('/checkout',userMiddleware.isCheck,userController.loadCheckout);
+router.get('/checkout',userMiddleware.cartCheck,userController.loadCheckout);
 router.get('/editAddress/:id',userMiddleware.isCheck,userController.getEditAddress);
 router.post('/edit-address',userMiddleware.isCheck,userController.postEditAddress);
 router.post('/placeOrder',userMiddleware.isCheck,userController.proceedPayment);

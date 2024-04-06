@@ -1,3 +1,6 @@
+const cartModel = require("../models/cartModel");
+const objectId = require('mongoose').Types.ObjectId;
+
 const otpExpiry = (req,res,next)=>{
     const expirationTime=req.session.expirationTime;
     if(Date.now()>=expirationTime){
@@ -91,6 +94,43 @@ const isRegistered = (req,res,next)=>{
 }
 
 }
+const cartCheck= async(req,res,next)=>{
+    try{
+        if(req.session.user){
+            
+
+            const userId = req.session.user._id
+
+            const cart = await cartModel.findOne({user:new objectId(userId)});
+            
+            
+                if(cart==null){
+
+                    res.redirect("/");
+    
+    
+    
+                }
+                else{
+                    next();
+    
+                }
+
+            
+        
+            
+            
+
+    }else{
+        res.redirect("/login");
+        
+    }
+    
+
+}catch(error){
+    console.log(error);
+}
+}
 
 
 module.exports={
@@ -98,5 +138,6 @@ module.exports={
     isLogin,
     isLogout,isRegistered,
     isCheck,
-    forgotOtpExpiry
+    forgotOtpExpiry,
+    cartCheck
 }

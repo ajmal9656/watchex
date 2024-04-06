@@ -892,8 +892,7 @@ const editAccount = async (req, res) => {
   const body = req.body;
 
 
-  console.log(body)
-  console.log(userdata)
+
   const passCheck = await bcrypt.compare(body.accountPassword,userdata.password)
   if(passCheck){
     
@@ -932,6 +931,8 @@ const loadCheckout = async (req, res,next) => {
     const cartData = await cartHelper.getAllCartItems(userId);
     const couponData = await couponHelper.getAllCoupons();
 let couponStatus = false;
+
+
 
     if(cartData[0].coupon!=null){
       var couponAdded = await couponModel.findOne({code:cartData[0].coupon});

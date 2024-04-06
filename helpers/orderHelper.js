@@ -29,7 +29,7 @@ const placeOrder = async (userId, body, cartItems) => {
             products.push({product: product.productItemId._id, quantity: product.quantity, size: product.size,productPrice:product.productItemId.offerPrice
             });
         }
-        let orderStat = "pending"
+        let orderStat = "pendings"
         if(body.status){
            orderStat = "payment pending"
         }

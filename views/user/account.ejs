@@ -239,7 +239,7 @@
                                                         
                                                         <div class="col-md-12 mt-2">
                                                             <button type="submit" class="btn btn-fill-out submit"
-                                                                name="submit" value="Submit">Save</button>
+                                                                name="submit" value="Submit" id="addressButton">Save</button>
                                                         </div>
                                                     </div>
                                                 </form>
@@ -329,7 +329,7 @@
                                                         </div>
                                                         <div class="col-md-12">
                                                             <button type="submit" class="btn btn-fill-out submit"
-                                                                name="submit" value="Submit">Save</button>
+                                                                name="submit" value="Submit" id="accButton">Save</button>
                                                         </div>
                                                     </div>
                                                 </form>
@@ -584,6 +584,8 @@
         </div>
     </div>
     <!-- Vendor JS-->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
 
   
     <script src="/public/user/assets/js/vendor/modernizr-3.6.0.min.js"></script>
@@ -642,7 +644,7 @@ const errdiv1 = document.getElementById('errordiv7')
 const errdiv2 = document.getElementById('errordiv8')
 const errdiv3 = document.getElementById('errordiv9')
 
-const accform = document.getElementById('enqs')
+const accform = document.getElementById('accButton')
 
 function emailvalidate(e){
     
@@ -705,7 +707,7 @@ mob.addEventListener('blur',mobvalidate)
 
 
 
-accform.addEventListener('submit',function(e){
+accform.addEventListener('click',function(e){
         emailvalidate()
         namevalidate()
         mobvalidate()
@@ -731,7 +733,7 @@ const errordiv3 = document.getElementById('errordiv3')
 const errordiv4 = document.getElementById('errordiv4')
 const errordiv5 = document.getElementById('errordiv5')
 const errordiv6 = document.getElementById('errordiv6')
-const regforms = document.getElementById('myForms')
+const regforms = document.getElementById('addressButton')
 
 
 
@@ -846,7 +848,7 @@ addressPin.addEventListener('blur',pinvalidate)
 
 
 
-regforms.addEventListener('submit',function(e){
+regforms.addEventListener('click',function(e){
         namevalidate()
         housevalidate()
         statevalidate()
