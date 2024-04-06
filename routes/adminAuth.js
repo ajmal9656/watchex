@@ -20,27 +20,27 @@ router.patch("/block-unblock-user/:id",adminMiddleware.isLogout,adminController.
 
 
 router.get("/category",adminMiddleware.isLogout,adminController.loadCategory);
-router.post("/createCategory",adminController.createCategory);
+router.post("/createCategory",adminMiddleware.isLogout,adminController.createCategory);
 router.patch("/deleteCategory/:id",adminMiddleware.isLogout,adminController.softDeleteCategory);
 router.get("/editcategory",adminMiddleware.isLogout,adminController.loadEditcategory);
-router.put("/editcategory/:id",adminController.editCategory);
+router.put("/editcategory/:id",adminMiddleware.isLogout,adminController.editCategory);
 
 
 router.get("/productList",adminMiddleware.isLogout,adminController.LoadProduct);
 router.get("/getAddProduct",adminMiddleware.isLogout,adminController.loadAddProduct);
-router.post("/addProduct",multerMiddleware.productUpload,adminController.addProduct);
+router.post("/addProduct",adminMiddleware.isLogout,multerMiddleware.productUpload,adminController.addProduct);
 router.patch("/delete-product/:id",adminMiddleware.isLogout,adminController.softDeleteProduct);
 router.get("/edit-product/:id",adminMiddleware.isLogout,adminController.loadEditProduct);
-router.put("/edit-product/:id",multerMiddleware.productUpload,adminController.editProduct);
+router.put("/edit-product/:id",adminMiddleware.isLogout,multerMiddleware.productUpload,adminController.editProduct);
 router.patch("/deleteImage/:id/:image",adminMiddleware.isLogout,adminController.deleteImage);
 
 
 router.get("/allOrders",adminMiddleware.isLogout,adminController.loadOrders);
-router.post("/orderStatus",adminController.changeOrderStatus);
-router.get("/orderDetails/:id",adminController.loadOrderDetails);
+router.post("/orderStatus",adminMiddleware.isLogout,adminController.changeOrderStatus);
+router.get("/orderDetails/:id",adminMiddleware.isLogout,adminController.loadOrderDetails);
 
-router.post("/orderStatusChange",adminController.changeSpecificOrderStatus);
-router.post("/approveReturn/:subTotal",adminController.acceptReturn);
+router.post("/orderStatusChange",adminMiddleware.isLogout,adminController.changeSpecificOrderStatus);
+router.post("/approveReturn/:subTotal",adminMiddleware.isLogout,adminController.acceptReturn);
 
 router.get("/coupons",adminMiddleware.isLogout,couponController.loadCoupons);
 router.post("/add-coupon",adminMiddleware.isLogout,couponController.addCoupon);
@@ -68,9 +68,9 @@ router.post("/salesReportDateSort",adminMiddleware.isLogout,adminController.load
 
 router.get("/banners",adminMiddleware.isLogout,bannerController.loadBanners);
 router.get("/getAddBanner",adminMiddleware.isLogout,bannerController.loadAddBanner);
-router.post("/addBanner",multerMiddleware.productUpload,bannerController.addBanner);
+router.post("/addBanner",adminMiddleware.isLogout,multerMiddleware.productUpload,bannerController.addBanner);
 router.get("/edit-banner/:id",adminMiddleware.isLogout,bannerController.loadEditBanner);
-router.put("/edit-banner/:id",multerMiddleware.productUpload,bannerController.editBanner);
+router.put("/edit-banner/:id",adminMiddleware.isLogout,multerMiddleware.productUpload,bannerController.editBanner);
 router.patch("/delete-banner/:id",adminMiddleware.isLogout,bannerController.softDeleteBanner);
 
 module.exports=router;

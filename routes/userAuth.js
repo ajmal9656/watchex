@@ -26,31 +26,31 @@ router.post('/resendOtpForgot',userController.resendOtpForgotPass);
 
 
 
-router.get('/productView/:id',userController.viewProduct);
-router.get('/shopProduct',userController.loadAllProduct);
-router.get("/shopFilter", userController.shopFilterLoad);
+router.get('/productView/:id',userMiddleware.isCheck,userController.viewProduct);
+router.get('/shopProduct',userMiddleware.isCheck,userController.loadAllProduct);
+router.get("/shopFilter",userMiddleware.isCheck, userController.shopFilterLoad);
 
 router.get('/cartView',userMiddleware.isCheck,userController.userCart);
 router.post('/addToCart/:id/:size',userMiddleware.isCheck,userController.addToCart);
-router.patch('/updateQuantity',userController.updateQuantity);
-router.delete('/removeProduct/:id/:size',userController.removeFromCart);
+router.patch('/updateQuantity',userMiddleware.isCheck,userController.updateQuantity);
+router.delete('/removeProduct/:id/:size',userMiddleware.isCheck,userController.removeFromCart);
 
 router.get('/whishlistView',userMiddleware.isCheck,userController.userWhishlist);
 router.post('/addToWishlist/:id',userMiddleware.isCheck,userController.addToWishlist);
-router.delete('/removeFromWishlist/:id',userController.removeFromWishlist);
+router.delete('/removeFromWishlist/:id',userMiddleware.isCheck,userController.removeFromWishlist);
 
 router.get('/profileView',userMiddleware.isCheck,userController.loadUserProfile);
-router.put('/addAddress',userController.addAddress);
+router.put('/addAddress',userMiddleware.isCheck,userController.addAddress);
 router.patch('/deleteAddress/:id',userMiddleware.isCheck,userController.deleteAddress);
 router.get('/editAddress',userMiddleware.isCheck,userController.loadEditAddress);
-router.post('/editAddress',userController.editAddress);
-router.post('/addressPost',userController.addAddressPost);
-router.put('/editAccount',userController.editAccount);
+router.post('/editAddress',userMiddleware.isCheck,userController.editAddress);
+router.post('/addressPost',userMiddleware.isCheck,userController.addAddressPost);
+router.put('/editAccount',userMiddleware.isCheck,userController.editAccount);
 router.patch('/addMoneyToWallet',userMiddleware.isCheck,userController.addMoneyToWallet);
 
 router.post('/changepassword',userMiddleware.isCheck,userController.changePassword);
 
-router.post('/applyCoupon/:totalAmount',couponController.applyCoupon)
+router.post('/applyCoupon/:totalAmount',userMiddleware.isCheck,couponController.applyCoupon)
 
 router.get('/checkout',userMiddleware.isCheck,userController.loadCheckout);
 router.get('/editAddress/:id',userMiddleware.isCheck,userController.getEditAddress);
@@ -59,7 +59,7 @@ router.post('/placeOrder',userMiddleware.isCheck,userController.proceedPayment);
 router.post('/createorder',userMiddleware.isCheck,userController.createOrder);
 router.post('/paymentSuccess',userMiddleware.isCheck,userController.paymentSuccess);
 router.get('/orderSuccess',userMiddleware.isCheck,userController.orderSuccess);
-router.patch('/cancelOrder/:id',userController.cancelOrder);
+router.patch('/cancelOrder/:id',userMiddleware.isCheck,userController.cancelOrder);
 router.get('/orderDetails/:id',userMiddleware.isCheck,userController.orderDetails); 
 
 router.get('/orderFailedPage',userMiddleware.isCheck,userController.getOrderFailed); 
@@ -68,21 +68,20 @@ router.post('/paymentSuccesses',userMiddleware.isCheck,userController.paymentSuc
 router.patch('/retryPayment',userMiddleware.isCheck,userController.retryPayment); 
 
 
-router.patch('/cancelOrders/:orderId/:productId/:subTotal/:size',userController.cancelOrders);
-router.patch('/returnOrders/:orderId/:productId/:size',userController.returnOrders);
+router.patch('/cancelOrders/:orderId/:productId/:subTotal/:size',userMiddleware.isCheck,userController.cancelOrders);
+router.patch('/returnOrders/:orderId/:productId/:size',userMiddleware.isCheck,userController.returnOrders);
 
 
 
 
 
 
-router.post('/searchProduct/:query',userController.searchProduct);
-router.post('/sortedProducts',userController.sortedProductsLoad);
-router.post('/priceSortProducts',userController.priceSortedProductsLoad);
+router.post('/searchProduct/:query',userMiddleware.isCheck,userController.searchProduct);
+router.post('/sortedProducts',userMiddleware.isCheck,userController.sortedProductsLoad);
+router.post('/priceSortProducts',userMiddleware.isCheck,userController.priceSortedProductsLoad);
 
 
 
-// router.get('/productDisplay/:id',userMiddleware.isCheck,userController.productDisplay);
 
 
 
