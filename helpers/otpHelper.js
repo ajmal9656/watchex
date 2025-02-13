@@ -1,5 +1,5 @@
 const User = require("../models/userModel");
-const { EMAIL, PASSWORD } = require("../env");
+const { EMAIL, PASSWORD } = require("../secret");
 const nodemailer = require("nodemailer");
 
 

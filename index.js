@@ -9,6 +9,9 @@ const bodyParser = require('body-parser');
 const methodoverride=require('method-override');
 const flash=require("express-flash");
 const createError = require("http-errors");
+const dotenv = require('dotenv')
+
+dotenv.config()
 
 const mongoose=require("mongoose");
 mongoose.connect("mongodb://ajmalsmuhammed2000:XbirXkOMqmXN9ouw@elitecare-shard-00-00.vbvzm.mongodb.net:27017,elitecare-shard-00-01.vbvzm.mongodb.net:27017,elitecare-shard-00-02.vbvzm.mongodb.net:27017/watchex?ssl=true&replicaSet=atlas-o39jlq-shard-0&authSource=admin&retryWrites=true&w=majority&appName=EliteCare");

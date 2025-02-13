@@ -1,8 +1,8 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
-const { EMAIL, PASSWORD } = require("../env");
-const { KEY_ID, KEY_SECRET } = require("../env");
+const { EMAIL, PASSWORD } = require("../secret");
+const { KEY_ID, KEY_SECRET } = require("../secret");
 const userHelper = require("../helpers/userHelper");
 const otpHelper = require("../helpers/otpHelper");
 const productHelper = require("../helpers/productHelper");
