@@ -30,7 +30,7 @@
                         <% for( let i = 0; i < allOrders.length; i++ ) { %>
                             <tr>
                                 <td  width="10%"><%= allOrders[i].orderId %></td>
-                                <td  width="8%"><%= allOrders[i].userDetails[0].name %> </td>
+                                <td  width="8%"><%= allOrders[i].address.name %> </td>
                                 <td  width="15%"><%= allOrders[i].formattedDate %></td>
                                 <td  width="13%">$<%= allOrders[i].totalAmount %></td>
                                 <td  width="13%"><%= allOrders[i].paymentMethod %></td>

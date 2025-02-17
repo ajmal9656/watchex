@@ -611,6 +611,9 @@ const loadOrders = async(req,res,next)=>{
       let totalPages = Math.ceil(allOrders.length/itemsPerPage)
       const orders = allOrders.slice(startIndex,endIndex)
 
+      console.log("all orders",orders);
+      
+
   res.render("admin/orders",{allOrders:orders,currentPage,totalPages});
 
   }catch(error){
@@ -654,6 +657,7 @@ const loadOrderDetails = async(req,res,next)=>{
       
       
   
+  console.log("order data",productDetails);
   
       
   
